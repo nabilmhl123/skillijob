@@ -1,0 +1,152 @@
+📁 ARBORESCENCE DU PROJET SKILLIJOB REACT
+==========================================
+
+skillijob-react/
+│
+├── 📄 Configuration & Documentation
+│   ├── package.json              ⚙️  Dépendances et scripts npm
+│   ├── vite.config.js            ⚙️  Configuration Vite
+│   ├── .gitignore                🚫  Fichiers ignorés par Git
+│   ├── .eslintrc.cjs             📋  Configuration ESLint
+│   ├── .env.example              🔐  Variables d'environnement (exemple)
+│   ├── README.md                 📖  Documentation complète
+│   ├── INSTRUCTIONS.md           🚀  Guide de démarrage rapide
+│   ├── PROJET-COMPLET.md         📊  Récapitulatif du projet
+│   └── ARBORESCENCE.txt          📁  Ce fichier
+│
+├── 📄 index.html                 🌐  Template HTML principal
+│
+├── 📁 public/                    🖼️  Fichiers statiques
+│   ├── logo-skillijob.png        🎨  Logo de l'entreprise
+│   ├── hero-image.png            🖼️  Image section hero (à ajouter)
+│   └── favicon.ico               🔖  Icône du site (à ajouter)
+│
+└── 📁 src/                       💻  Code source
+    │
+    ├── 📄 main.jsx               🎯  Point d'entrée React
+    ├── 📄 App.jsx                🔀  Configuration des routes
+    │
+    ├── 📁 components/            🧩  Composants React
+    │   │
+    │   ├── 📁 layout/            🏗️  Composants de mise en page
+    │   │   ├── Navbar.jsx        📍  Barre de navigation
+    │   │   ├── Navbar.css
+    │   │   ├── Footer.jsx        📍  Pied de page
+    │   │   ├── Footer.css
+    │   │   ├── ChatBot.jsx       💬  ChatBot flottant
+    │   │   └── ChatBot.css
+    │   │
+    │   ├── 📁 home/              🏠  Composants page d'accueil
+    │   │   ├── Hero.jsx          🎭  Section hero
+    │   │   ├── Hero.css
+    │   │   ├── ProblemSection.jsx 🎯  Section problème/solution
+    │   │   ├── ProblemSection.css
+    │   │   ├── SectorsSection.jsx 🏢  Secteurs d'activité
+    │   │   └── SectorsSection.css
+    │   │
+    │   └── 📁 shared/            ♻️  Composants réutilisables
+    │       ├── Button.jsx        🔘  Bouton personnalisé
+    │       ├── Button.css
+    │       ├── Card.jsx          🃏  Carte avec animations
+    │       ├── Card.css
+    │       ├── Modal.jsx         🪟  Modal/Dialog
+    │       └── Modal.css
+    │
+    ├── 📁 pages/                 📄  Pages du site
+    │   ├── Home.jsx              🏠  Page d'accueil
+    │   ├── Candidates.jsx        👤  Page candidats
+    │   ├── Candidates.css
+    │   ├── Companies.jsx         🏢  Page entreprises
+    │   └── Companies.css
+    │
+    └── 📁 styles/                🎨  Styles globaux
+        ├── globals.css           🌍  Styles globaux
+        └── variables.css         📊  Variables CSS
+
+
+📊 STATISTIQUES
+===============
+Total fichiers : 36
+Composants React : 12
+Pages : 3
+Fichiers CSS : 16
+Documentation : 4
+
+
+🎯 NAVIGATION DU SITE
+=====================
+/ (Home)              → Page d'accueil
+/candidats           → Page pour les candidats
+/entreprises         → Page pour les entreprises
+
+
+🛠️ COMPOSANTS PRINCIPAUX
+==========================
+
+Layout (3)
+├── Navbar          → Barre de navigation responsive
+├── Footer          → Pied de page avec réseaux sociaux
+└── ChatBot         → ChatBot flottant avec Jotform
+
+Shared (3)
+├── Button          → 4 variantes (primary, secondary, outline, ghost)
+├── Card            → Carte avec animations Framer Motion
+└── Modal           → Modal avec gestion du clavier et scroll
+
+Home (3)
+├── Hero            → Section hero animée avec CTA
+├── ProblemSection  → Problème/Solution avec transition
+└── SectorsSection  → 8 secteurs d'activité
+
+
+🎨 STRUCTURE CSS
+================
+variables.css       → Couleurs, espacements, rayons
+globals.css         → Reset, typography, utilities
+[Composant].css     → Styles spécifiques par composant
+
+
+⚙️ TECHNOLOGIES
+================
+React           18.2.0      → UI Library
+React Router    6.20.1      → Navigation
+Framer Motion   10.16.16    → Animations
+Vite            5.0.8       → Build Tool
+ESLint          8.55.0      → Linter
+
+
+📦 SCRIPTS NPM
+==============
+npm install         → Installer les dépendances
+npm run dev         → Serveur de développement
+npm run build       → Build production
+npm run preview     → Prévisualiser le build
+npm run lint        → Vérifier le code
+
+
+🚀 DÉMARRAGE RAPIDE
+===================
+1. cd skillijob-react
+2. npm install
+3. npm run dev
+4. Ouvrir http://localhost:3000
+
+
+✅ CHECKLIST
+============
+[ ] npm install exécuté
+[ ] npm run dev fonctionne
+[ ] Site accessible sur localhost:3000
+[ ] Navigation fonctionne
+[ ] Responsive testé
+[ ] Images ajoutées dans /public/
+[ ] Prêt pour le déploiement
+
+
+📞 SUPPORT
+==========
+Email : contact@skillijob.com
+Tel   : 09 70 19 67 02
+
+
+🎉 Bon développement !

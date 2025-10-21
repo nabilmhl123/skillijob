@@ -1,0 +1,227 @@
+/* Section */
+.sectors-section {
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.sectors-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(108, 0, 255, 0.03) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Header */
+.sectors-header {
+  text-align: center;
+  margin-bottom: 60px;
+  position: relative;
+  z-index: 1;
+}
+
+.sectors-header h2 {
+  color: var(--text);
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sectors-subtitle {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--muted);
+  font-weight: 500;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Grille de bannières */
+.sectors-banner-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Bannière individuelle */
+.sector-banner {
+  position: relative;
+  height: 280px;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-normal);
+}
+
+.sector-banner:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+/* Image de la bannière */
+.sector-banner-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.sector-banner-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.sector-banner:hover .sector-banner-image img {
+  transform: scale(1.1);
+}
+
+/* Overlay sombre */
+.sector-banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  transition: background 0.4s ease;
+  z-index: 2;
+}
+
+.sector-banner:hover .sector-banner-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(108, 0, 255, 0.4) 0%,
+    rgba(108, 0, 255, 0.6) 50%,
+    rgba(108, 0, 255, 0.85) 100%
+  );
+}
+
+/* Contenu de la bannière */
+.sector-banner-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sector-banner-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+  transition: transform 0.3s ease;
+}
+
+.sector-banner:hover .sector-banner-icon {
+  transform: scale(1.2) rotate(-5deg);
+}
+
+.sector-banner-title {
+  color: var(--white);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.5px;
+}
+
+.sector-banner-description {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin: 0;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .sectors-banner-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .sectors-banner-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .sector-banner {
+    height: 250px;
+  }
+
+  .sector-banner-content {
+    padding: 20px;
+  }
+
+  .sector-banner-icon {
+    font-size: 2rem;
+  }
+
+  .sector-banner-title {
+    font-size: 1.3rem;
+  }
+
+  .sector-banner-description {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .sectors-header {
+    margin-bottom: 40px;
+  }
+
+  .sectors-banner-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .sector-banner {
+    height: 220px;
+  }
+
+  .sector-banner-content {
+    padding: 18px;
+  }
+
+  .sector-banner-icon {
+    font-size: 1.8rem;
+    margin-bottom: 6px;
+  }
+
+  .sector-banner-title {
+    font-size: 1.2rem;
+  }
+
+  .sector-banner-description {
+    font-size: 0.8rem;
+  }
+}
