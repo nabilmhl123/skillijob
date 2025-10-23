@@ -15,6 +15,7 @@ const EspaceCandidats = () => {
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'grid'
   const [expandedCandidate, setExpandedCandidate] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedCandidateModal, setSelectedCandidateModal] = useState(null);
 
   // Extract unique values for filters
   const regions = useMemo(() => {
@@ -437,9 +438,12 @@ const EspaceCandidats = () => {
                             </div>
 
                             <div className="card-actions">
-                              <Link to="/paiements" className="btn-action btn-primary">
+                              <button
+                                onClick={() => setSelectedCandidateModal(candidate)}
+                                className="btn-action btn-primary"
+                              >
                                 Débloquer le profil
-                              </Link>
+                              </button>
                               <button className="btn-action btn-secondary">
                                 Ajouter aux favoris
                               </button>
@@ -469,6 +473,160 @@ const EspaceCandidats = () => {
           </div>
         </div>
       </section>
+
+      {/* Candidate Profile Modal */}
+      <AnimatePresence>
+        {selectedCandidateModal && (
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedCandidateModal(null)}
+          >
+            <motion.div
+              className="modal-content"
+              initial={{ scale: 0.9, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 50 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="modal-close"
+                onClick={() => setSelectedCandidateModal(null)}
+                aria-label="Fermer"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+
+              <div className="modal-header">
+                <div className="modal-avatar">
+                  {selectedCandidateModal.name.split(' ').map(n => n[0]).join('')}
+                </div>
+                <div className="modal-header-info">
+                  <h2>{selectedCandidateModal.name}</h2>
+                  <p className="modal-position">{selectedCandidateModal.position}</p>
+                  <div className="modal-badges">
+                    <span className="badge badge-sector">{selectedCandidateModal.sector}</span>
+                    <span className="badge badge-availability">{selectedCandidateModal.availability}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-body">
+                <div className="modal-section">
+                  <h3>À propos</h3>
+                  <p className="candidate-description">
+                    Professionnel{selectedCandidateModal.name.includes('Mme') ? 'le' : ''} expérimenté{selectedCandidateModal.name.includes('Mme') ? 'e' : ''} dans le secteur {selectedCandidateModal.sector.toLowerCase()} avec {selectedCandidateModal.experience} d'expérience.
+                    Spécialisé{selectedCandidateModal.name.includes('Mme') ? 'e' : ''} en {selectedCandidateModal.position.toLowerCase()},
+                    recherche actuellement de nouvelles opportunités professionnelles avec une disponibilité {selectedCandidateModal.availability.toLowerCase()}.
+                  </p>
+                </div>
+
+                <div className="modal-section">
+                  <h3>Informations clés</h3>
+                  <div className="modal-info-grid">
+                    <div className="info-card">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                      </svg>
+                      <div>
+                        <strong>Localisation</strong>
+                        <p>{selectedCandidateModal.location}, {selectedCandidateModal.region}</p>
+                      </div>
+                    </div>
+                    <div className="info-card">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                      </svg>
+                      <div>
+                        <strong>Expérience</strong>
+                        <p>{selectedCandidateModal.experience}</p>
+                      </div>
+                    </div>
+                    <div className="info-card">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+                      </svg>
+                      <div>
+                        <strong>Formation</strong>
+                        <p>{selectedCandidateModal.education}</p>
+                      </div>
+                    </div>
+                    <div className="info-card">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+                      </svg>
+                      <div>
+                        <strong>Mobilité</strong>
+                        <p>{selectedCandidateModal.mobility}</p>
+                      </div>
+                    </div>
+                    <div className="info-card">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                      </svg>
+                      <div>
+                        <strong>Type de contrat</strong>
+                        <p>{selectedCandidateModal.contractType}</p>
+                      </div>
+                    </div>
+                    <div className="info-card">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+                      </svg>
+                      <div>
+                        <strong>Langues</strong>
+                        <p>{selectedCandidateModal.languages.join(', ')}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="modal-section">
+                  <h3>Compétences techniques</h3>
+                  <div className="modal-skills">
+                    {selectedCandidateModal.skills.map((skill, idx) => (
+                      <span key={idx} className="skill-tag-modal">{skill}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {selectedCandidateModal.certifications.length > 0 && (
+                  <div className="modal-section">
+                    <h3>Certifications</h3>
+                    <div className="modal-certifications">
+                      {selectedCandidateModal.certifications.map((cert, idx) => (
+                        <div key={idx} className="cert-item">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                          </svg>
+                          <span>{cert}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="modal-footer">
+                <Link to="/paiements" className="btn-modal-primary">
+                  Obtenir le profil complet
+                </Link>
+                <button
+                  onClick={() => setSelectedCandidateModal(null)}
+                  className="btn-modal-secondary"
+                >
+                  Fermer
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

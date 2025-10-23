@@ -629,6 +629,101 @@
    RESPONSIVE DESIGN
    =========================== */
 
+/* Filters Bar Responsive */
+@media (max-width: 1200px) {
+  .filters-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .filters-bar-section {
+    padding: 1.5rem 0;
+  }
+
+  .filters-bar {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .filters-bar-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .filters-bar-header h3 {
+    font-size: 1.125rem;
+  }
+
+  .reset-filters-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filters-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-item label {
+    font-size: 0.8rem;
+  }
+
+  .filter-select-bar {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .skills-filter-section {
+    padding-top: 1.5rem;
+  }
+
+  .skills-label {
+    font-size: 0.8rem;
+  }
+
+  .skills-chips-bar {
+    gap: 0.625rem;
+  }
+
+  .skill-chip-bar {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .filters-bar {
+    padding: 1.25rem;
+  }
+
+  .filters-bar-header h3 {
+    font-size: 1rem;
+  }
+
+  .filters-bar-header h3 svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .reset-filters-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .filter-select-bar {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .skill-chip-bar {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
 @media (max-width: 1024px) {
   .main-layout {
     grid-template-columns: 1fr;
@@ -746,5 +841,400 @@
   .card-meta {
     flex-direction: column;
     gap: 0.5rem;
+  }
+}
+
+/* ===========================
+   CANDIDATE PROFILE MODAL
+   =========================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 24px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background: #e5e7eb;
+  transform: rotate(90deg);
+}
+
+.modal-close svg {
+  color: #6b7280;
+}
+
+.modal-header {
+  padding: 3rem 3rem 2rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background: linear-gradient(135deg, rgba(108, 0, 255, 0.03), rgba(139, 92, 246, 0.02));
+}
+
+.modal-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6C00FF, #8B5CF6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 10px 30px rgba(108, 0, 255, 0.2);
+}
+
+.modal-header-info {
+  flex: 1;
+}
+
+.modal-header-info h2 {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.modal-position {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin: 0 0 1rem;
+}
+
+.modal-badges {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.modal-body {
+  padding: 2.5rem 3rem;
+}
+
+.modal-section {
+  margin-bottom: 2.5rem;
+}
+
+.modal-section:last-child {
+  margin-bottom: 0;
+}
+
+.modal-section h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-section h3::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(135deg, #6C00FF, #8B5CF6);
+  border-radius: 2px;
+}
+
+.candidate-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #4b5563;
+  margin: 0;
+}
+
+.modal-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.info-card:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  transform: translateY(-2px);
+}
+
+.info-card svg {
+  color: #6C00FF;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.info-card div {
+  flex: 1;
+}
+
+.info-card strong {
+  display: block;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-card p {
+  margin: 0;
+  font-size: 1rem;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.modal-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.skill-tag-modal {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, rgba(108, 0, 255, 0.1), rgba(139, 92, 246, 0.08));
+  color: #6C00FF;
+  border: 1px solid rgba(108, 0, 255, 0.2);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.skill-tag-modal:hover {
+  background: linear-gradient(135deg, rgba(108, 0, 255, 0.15), rgba(139, 92, 246, 0.12));
+  border-color: rgba(108, 0, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.modal-certifications {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cert-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.cert-item:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.cert-item svg {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.cert-item span {
+  font-size: 0.95rem;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.modal-footer {
+  padding: 2rem 3rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  background: #f9fafb;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
+
+.btn-modal-primary,
+.btn-modal-secondary {
+  padding: 0.875rem 2rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btn-modal-primary {
+  background: linear-gradient(135deg, #6C00FF, #8B5CF6);
+  color: white;
+  box-shadow: 0 4px 12px rgba(108, 0, 255, 0.3);
+}
+
+.btn-modal-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 0, 255, 0.4);
+}
+
+.btn-modal-secondary {
+  background: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.btn-modal-secondary:hover {
+  background: #f9fafb;
+  color: #374151;
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+  .modal-content {
+    border-radius: 20px;
+    max-height: 95vh;
+  }
+
+  .modal-header {
+    padding: 2rem 1.5rem 1.5rem;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .modal-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 1.75rem;
+  }
+
+  .modal-header-info h2 {
+    font-size: 1.5rem;
+  }
+
+  .modal-position {
+    font-size: 1rem;
+  }
+
+  .modal-body {
+    padding: 2rem 1.5rem;
+  }
+
+  .modal-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .info-card {
+    padding: 1rem;
+  }
+
+  .modal-footer {
+    padding: 1.5rem;
+    flex-direction: column;
+  }
+
+  .btn-modal-primary,
+  .btn-modal-secondary {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 10px;
+  }
+
+  .modal-content {
+    border-radius: 16px;
+  }
+
+  .modal-header {
+    padding: 1.5rem 1rem 1rem;
+  }
+
+  .modal-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+
+  .modal-header-info h2 {
+    font-size: 1.25rem;
+  }
+
+  .modal-body {
+    padding: 1.5rem 1rem;
+  }
+
+  .modal-section {
+    margin-bottom: 2rem;
+  }
+
+  .modal-section h3 {
+    font-size: 1.125rem;
+  }
+
+  .skill-tag-modal {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .modal-footer {
+    padding: 1.25rem 1rem;
+  }
+
+  .btn-modal-primary,
+  .btn-modal-secondary {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
   }
 }

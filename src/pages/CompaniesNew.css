@@ -357,6 +357,14 @@ section {
   -webkit-text-fill-color: #fff !important;
 }
 
+.how-section-main .cta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
 .steps-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -847,7 +855,15 @@ section {
   }
 
   .steps-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .step-card {
+    width: 100%;
+    max-width: 500px;
   }
 }
 
@@ -883,6 +899,15 @@ section {
     padding: 36px 0;
   }
 
+  .steps-grid {
+    gap: 48px;
+  }
+
+  .step-card {
+    max-width: 450px;
+    padding: 48px 18px 18px;
+  }
+
   .hero h1 {
     font-size: clamp(22px, 6.5vw, 28px);
   }
@@ -892,7 +917,15 @@ section {
   }
 
   .cta {
-    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .cta .btn {
+    width: 100%;
+    max-width: 400px;
   }
 
   .testimonials-marquee,
@@ -1077,6 +1110,24 @@ section {
 
 /* Petits mobiles - 480px */
 @media (max-width: 480px) {
+  /* Steps Section */
+  .steps-grid {
+    gap: 56px;
+  }
+
+  .step-card {
+    max-width: 400px;
+    padding: 50px 16px 16px;
+  }
+
+  .cta {
+    gap: 18px;
+  }
+
+  .cta .btn {
+    max-width: 350px;
+  }
+
   /* Pricing Section */
   .pricing-section {
     padding: 42px 0;

@@ -11,9 +11,8 @@ const Paiements = () => {
 
   const handleUnlockCredit = () => {
     if (acceptedCGV && isB2B) {
-      console.log('Redirecting to Stripe checkout...');
-      // Logique de redirection vers Stripe
-      window.location.href = 'https://checkout.stripe.com/...'; // URL à remplacer
+      // Redirection vers Stripe Checkout
+      window.location.href = 'https://buy.stripe.com/5kQbJ16i57gP4nP6LZaAw07';
     }
   };
 
