@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import LegalModals from '../shared/LegalModals';
+import Icons from '../shared/Icons';
 import './Footer.css';
 
 const Footer = () => {
@@ -45,12 +46,12 @@ const Footer = () => {
           <div className="footer-contact">
             <h4>Contact</h4>
             <a href="tel:+33970196702" className="footer-link">
-              📞 09 70 19 67 02
+              <Icons.Phone size={16} style={{ marginRight: '8px' }} /> 09 70 19 67 02
             </a>
             <a href="mailto:contact@skillijob.fr" className="footer-link">
-              ✉️ contact@skillijob.fr
+              <Icons.Mail size={16} style={{ marginRight: '8px' }} /> contact@skillijob.fr
             </a>
-            <p>📍 60 rue François 1er, 75008 Paris</p>
+            <p><Icons.MapPin size={16} style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }} /> 60 rue François 1er, 75008 Paris</p>
           </div>
 
           {/* Social Media Section */}

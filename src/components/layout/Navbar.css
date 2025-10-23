@@ -86,6 +86,43 @@
   width: 100%;
 }
 
+/* Mon espace link with icon */
+.navbar-link-space {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: var(--white);
+  padding: 0.6rem 1.2rem;
+  border-radius: 24px;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 12px rgba(108, 0, 255, 0.25);
+}
+
+.navbar-link-space:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 0, 255, 0.35);
+  color: var(--white);
+}
+
+.navbar-link-space.active {
+  background: linear-gradient(135deg, var(--primary-2), var(--primary));
+  color: var(--white);
+}
+
+.navbar-link-space::after {
+  display: none;
+}
+
+.space-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Mobile Menu Toggle */
 .navbar-toggle {
   display: none;
@@ -134,6 +171,12 @@
   font-size: 1.1rem;
 }
 
+.mobile-menu .navbar-link-space {
+  justify-content: center;
+  width: auto;
+  margin: 0.5rem 0;
+}
+
 .mobile-menu .mobile-cta {
   width: 100%;
   margin-top: 0.5rem;
@@ -150,6 +193,16 @@
   .navbar-logo {
     width: 55px;
     height: 55px;
+  }
+
+  .navbar-link-space {
+    padding: 0.55rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .space-icon {
+    width: 17px;
+    height: 17px;
   }
 }
 
@@ -215,6 +268,11 @@
     font-size: 1.02rem;
   }
 
+  .mobile-menu .navbar-link-space {
+    padding: 0.65rem 1.1rem;
+    font-size: 1rem;
+  }
+
   .bar {
     width: 24px;
     height: 3px;
@@ -244,6 +302,16 @@
   .mobile-menu .navbar-link {
     padding: 0.65rem 0;
     font-size: 0.98rem;
+  }
+
+  .mobile-menu .navbar-link-space {
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .space-icon {
+    width: 16px;
+    height: 16px;
   }
 
   .bar {
@@ -276,6 +344,16 @@
     font-size: 0.95rem;
   }
 
+  .mobile-menu .navbar-link-space {
+    padding: 0.55rem 0.95rem;
+    font-size: 0.92rem;
+  }
+
+  .space-icon {
+    width: 15px;
+    height: 15px;
+  }
+
   .bar {
     width: 21px;
     height: 2.5px;
@@ -301,14 +379,19 @@
     font-size: 0.9rem;
   }
 
+  .mobile-menu .navbar-link-space {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.88rem;
+  }
+
+  .space-icon {
+    width: 14px;
+    height: 14px;
+  }
+
   .bar {
     width: 20px;
     height: 2px;
-  }
-
-  .mobile-menu .mobile-cta {
-    font-size: 0.88rem;
-    padding: 12px 16px;
   }
 }
 

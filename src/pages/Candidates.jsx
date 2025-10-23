@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import HeroSection from '../components/shared/HeroSection';
 import Button from '../components/shared/Button';
 import PartnerLogo from '../components/shared/PartnerLogo';
+import Icons from '../components/shared/Icons';
 import candidatImage from '../assets/images/image_candidat.png';
 import './Candidates.css';
 
@@ -49,10 +50,11 @@ const Candidates = () => {
       external: true
     },
     {
-      text: '📞 09 70 19 67 02',
+      text: '09 70 19 67 02',
       variant: 'yellow',
       size: 'large',
-      href: 'tel:+33970196702'
+      href: 'tel:+33970196702',
+      icon: <Icons.Phone size={18} />
     }
   ];
 
@@ -246,8 +248,8 @@ const Candidates = () => {
                 <div className="cta-action-card">
                   <h3 className="cta-action-title">Nous appeler</h3>
                   <p className="cta-action-desc">Parlez directement avec un conseiller RH pour optimiser votre recherche d'emploi</p>
-                  <Button variant="yellow" size="large" href="tel:+33970196702">
-                    📞 09 70 19 67 02
+                  <Button variant="yellow" size="large" href="tel:+33970196702" icon={<Icons.Phone size={18} />}>
+                    09 70 19 67 02
                   </Button>
                 </div>
               </div>
