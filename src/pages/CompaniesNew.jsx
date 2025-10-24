@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Button from '../components/shared/Button';
 import PartnerLogo from '../components/shared/PartnerLogo';
 import HeroSection from '../components/shared/HeroSection';
+import PricingSection from '../components/pricing/PricingSection';
 import candidatImage from '../assets/images/image_candidat.png';
 import './CompaniesNew.css';
 
@@ -107,15 +108,6 @@ const CompaniesNew = () => {
       role: "Responsable Recrutement",
       company: "Tertiaire"
     }
-  ];
-
-  // Pricing features
-  const pricingFeatures = [
-    '5 entretiens garantis avec des profils que vous choisissez vous-même',
-    'Accès immédiat à notre base de candidats disponibles et qualifiés',
-    'Déblocage instantané : CV complet, coordonnées, compte-rendu RH',
-    'Garantie remplacement si un candidat ne se présente pas',
-    'Sourcing renforcé : dès réception de votre fiche de poste, notre équipe recherche activement des profils ciblés pour vos besoins'
   ];
 
   const heroBadges = ['✓ Recrutement accéléré', '✓ Gain de temps réel'];
@@ -269,42 +261,8 @@ const CompaniesNew = () => {
         </div>
       </section>
 
-      {/* Pricing Section - Minimalist Design */}
-      <section aria-labelledby="offer-title" id="offre" className="pricing-section">
-        <div className="container">
-          <div className="pricing-container">
-            <div className="pricing-header">
-              <span className="pricing-badge">OFFRE STARTER</span>
-              <h2 className="pricing-title" id="offer-title">
-                Tout ce dont vous avez besoin pour recruter
-              </h2>
-              <p className="pricing-subtitle">
-                Une solution complète, sans engagement, pour accéder rapidement aux meilleurs profils
-              </p>
-            </div>
-
-            <div className="pricing-card-minimal">
-              <div className="pricing-features-minimal">
-                {pricingFeatures.map((feature, idx) => (
-                  <div key={idx} className="feature-item-minimal">
-                    <div className="feature-check">✓</div>
-                    <span className="feature-text">{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="pricing-cta-section">
-                <Button variant="yellow" size="large" href="/paiements">
-                  Obtenir mes 5 profils qualifiés
-                </Button>
-                <p className="pricing-note">
-                  Dossiers complets envoyés {'<'} 24h après déblocage
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Pricing Section */}
+      <PricingSection />
 
       {/* About Section */}
       <section aria-labelledby="about-title" className="about-section" id="apropos">
