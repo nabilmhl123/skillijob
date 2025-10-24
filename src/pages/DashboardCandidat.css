@@ -1,0 +1,1068 @@
+/* ===================================
+   DASHBOARD ENTREPRISE - CRM STYLE
+   Adapté avec les couleurs Skillijob
+   =================================== */
+
+/* Variables Skillijob */
+:root {
+  --primary: #6C00FF;
+  --primary-dark: #5500CC;
+  --primary-light: #9D50FF;
+  --secondary: #F59E0B;
+  --secondary-light: #FBBF24;
+  --success: #10B981;
+  --info: #3B82F6;
+  --danger: #EF4444;
+  --warning: #F59E0B;
+
+  --white: #FFFFFF;
+  --bg-gradient-start: #F4F0FF;
+  --bg-gradient-end: #E8DCFF;
+  --text: #1A1A1A;
+  --text-secondary: #6B7280;
+  --text-light: #9CA3AF;
+  --border: #E5E7EB;
+  --border-light: #F3F4F6;
+
+  --sidebar-bg-start: #4C0099;
+  --sidebar-bg-end: #6C00FF;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================
+   LAYOUT PRINCIPAL - DEUX COLONNES
+   =================================== */
+
+.dashboard-crm {
+  display: flex;
+  min-height: 100vh;
+  height: 100vh;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+/* ===================================
+   SIDEBAR GAUCHE - NAVIGATION
+   =================================== */
+
+.crm-sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, var(--sidebar-bg-start) 0%, var(--sidebar-bg-end) 100%);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 20px rgba(108, 0, 255, 0.15);
+  position: relative;
+  z-index: 50;
+}
+
+/* Logo Section */
+.sidebar-logo {
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-image {
+  width: 100%;
+  max-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-image img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+/* Navigation Menu */
+.sidebar-nav {
+  padding: 1.5rem 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Headers de section */
+.nav-header {
+  padding: 1.5rem 1.5rem 0.75rem 1.5rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+.nav-header:first-child {
+  margin-top: 0;
+}
+
+.sidebar-nav .nav-item {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  border-left: 3px solid transparent;
+  text-align: left;
+}
+
+.sidebar-nav .nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+  border-left-color: var(--secondary);
+}
+
+.sidebar-nav .nav-item.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  font-weight: 600;
+  border-left-color: var(--secondary);
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-nav .nav-item.submenu-item {
+  padding-left: 3rem;
+  font-size: 0.875rem;
+}
+
+.sidebar-nav .nav-item svg {
+  flex-shrink: 0;
+}
+
+/* ===================================
+   MAIN CONTENT AREA
+   =================================== */
+
+.crm-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 100%);
+}
+
+/* ===================================
+   HEADER - NAVIGATION SKILLIJOB
+   =================================== */
+
+.crm-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+/* Navigation principale */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  width: 100%;
+}
+
+/* Liens de navigation */
+.nav-link {
+  color: var(--text);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: var(--transition);
+  padding: 0.5rem 0;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+  border-bottom-color: var(--primary-light);
+}
+
+/* Bouton CTA "Publier une offre" */
+.nav-link-cta {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: var(--white);
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4px 12px rgba(108, 0, 255, 0.25);
+  margin-left: auto;
+  font-size: 1rem;
+}
+
+.nav-link-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(108, 0, 255, 0.35);
+  color: var(--white);
+  border-bottom-color: transparent;
+}
+
+/* ===================================
+   CRM CONTENT - CONTENU PRINCIPAL
+   =================================== */
+
+.crm-content {
+  padding: 2.5rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ===================================
+   SECTION HEADER - TITRE + FILTRES
+   =================================== */
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.section-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+/* Pills de filtrage */
+.filter-pills {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-pills .pill {
+  padding: 0.5rem 1.25rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.filter-pills .pill:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: rgba(108, 0, 255, 0.05);
+}
+
+.filter-pills .pill.active {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: var(--white);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(108, 0, 255, 0.25);
+}
+
+/* ===================================
+   OPPORTUNITIES SECTION - TABLEAU
+   =================================== */
+
+.opportunities-section {
+  margin-bottom: 3rem;
+}
+
+.opportunities-table {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.opportunities-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.opportunities-table thead {
+  background: linear-gradient(135deg, #FAFBFF 0%, #F4F0FF 100%);
+  border-bottom: 2px solid var(--border-light);
+}
+
+.opportunities-table th {
+  padding: 1.125rem 1.5rem;
+  text-align: left;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.opportunities-table tbody tr {
+  border-bottom: 1px solid var(--border-light);
+  transition: var(--transition);
+}
+
+.opportunities-table tbody tr:hover {
+  background: rgba(108, 0, 255, 0.02);
+}
+
+.opportunities-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.opportunities-table td {
+  padding: 1.25rem 1.5rem;
+  font-size: 0.9375rem;
+  color: var(--text);
+  vertical-align: middle;
+}
+
+/* Cellule entreprise avec avatar */
+.company-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  font-weight: 600;
+}
+
+.company-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  flex-shrink: 0;
+  box-shadow: 0 4px 8px rgba(108, 0, 255, 0.2);
+}
+
+/* Cellule budget */
+.budget-cell {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+/* Badges de statut */
+.status-badge {
+  display: inline-flex;
+  padding: 0.375rem 0.875rem;
+  border-radius: 50px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+.status-badge.status-blue {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.1));
+  color: var(--info);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-badge.status-yellow {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.1));
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-badge.status-green {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.1));
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* ===================================
+   PROPOSAL SECTION - CARTES
+   =================================== */
+
+.proposal-section {
+  margin-bottom: 2rem;
+}
+
+.view-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.view-all-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: rgba(108, 0, 255, 0.05);
+}
+
+/* Grille de cartes */
+.proposal-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Carte individuelle */
+.proposal-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.proposal-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+}
+
+.proposal-card:hover {
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary);
+}
+
+/* Header de la carte */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.card-header h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+
+.card-budget {
+  padding: 0.375rem 0.875rem;
+  background: linear-gradient(135deg, rgba(108, 0, 255, 0.1), rgba(108, 0, 255, 0.05));
+  border-radius: var(--radius-md);
+  color: var(--primary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid rgba(108, 0, 255, 0.2);
+}
+
+.card-description {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Barre de progression */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--border-light);
+  border-radius: 50px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+  border-radius: 50px;
+  transition: width 0.3s ease;
+  box-shadow: 0 2px 8px rgba(108, 0, 255, 0.3);
+}
+
+.progress-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--primary);
+  min-width: 45px;
+  text-align: right;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+@media (max-width: 1200px) {
+  .crm-sidebar {
+    width: 240px;
+  }
+
+  .crm-content {
+    padding: 2rem;
+  }
+
+  .proposal-cards {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 968px) {
+  .crm-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .header-nav {
+    gap: 1.5rem;
+    overflow-x: auto;
+  }
+
+  .header-logo {
+    height: 28px;
+  }
+
+  .nav-link {
+    font-size: 0.9375rem;
+    white-space: nowrap;
+  }
+
+  .nav-link-cta {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-pills {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-crm {
+    flex-direction: column;
+  }
+
+  .crm-sidebar {
+    width: 100%;
+    max-height: auto;
+  }
+
+  .sidebar-logo {
+    padding: 1.25rem;
+  }
+
+  .sidebar-nav {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .crm-content {
+    padding: 1.5rem 1rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .opportunities-table {
+    overflow-x: auto;
+  }
+
+  .opportunities-table table {
+    min-width: 700px;
+  }
+
+  .proposal-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-image {
+    max-width: 140px;
+  }
+
+  .crm-header {
+    padding: 1rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.375rem;
+  }
+
+  .filter-pills .pill {
+    font-size: 0.8125rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .proposal-card {
+    padding: 1.5rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+  }
+
+  .card-budget {
+    align-self: flex-start;
+  }
+}
+
+/* ===================================
+   SCROLLBAR PERSONNALISÉ
+   =================================== */
+
+.sidebar-nav::-webkit-scrollbar,
+.crm-main::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ===================================
+   ANIMATIONS & MICRO-INTERACTIONS
+   =================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.opportunities-section,
+.proposal-section {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* Focus states pour l'accessibilité */
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ===================================
+   NOUVEAUX COMPOSANTS - SECTIONS DYNAMIQUES
+   =================================== */
+
+/* Grille de statistiques */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  transition: var(--transition);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.stat-info h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.stat-info p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Section Dashboard Générique */
+.dashboard-section {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  margin-top: 1.5rem;
+}
+
+.dashboard-section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+/* Liste d'offres d'emploi */
+.jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.job-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  background: rgba(108, 0, 255, 0.02);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+}
+
+.job-item:hover {
+  background: rgba(108, 0, 255, 0.05);
+  border-color: var(--primary);
+}
+
+.job-info {
+  flex: 1;
+}
+
+.job-info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.job-info p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.job-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.job-stats .dot {
+  color: var(--text-light);
+}
+
+.status {
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-actif {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.1));
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Liste d'entretiens */
+.interviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.interview-item {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: rgba(108, 0, 255, 0.02);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+}
+
+.interview-item:hover {
+  background: rgba(108, 0, 255, 0.05);
+  border-color: var(--primary);
+  transform: translateX(4px);
+}
+
+.interview-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.interview-info {
+  flex: 1;
+}
+
+.interview-info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.interview-info p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.interview-time {
+  text-align: right;
+}
+
+.interview-time .date {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.interview-time .time {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Cellule salaire */
+.salary-cell {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+/* Bouton d'action */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 2px 8px rgba(108, 0, 255, 0.2);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 0, 255, 0.35);
+}
+
+/* État vide / Coming Soon */
+.coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.coming-soon svg {
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+  opacity: 0.5;
+}
+
+.coming-soon h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.coming-soon p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Liste d'applications */
+.applications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.application-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  background: rgba(108, 0, 255, 0.02);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+}
+
+.application-item:hover {
+  background: rgba(108, 0, 255, 0.05);
+  border-color: var(--primary);
+}
+
+.candidate-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.candidate-avatar {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.candidate-info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.position-name {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.application-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Responsive pour les nouveaux composants */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .interview-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .interview-time {
+    text-align: left;
+    width: 100%;
+  }
+
+  .job-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .application-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .application-meta {
+    width: 100%;
+  }
+}

@@ -10,16 +10,19 @@ import Candidates from './pages/Candidates';
 import CompaniesNew from './pages/CompaniesNew';
 import EspaceCandidats from './pages/EspaceCandidats';
 import LoginForm from './pages/LoginForm';
+import DashboardCandidat from './pages/DashboardCandidat';
+import DashboardEntreprise from './pages/DashboardEntreprise';
 import Paiements from './pages/Paiements';
 import './styles/globals.css';
 
 function AppContent() {
   const location = useLocation();
   const isAuthPage = location.pathname === '/login';
+  const isDashboardPage = location.pathname.startsWith('/dashboard');
 
   return (
     <div className="App">
-      {!isAuthPage && <Navbar />}
+      {!isAuthPage && !isDashboardPage && <Navbar />}
 
       <Routes>
         <Route path="/" element={<Home />} />
@@ -27,12 +30,14 @@ function AppContent() {
         <Route path="/entreprises" element={<CompaniesNew />} />
         <Route path="/espace-candidats" element={<EspaceCandidats />} />
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/dashboard-candidat" element={<DashboardCandidat />} />
+        <Route path="/dashboard-entreprise" element={<DashboardEntreprise />} />
         <Route path="/paiements" element={<Paiements />} />
       </Routes>
 
-      {!isAuthPage && <Footer />}
-      {!isAuthPage && <ChatBot />}
-      {!isAuthPage && <NewsletterPopup />}
+      {!isAuthPage && !isDashboardPage && <Footer />}
+      {!isAuthPage && !isDashboardPage && <ChatBot />}
+      {!isAuthPage && !isDashboardPage && <NewsletterPopup />}
     </div>
   );
 }
