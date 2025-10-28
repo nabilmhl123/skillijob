@@ -102,6 +102,13 @@
   align-items: center;
 }
 
+.hero-section-buttons .btn {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .hero-section-content.centered .hero-section-buttons {
   justify-content: center;
 }

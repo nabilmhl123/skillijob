@@ -276,6 +276,35 @@ section {
   background: var(--bg);
 }
 
+.benefits-section .section-title {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.benefits-tagline {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.benefits-tagline span {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.benefits-section .section-sub {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 40px;
+  font-size: 1.1rem;
+}
+
 .benefits-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -363,6 +392,13 @@ section {
   align-items: center;
   gap: 20px;
   flex-wrap: wrap;
+}
+
+.how-section-main .cta .btn {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .steps-grid {

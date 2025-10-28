@@ -5,6 +5,7 @@ import PartnerLogo from '../components/shared/PartnerLogo';
 import HeroSection from '../components/shared/HeroSection';
 import PricingSection from '../components/pricing/PricingSection';
 import candidatImage from '../assets/images/image_candidat.png';
+import franceTravailLogo from '../assets/images/francetravail.jpg';
 import './CompaniesNew.css';
 
 const CompaniesNew = () => {
@@ -12,14 +13,14 @@ const CompaniesNew = () => {
 
   // Partners data - Same as Candidates.jsx
   const partners = [
-    { name: 'Manpower', color: '#0050A0', domain: 'manpower.fr' },
-    { name: 'Randstad', color: '#003DA5', domain: 'randstad.fr' },
-    { name: 'Adecco', color: '#E30613', domain: 'adecco.fr' },
-    { name: 'France Travail', color: '#FFC845', domain: 'francetravail.fr' },
-    { name: 'Indeed', color: '#2164F3', domain: 'indeed.com' },
-    { name: 'Monster', color: '#6E46AE', domain: 'monster.fr' },
-    { name: 'LinkedIn', color: '#0A66C2', domain: 'linkedin.com' },
-    { name: 'APEC', color: '#00A0DC', domain: 'apec.fr' }
+    { name: '', color: '#0050A0', domain: 'unml.info' },
+    { name: '', color: '#003DA5', domain: 'bpifrance.fr' },
+    { name: '', color: '#E30613', domain: 'bge.asso.fr' },
+    { name: '', color: '#FFC845', domain: 'francetravail.fr', logo: franceTravailLogo },
+    { name: '', color: '#2164F3', domain: 'indeed.com' },
+    { name: '', color: '#6E46AE', domain: 'monster.fr' },
+    { name: '', color: '#0A66C2', domain: 'linkedin.com' },
+    { name: '', color: '#00A0DC', domain: 'apec.fr' }
   ];
 
   // Dupliquer les partenaires pour un défilement infini
@@ -27,12 +28,12 @@ const CompaniesNew = () => {
 
   // Problems data
   const problems = [
-    'Cherchez en urgence à recruter dans un métier en tension',
+    'Avez cherchez en urgence à recruter dans un métier en tension',
     'Avez testé des cabinets de recrutement trop chers, ou de l\'intérim inefficace',
     'Avez déjà posté des annonces, sans résultat',
-    'Validations internes lentes, managers débordés',
+    'Avez des validations internes lentes, managers débordés',
     'Vous n\'avez pas le temps de trier et qualifier des CV non qualifiés',
-    'Mauvais matching : localisation / salaires / horaires'
+    'Avez un mauvais matching : localisation / salaires / horaires'
   ];
 
   // Benefits data
@@ -172,7 +173,16 @@ const CompaniesNew = () => {
                 {duplicatedPartners.map((partner, index) => (
                   <div key={index} className="partners-carousel-slide">
                     <div className="partner-card">
-                      <PartnerLogo name={partner.name} color={partner.color} domain={partner.domain} />
+                      {partner.logo ? (
+                        <img
+                          src={partner.logo}
+                          alt={partner.name}
+                          className="partner-logo-image"
+                          style={{ maxHeight: '120px', maxWidth: '240px', objectFit: 'contain' }}
+                        />
+                      ) : (
+                        <PartnerLogo name={partner.name} color={partner.color} domain={partner.domain} />
+                      )}
                       <div className="partner-name" style={{ color: partner.color }}>
                         {partner.name}
                       </div>
@@ -212,20 +222,45 @@ const CompaniesNew = () => {
       <section aria-labelledby="benefits-title" id="avantages" className="benefits-section">
         <div className="container">
           <h2 className="section-title" id="benefits-title">
-            Pourquoi Skillijob ?
+            Skillijob, c'est une <strong>nouvelle façon de recruter</strong>.
           </h2>
+          <div className="benefits-tagline">
+            <span>Simple.</span>
+            <span>Rapide.</span>
+            <span>Efficace.</span>
+          </div>
           <p className="section-sub">
-            On ne vous envoie pas des CV. On vous met en relation avec des candidats disponibles, déjà qualifiés par notre équipe.
+            On ne vous envoie pas des CV. On vous met en relation avec des candidats <strong>disponibles, déjà qualifiés</strong> par notre équipe.
           </p>
 
           <div className="benefits-grid">
-            {benefits.map((benefit, idx) => (
-              <div key={idx} className="benefit-card">
-                <div className="kpi">{benefit.stat}</div>
-                <h3>{benefit.title}</h3>
-                <p className="section-sub">{benefit.description}</p>
-              </div>
-            ))}
+            <div className="benefit-card">
+              <h3>Gagnez du temps dès le départ</h3>
+              <p className="section-sub">
+                Vous accédez directement à des profils disponibles, déjà qualifiés. Nos clients économisent en moyenne <strong>8 à 12 heures</strong> par recrutement.
+              </p>
+            </div>
+
+            <div className="benefit-card">
+              <h3>Payez pour du concret, pas pour du flou</h3>
+              <p className="section-sub">
+                Vous choisissez les profils. Vous décidez qui rencontrer. Jusqu'à <strong>4 000 €</strong> d'économies par rapport à un cabinet classique.
+              </p>
+            </div>
+
+            <div className="benefit-card">
+              <h3>Accédez à un vivier actif et ciblé</h3>
+              <p className="section-sub">
+                Tous nos candidats sont appelés, validés et disponibles. Plus de <strong>3 000 profils qualifiés</strong> dans les secteurs en tension.
+              </p>
+            </div>
+
+            <div className="benefit-card">
+              <h3>Recrutez rapidement, sereinement</h3>
+              <p className="section-sub">
+                Vous êtes accompagné à chaque étape, jusqu'à l'entretien. <strong>80 %</strong> de nos clients recrutent en <strong>moins de 3 semaines</strong>.
+              </p>
+            </div>
           </div>
         </div>
       </section>
