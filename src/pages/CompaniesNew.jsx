@@ -125,12 +125,6 @@ const CompaniesNew = () => {
       size: 'large',
       href: 'https://form.jotform.com/252922402753050',
       external: true
-    },
-    {
-      text: 'Obtenir mes 5 profils qualifiés',
-      variant: 'secondary',
-      size: 'large',
-      href: '/paiements'
     }
   ];
 
@@ -283,6 +277,63 @@ const CompaniesNew = () => {
                 <p className="section-sub">{step.description}</p>
               </div>
             ))}
+          </div>
+
+          {/* Timeline Roadmap intégrée */}
+          <div className="timeline-wrapper">
+            <div className="timeline-container">
+
+              <div className="milestone" data-position="top">
+                <div className="milestone-content">
+                  <h3 className="milestone-title">CONSULTER</h3>
+                  {/* <p className="milestone-desc">Créez votre compte entreprise en quelques clics</p> */}
+                </div>
+                <div className="milestone-circle">
+                  <span>01</span>
+                </div>
+              </div>
+
+              <div className="milestone" data-position="bottom">
+                <div className="milestone-circle">
+                  <span>02</span>
+                </div>
+                <div className="milestone-content">
+                  <h3 className="milestone-title">DÉBLOQUER</h3>
+                  {/* <p className="milestone-desc">Parcourez +3000 profils qualifiés dans votre secteur</p> */}
+                </div>
+              </div>
+
+              <div className="milestone" data-position="top">
+                <div className="milestone-content">
+                  <h3 className="milestone-title">CONTACTER</h3>
+                  {/* <p className="milestone-desc">Choisissez 5 candidats correspondant à vos besoins</p> */}
+                </div>
+                <div className="milestone-circle">
+                  <span>03</span>
+                </div>
+              </div>
+
+              <div className="milestone" data-position="bottom">
+                <div className="milestone-circle">
+                  <span>04</span>
+                </div>
+                <div className="milestone-content">
+                  <h3 className="milestone-title">ENTRETIEN</h3>
+                  {/* <p className="milestone-desc">Contactez directement vos candidats préqualifiés</p> */}
+                </div>
+              </div>
+
+              <div className="milestone" data-position="top">
+                <div className="milestone-content">
+                  <h3 className="milestone-title">RECRUTEMENT</h3>
+                  {/* <p className="milestone-desc">Embauchez en moins de 30 jours garanti</p> */}
+                </div>
+                <div className="milestone-circle">
+                  <span>05</span>
+                </div>
+              </div>
+
+            </div>
           </div>
 
           <div className="cta" style={{ marginTop: '2.5rem', justifyContent: 'center' }}>

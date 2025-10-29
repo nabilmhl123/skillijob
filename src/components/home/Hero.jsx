@@ -30,7 +30,7 @@ const Hero = () => {
       subtitle="Candidats, accédez à des offres réelles. Entreprises, découvrez des profils disponibles. Choisissez votre espace et démarrez gratuitement."
       badges={badges}
       buttons={buttons}
-      image={heroImage}
+      // image={heroImage}
       imageAlt="Skillijob - Plateforme de recrutement"
     />
   );

@@ -52,11 +52,7 @@ function AppContent() {
         />
         <Route
           path="/paiements"
-          element={
-            <ProtectedRoute>
-              <Paiements />
-            </ProtectedRoute>
-          }
+          element={<Paiements />}
         />
         <Route
           path="/profile"

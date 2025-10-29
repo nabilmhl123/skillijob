@@ -873,7 +873,7 @@ section {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
-  margin: 0 0 3rem;
+  margin: 0 0 4.5rem;
 }
 
 .guarantees-row {
@@ -1081,6 +1081,166 @@ section {
   line-height: 1.4;
 }
 
+/* ========== ROADMAP TIMELINE (intégrée dans Comment ça marche) ========== */
+.timeline-wrapper {
+  position: relative;
+  max-width: 1400px;
+  margin: 4rem auto 2rem;
+  padding: 60px 20px;
+}
+
+.timeline-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  gap: 2rem;
+}
+
+/* Ligne horizontale simple dorée */
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 4px;
+  background: var(--secondary);
+  transform: translateY(-50%);
+  z-index: 0;
+  border-radius: 2px;
+}
+
+.milestone {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+}
+
+/* Branches verticales vers les bulles */
+.milestone::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 3px;
+  background: var(--secondary);
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+/* Branche vers le haut pour position top (de la barre vers le titre en haut) */
+.milestone[data-position="top"]::after {
+  bottom: 50%;
+  top: 0;
+}
+
+/* Branche vers le bas pour position bottom (de la barre vers le bas) */
+.milestone[data-position="bottom"]::after {
+  top: 50%;
+  bottom: 0;
+}
+
+/* Alternance top/bottom */
+.milestone[data-position="top"],
+.milestone[data-position="bottom"] {
+  flex-direction: column;
+}
+
+.milestone-content {
+  text-align: center;
+  padding: 1.5rem;
+  max-width: 200px;
+}
+
+/* Position top : description en haut, bulle en bas */
+.milestone[data-position="bottom"] .milestone-content {
+  order: 2;
+  margin-bottom: 150px;
+}
+
+.milestone[data-position="top"] .milestone-circle {
+  order: 2;
+}
+
+/* Position bottom : bulle en haut, description en bas */
+.milestone[data-position="bottom"] .milestone-circle {
+  order: 1;
+}
+
+.milestone[data-position="top"] .milestone-content {
+  order: 1;
+  margin-top: 150px;
+}
+
+.milestone-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--white);
+  /* margin: 0 0 0.75rem; */
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.milestone-desc {
+  font-size: 0.875rem;
+  color: var(--white);
+  line-height: 1.5;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Cercles avec effet néon */
+.milestone-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%,
+    rgba(108, 0, 255, 0.2) 0%,
+    rgba(108, 0, 255, 0.8) 100%
+  );
+  border: 4px solid var(--primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow:
+    0 0 20px rgba(108, 0, 255, 0.7),
+    0 0 40px rgba(108, 0, 255, 0.4),
+    inset 0 0 20px rgba(108, 0, 255, 0.3);
+  position: relative;
+  z-index: 2;
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.milestone-circle span {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--white);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  letter-spacing: 1px;
+}
+
+.milestone-circle:hover {
+  transform: scale(1.15);
+  box-shadow:
+    0 0 30px rgba(108, 0, 255, 0.9),
+    0 0 60px rgba(245, 158, 11, 0.6),
+    inset 0 0 30px rgba(108, 0, 255, 0.5);
+  border-color: var(--secondary);
+  background: radial-gradient(circle at 30% 30%,
+    rgba(245, 158, 11, 0.2) 0%,
+    rgba(108, 0, 255, 0.9) 100%
+  );
+}
+
+.milestone:hover .milestone-title {
+  color: var(--secondary);
+  transition: color 0.3s ease;
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 980px) {
   .problems-grid {
@@ -1095,17 +1255,81 @@ section {
     grid-template-columns: 1fr;
   }
 
-  .pricing-title {
-    font-size: 2rem;
+  /* Pricing Section - Tablet */
+  .pricing-section {
+    padding: 70px 0;
   }
 
-  .pricing-features-minimal,
+  .pricing-container {
+    max-width: 750px;
+    padding: 0 20px;
+  }
+
+  .pricing-header {
+    margin-bottom: 2.75rem;
+  }
+
+  .pricing-badge {
+    font-size: 0.73rem;
+    padding: 7px 16px;
+  }
+
+  .pricing-title {
+    font-size: clamp(2rem, 4.5vw, 2.3rem);
+    line-height: 1.25;
+  }
+
+  .pricing-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.08rem);
+    max-width: 550px;
+  }
+
+  .pricing-card-minimal {
+    border-radius: 18px;
+  }
+
+  .pricing-features-minimal {
+    padding: 2.25rem;
+  }
+
   .pricing-cta-section {
-    padding: 2rem;
+    padding: 2.25rem;
+  }
+
+  .feature-item-minimal {
+    gap: 14px;
+    padding: 14px 0;
+  }
+
+  .feature-check {
+    width: 27px;
+    height: 27px;
+    font-size: 15px;
+  }
+
+  .feature-text {
+    font-size: 0.97rem;
+    line-height: 1.6;
+  }
+
+  .pricing-note {
+    font-size: 0.88rem;
+  }
+
+  /* Guarantees Section - Tablet */
+  .guarantees-main-section {
+    padding: 70px 0;
+  }
+
+  .guarantees-main-title {
+    font-size: 1.85rem;
+    margin-bottom: 3.5rem;
   }
 
   .guarantees-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem;
+    max-width: 900px;
   }
 
   /* Hide connectors on tablet when cards wrap */
@@ -1114,12 +1338,228 @@ section {
     display: none;
   }
 
+  .card-shape-svg {
+    max-width: 300px;
+  }
+
+  .card-content {
+    padding: 2.25rem 1.75rem;
+    min-height: 300px;
+    max-width: 300px;
+  }
+
+  .card-title {
+    font-size: 0.95rem;
+    padding: 9px 18px;
+  }
+
+  .card-text {
+    font-size: 0.92rem;
+  }
+
+  .card-check {
+    width: 52px;
+    height: 52px;
+  }
+
+  .highlights {
+    padding: 2.75rem 1.75rem;
+  }
+
+  .highlights-title {
+    font-size: 1.4rem;
+    margin-bottom: 2.25rem;
+  }
+
   .highlights-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem;
+  }
+
+  .icon-wrapper {
+    width: 95px;
+    height: 95px;
+  }
+
+  .kpi-large {
+    font-size: 2.35rem;
+  }
+
+  .kpi-desc {
+    font-size: 0.92rem;
+  }
+
+  /* Roadmap responsive - tablet */
+  .timeline-wrapper {
+    padding: 40px 15px;
+  }
+
+  .timeline-container {
+    flex-direction: column;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  /* Ligne verticale au centre sur tablette */
+  .timeline-container::before {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    right: auto;
+    width: 4px;
+    height: 100%;
+    transform: translateX(-50%);
+    background: var(--secondary);
+  }
+
+  /* Masquer les branches sur tablette */
+  .milestone::after {
+    display: none;
+  }
+
+  .milestone {
+    display: grid !important;
+    grid-template-columns: 1fr auto 1fr;
+    width: 100%;
+    max-width: 700px;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .milestone[data-position="top"],
+  .milestone[data-position="bottom"] {
+    display: grid !important;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+
+  /* Bulle à gauche (colonne 1) - alignée à droite pour être proche de la ligne */
+  .milestone[data-position="top"] .milestone-circle,
+  .milestone[data-position="bottom"] .milestone-circle {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+    width: 80px;
+    height: 80px;
+    margin: 0;
+  }
+
+  /* Titre à droite (colonne 3) */
+  .milestone[data-position="top"] .milestone-content,
+  .milestone[data-position="bottom"] .milestone-content {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: start;
+    align-self: center;
+    margin: 0 !important;
+    text-align: left;
+    padding: 0;
+    max-width: none;
+  }
+
+  .milestone-circle span {
+    font-size: 1.5rem;
+  }
+
+  .milestone-title {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .milestone-desc {
+    font-size: 0.85rem;
   }
 }
 
 @media (max-width: 768px) {
+  /* Roadmap responsive - mobile */
+  .timeline-wrapper {
+    padding: 40px 10px;
+  }
+
+  .timeline-container {
+    flex-direction: column;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  /* Ligne verticale au centre sur mobile */
+  .timeline-container::before {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    right: auto;
+    width: 4px;
+    height: 100%;
+    transform: translateX(-50%);
+    background: var(--secondary);
+  }
+
+  /* Masquer les branches sur mobile */
+  .milestone::after {
+    display: none;
+  }
+
+  .milestone {
+    display: grid !important;
+    grid-template-columns: 1fr auto 1fr;
+    width: 100%;
+    max-width: 500px;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .milestone[data-position="top"],
+  .milestone[data-position="bottom"] {
+    display: grid !important;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+
+  /* Bulle à gauche (colonne 1) - alignée à droite pour être proche de la ligne */
+  .milestone[data-position="top"] .milestone-circle,
+  .milestone[data-position="bottom"] .milestone-circle {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+    width: 70px;
+    height: 70px;
+    margin: 0;
+  }
+
+  /* Titre à droite (colonne 3) */
+  .milestone[data-position="top"] .milestone-content,
+  .milestone[data-position="bottom"] .milestone-content {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: start;
+    align-self: center;
+    margin: 0 !important;
+    text-align: left;
+    padding: 0;
+    max-width: none;
+  }
+
+  .milestone-content {
+    max-width: none;
+    padding: 0;
+  }
+
+  .milestone-circle span {
+    font-size: 1.3rem;
+  }
+
+  .milestone-title {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .milestone-desc {
+    font-size: 0.8rem;
+  }
+
   .grid-2,
   .grid-3,
   .grid-4 {
@@ -1140,6 +1580,149 @@ section {
 }
 
 @media (max-width: 768px) {
+  /* Guarantees Section - Mobile */
+  .guarantees-main-section {
+    padding: 60px 0;
+  }
+
+  .guarantees-main-title {
+    font-size: clamp(1.7rem, 5vw, 1.85rem);
+    margin-bottom: 3.25rem;
+    padding: 0 20px;
+  }
+
+  .guarantees-row {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    max-width: 450px;
+    padding: 0 15px;
+  }
+
+  /* Hide all connectors on mobile */
+  .guarantee-card::after,
+  .guarantee-card::before {
+    display: none;
+  }
+
+  .card-shape-svg {
+    max-width: 320px;
+  }
+
+  .card-content {
+    padding: 2rem 1.5rem;
+    min-height: 290px;
+    max-width: 320px;
+  }
+
+  .card-title {
+    font-size: 0.96rem;
+    padding: 8px 17px;
+  }
+
+  .card-text {
+    font-size: 0.91rem;
+    line-height: 1.6;
+  }
+
+  .card-check {
+    width: 50px;
+    height: 50px;
+  }
+
+  .highlights {
+    padding: 2.5rem 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .highlights-title {
+    font-size: 1.35rem;
+    margin-bottom: 2rem;
+  }
+
+  .highlights-row {
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+  }
+
+  .icon-wrapper {
+    width: 92px;
+    height: 92px;
+  }
+
+  .kpi-large {
+    font-size: 2.3rem;
+  }
+
+  .kpi-desc {
+    font-size: 0.93rem;
+  }
+
+  /* Pricing Section - Mobile */
+  .pricing-section {
+    padding: 55px 0;
+  }
+
+  .pricing-container {
+    max-width: 600px;
+    padding: 0 18px;
+  }
+
+  .pricing-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .pricing-badge {
+    font-size: 0.72rem;
+    padding: 7px 15px;
+  }
+
+  .pricing-title {
+    font-size: clamp(1.75rem, 5vw, 2rem);
+    line-height: 1.3;
+  }
+
+  .pricing-subtitle {
+    font-size: clamp(0.98rem, 2.8vw, 1.08rem);
+    line-height: 1.6;
+    max-width: 500px;
+  }
+
+  .pricing-card-minimal {
+    border-radius: 18px;
+  }
+
+  .pricing-features-minimal {
+    padding: 2rem 1.6rem;
+  }
+
+  .pricing-cta-section {
+    padding: 2rem 1.6rem;
+  }
+
+  .feature-item-minimal {
+    gap: 13px;
+    padding: 13px 0;
+  }
+
+  .feature-check {
+    width: 26px;
+    height: 26px;
+    font-size: 15px;
+  }
+
+  .feature-text {
+    font-size: clamp(0.92rem, 2.3vw, 0.98rem);
+    line-height: 1.6;
+  }
+
+  .pricing-note {
+    font-size: clamp(0.87rem, 2vw, 0.92rem);
+  }
+
+  .pricing-cta-section .btn {
+    padding: 13px 18px;
+  }
+
   .cta-modal-actions {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -1171,18 +1754,22 @@ section {
     padding: 36px 0;
   }
 
+  /* Guarantees Section - Small Mobile */
   .guarantees-main-section {
-    padding: 50px 0;
+    padding: 48px 0;
   }
 
   .guarantees-main-title {
-    font-size: 1.65rem;
-    margin-bottom: 2rem;
+    font-size: clamp(1.55rem, 5.5vw, 1.7rem);
+    margin-bottom: 3rem;
+    padding: 0 15px;
   }
 
   .guarantees-row {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    gap: 2.75rem;
+    max-width: 400px;
+    padding: 0 10px;
   }
 
   /* Hide all connectors on mobile */
@@ -1191,42 +1778,54 @@ section {
     display: none;
   }
 
+  .card-shape-svg {
+    max-width: 300px;
+  }
+
   .card-content {
-    padding: 2rem 1.5rem;
-    min-height: 280px;
+    padding: 1.85rem 1.4rem;
+    min-height: 275px;
+    max-width: 300px;
   }
 
   .card-title {
-    font-size: 0.95rem;
-    padding: 8px 16px;
+    font-size: 0.93rem;
+    padding: 7px 15px;
   }
 
   .card-text {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
+    line-height: 1.55;
   }
 
   .card-check {
-    width: 48px;
-    height: 48px;
+    width: 47px;
+    height: 47px;
+  }
+
+  .card-check svg {
+    width: 24px;
+    height: 24px;
   }
 
   .highlights {
-    padding-top: 2.5rem;
+    padding: 2.25rem 1.25rem;
+    margin-top: 2.25rem;
   }
 
   .highlights-title {
-    font-size: 1.3rem;
-    margin-bottom: 2rem;
+    font-size: clamp(1.25rem, 4.5vw, 1.35rem);
+    margin-bottom: 1.85rem;
   }
 
   .highlights-row {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.95rem;
   }
 
   .icon-wrapper {
-    width: 90px;
-    height: 90px;
+    width: 88px;
+    height: 88px;
   }
 
   .icon-wrapper svg {
@@ -1235,7 +1834,11 @@ section {
   }
 
   .kpi-large {
-    font-size: 2.2rem;
+    font-size: 2.15rem;
+  }
+
+  .kpi-desc {
+    font-size: 0.91rem;
   }
 
   .steps-grid {
@@ -1278,60 +1881,70 @@ section {
     animation: none;
   }
 
-  /* Pricing Section */
+  /* Pricing Section - Small Mobile */
   .pricing-section {
-    padding: 48px 0;
+    padding: 46px 0;
   }
 
   .pricing-container {
-    padding: 0 16px;
+    max-width: 550px;
+    padding: 0 15px;
   }
 
-  .pricing-title {
-    font-size: clamp(1.65rem, 4.5vw, 1.85rem);
-    line-height: 1.25;
-  }
-
-  .pricing-subtitle {
-    font-size: clamp(0.95rem, 2.2vw, 1.05rem);
-    line-height: 1.55;
+  .pricing-header {
+    margin-bottom: 2.25rem;
   }
 
   .pricing-badge {
-    font-size: 0.72rem;
-    padding: 7px 16px;
+    font-size: 0.71rem;
+    padding: 6px 14px;
+  }
+
+  .pricing-title {
+    font-size: clamp(1.6rem, 5.5vw, 1.8rem);
+    line-height: 1.28;
+  }
+
+  .pricing-subtitle {
+    font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+    line-height: 1.58;
+    max-width: 480px;
   }
 
   .pricing-card-minimal {
-    border-radius: 18px;
+    border-radius: 17px;
   }
 
   .pricing-features-minimal {
-    padding: 1.75rem 1.5rem;
+    padding: 1.8rem 1.45rem;
   }
 
   .pricing-cta-section {
-    padding: 1.75rem 1.5rem;
+    padding: 1.8rem 1.45rem;
   }
 
   .feature-item-minimal {
-    gap: 14px;
-    padding: 14px 0;
-  }
-
-  .feature-text {
-    font-size: clamp(0.9rem, 2vw, 0.98rem);
-    line-height: 1.55;
+    gap: 13px;
+    padding: 13px 0;
   }
 
   .feature-check {
-    width: 26px;
-    height: 26px;
-    font-size: 15px;
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+  }
+
+  .feature-text {
+    font-size: clamp(0.89rem, 2.2vw, 0.95rem);
+    line-height: 1.57;
   }
 
   .pricing-note {
-    font-size: clamp(0.86rem, 1.9vw, 0.92rem);
+    font-size: clamp(0.85rem, 2vw, 0.9rem);
+  }
+
+  .pricing-cta-section .btn {
+    padding: 12px 17px;
   }
 
   /* About Section */
@@ -1467,32 +2080,41 @@ section {
     max-width: 350px;
   }
 
-  /* Guarantees Section */
+  /* Guarantees Section - Extra Small Mobile */
   .guarantees-main-section {
-    padding: 42px 0;
+    padding: 40px 0;
   }
 
   .guarantees-main-title {
-    font-size: 1.5rem;
-    margin-bottom: 1.75rem;
+    font-size: clamp(1.4rem, 6vw, 1.55rem);
+    margin-bottom: 2.75rem;
+    padding: 0 12px;
   }
 
   .guarantees-row {
-    gap: 2rem;
+    gap: 2.5rem;
+    max-width: 360px;
+    padding: 0 8px;
+  }
+
+  .card-shape-svg {
+    max-width: 280px;
   }
 
   .card-content {
-    padding: 1.75rem 1.25rem;
+    padding: 1.7rem 1.2rem;
     min-height: 260px;
+    max-width: 280px;
   }
 
   .card-title {
-    font-size: 0.9rem;
-    padding: 7px 14px;
+    font-size: 0.88rem;
+    padding: 6px 13px;
   }
 
   .card-text {
-    font-size: 0.88rem;
+    font-size: 0.86rem;
+    line-height: 1.5;
   }
 
   .card-check {
@@ -1501,17 +2123,18 @@ section {
   }
 
   .card-check svg {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
 
   .highlights {
-    padding-top: 2rem;
+    padding: 2rem 1rem;
+    margin-top: 2rem;
   }
 
   .highlights-title {
-    font-size: 1.2rem;
-    margin-bottom: 1.75rem;
+    font-size: clamp(1.15rem, 5vw, 1.25rem);
+    margin-bottom: 1.65rem;
   }
 
   .highlights-row {
@@ -1529,41 +2152,46 @@ section {
   }
 
   .kpi-small {
-    font-size: 0.85rem;
+    font-size: 0.84rem;
   }
 
   .kpi-large {
-    font-size: 2rem;
+    font-size: 1.95rem;
   }
 
   .kpi-desc {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
+    line-height: 1.4;
   }
 
-  /* Pricing Section */
+  /* Pricing Section - Extra Small Mobile */
   .pricing-section {
-    padding: 42px 0;
+    padding: 40px 0;
   }
 
   .pricing-container {
-    padding: 0 14px;
+    max-width: 500px;
+    padding: 0 12px;
   }
 
   .pricing-header {
-    margin-bottom: 2.25rem;
-  }
-
-  .pricing-title {
-    font-size: clamp(1.5rem, 5vw, 1.7rem);
-  }
-
-  .pricing-subtitle {
-    font-size: clamp(0.88rem, 2.3vw, 0.98rem);
+    margin-bottom: 2rem;
   }
 
   .pricing-badge {
-    font-size: 0.7rem;
-    padding: 6px 14px;
+    font-size: 0.69rem;
+    padding: 6px 13px;
+  }
+
+  .pricing-title {
+    font-size: clamp(1.45rem, 6vw, 1.65rem);
+    line-height: 1.3;
+  }
+
+  .pricing-subtitle {
+    font-size: clamp(0.88rem, 2.5vw, 0.98rem);
+    line-height: 1.55;
+    max-width: 450px;
   }
 
   .pricing-card-minimal {
@@ -1571,30 +2199,36 @@ section {
   }
 
   .pricing-features-minimal {
-    padding: 1.5rem 1.25rem;
+    padding: 1.6rem 1.2rem;
   }
 
   .pricing-cta-section {
-    padding: 1.5rem 1.25rem;
+    padding: 1.6rem 1.2rem;
   }
 
   .feature-item-minimal {
-    gap: 12px;
-    padding: 12px 0;
-  }
-
-  .feature-text {
-    font-size: clamp(0.86rem, 2.2vw, 0.92rem);
+    gap: 11px;
+    padding: 11px 0;
   }
 
   .feature-check {
     width: 24px;
     height: 24px;
-    font-size: 14px;
+    font-size: 13px;
+  }
+
+  .feature-text {
+    font-size: clamp(0.86rem, 2.3vw, 0.92rem);
+    line-height: 1.55;
   }
 
   .pricing-note {
-    font-size: clamp(0.84rem, 2vw, 0.88rem);
+    font-size: clamp(0.83rem, 2.1vw, 0.88rem);
+  }
+
+  .pricing-cta-section .btn {
+    padding: 11px 16px;
+    font-size: 0.95rem;
   }
 
   /* About Section */

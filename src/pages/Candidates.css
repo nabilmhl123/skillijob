@@ -356,11 +356,14 @@
   text-align: center;
   max-width: 800px;
   margin: 0 auto 60px;
+  background: var(--primary);
+  padding: 2rem;
+  border-radius: 12px;
 }
 
 .testimonials-candidates-title {
   font-size: clamp(2rem, 3.5vw, 2.8rem);
-  color: var(--primary);
+  color: var(--white);
   margin-bottom: 16px;
   font-weight: 800;
   letter-spacing: -0.01em;
@@ -369,9 +372,9 @@
 
 .testimonials-candidates-subtitle {
   font-size: 1.15rem;
-  color: var(--text);
+  color: var(--white);
   line-height: 1.6;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .testimonials-candidates-carousel {
