@@ -117,7 +117,8 @@ const CompaniesNew = () => {
       text: 'Voir les candidats',
       variant: 'primary',
       size: 'large',
-      href: '/espace-candidats'
+      href: 'https://form.jotform.com/252922402753050',
+      external: true
     },
     {
       text: 'Déposer une offre d\'emploi',
@@ -337,7 +338,7 @@ const CompaniesNew = () => {
           </div>
 
           <div className="cta" style={{ marginTop: '2.5rem', justifyContent: 'center' }}>
-            <Button variant="primary" size="large" href="/espace-candidats">
+            <Button variant="primary" size="large" href="https://form.jotform.com/252922402753050" external>
               Voir les candidats
             </Button>
             <Button variant="yellow" size="large" href="/paiements">
@@ -535,7 +536,7 @@ const CompaniesNew = () => {
                 <div className="cta-action-card">
                   <h3 className="cta-action-title">Explorer les candidats</h3>
                   <p className="cta-action-desc">Parcourez notre vivier de profils qualifiés gratuitement</p>
-                  <Button variant="primary" size="large" href="/espace-candidats">
+                  <Button variant="primary" size="large" href="https://form.jotform.com/252922402753050" external>
                     Voir les candidats
                   </Button>
                 </div>

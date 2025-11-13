@@ -9,7 +9,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Candidates from './pages/Candidates';
 import CompaniesNew from './pages/CompaniesNew';
-import EspaceCandidats from './pages/EspaceCandidats';
 import LoginForm from './pages/LoginForm';
 import DashboardCandidat from './pages/DashboardCandidat';
 import DashboardEntreprise from './pages/DashboardEntreprise';
@@ -32,7 +31,6 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/candidats" element={<Candidates />} />
         <Route path="/entreprises" element={<CompaniesNew />} />
-        <Route path="/espace-candidats" element={<EspaceCandidats />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/login" element={<LoginForm />} />
         <Route

@@ -39,7 +39,6 @@ const Footer = () => {
             <Link to="/">Accueil</Link>
             <Link to="/candidats">Candidats</Link>
             <Link to="/entreprises">Entreprises</Link>
-            <Link to="/espace-candidats">Espace Candidats</Link>
           </nav>
 
           {/* Contact Section */}

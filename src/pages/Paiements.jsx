@@ -17,7 +17,7 @@ const Paiements = () => {
   };
 
   const handleViewCandidates = () => {
-    navigate('/espace-candidats');
+    window.location.href = 'https://form.jotform.com/252922402753050';
   };
 
   return (

@@ -22,7 +22,7 @@ const ChatBot = () => {
     const path = location.pathname;
 
     // Page Candidats
-    if (path === '/candidats' || path === '/cv' || path === '/espace-candidats') {
+    if (path === '/candidats' || path === '/cv') {
       return {
         url: 'https://eu.jotform.com/agent/0199ec4163ab79a9bd33b9051da28fb25505',
         title: 'Eloise - Assistant Recrutement'
