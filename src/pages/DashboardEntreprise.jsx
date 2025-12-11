@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { useAuth } from '../components/AuthProvider';
@@ -8,17 +8,6 @@ import Icons from '../components/shared/Icons';
 import ProfileSection from '../components/dashboard/ProfileSection';
 import './DashboardEntreprise.css';
 
-// Fonction helper pour masquer les informations personnelles
-const anonymizeProfile = (profile) => {
-  return {
-    ...profile,
-    firstName: profile.firstName.charAt(0) + '***',
-    lastName: profile.lastName.charAt(0) + '***',
-    email: '***@***.***',
-    phone: profile.phone ? '*** ** ** ** **' : null,
-    address: profile.address ? '***' : null,
-  };
-};
 
 // Dashboard entreprise avec données réelles de Convex
 
@@ -27,6 +16,8 @@ const DashboardEntreprise = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBy, setFilterBy] = useState('all');
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   const { user, token } = useAuth();
   const navigate = useNavigate();
@@ -58,7 +49,6 @@ const DashboardEntreprise = () => {
   const menuItems = [
     { id: 'overview', icon: 'Target', label: 'Vue d\'ensemble', section: 'main' },
     { id: 'candidates', icon: 'Users', label: 'Candidats', section: 'main' },
-    { id: 'analytics', icon: 'BarChart', label: 'Statistiques', section: 'main' },
 
     { id: 'publish-header', label: 'PUBLICATION', isHeader: true },
     { id: 'jobs', icon: 'Briefcase', label: 'Mes offres', section: 'main' },
@@ -95,12 +85,13 @@ const DashboardEntreprise = () => {
 
   // Filtrage et recherche des candidats
   const filteredCandidates = allCandidates
-    .map(anonymizeProfile)
     .filter(candidate => {
       const matchesSearch = searchTerm === '' ||
         candidate.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (candidate.bio && candidate.bio.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (candidate.experience && candidate.experience.toLowerCase().includes(searchTerm.toLowerCase()));
+        (candidate.experience && candidate.experience.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (candidate.firstName && candidate.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (candidate.lastName && candidate.lastName.toLowerCase().includes(searchTerm.toLowerCase()));
 
       const matchesFilter = filterBy === 'all' ||
         (filterBy === 'available' && candidate.availability === 'available') ||
@@ -112,10 +103,6 @@ const DashboardEntreprise = () => {
   const renderOverview = () => (
     <>
       <section className="candidates-overview-section">
-        <div className="section-header">
-          <h2>Profils de candidats</h2>
-          <p>Découvrez les profils anonymisés des candidats disponibles</p>
-        </div>
 
         {/* Barre de recherche et filtres */}
         <div className="search-filter-container">
@@ -157,7 +144,7 @@ const DashboardEntreprise = () => {
                     {candidate.firstName.charAt(0)}{candidate.lastName.charAt(0)}
                   </div>
                   <div className="candidate-match">
-                    <span className="match-label">Profil anonyme</span>
+                    <span className="match-label">Profil candidat</span>
                   </div>
                 </div>
 
@@ -166,12 +153,12 @@ const DashboardEntreprise = () => {
                     {candidate.firstName} {candidate.lastName}
                   </div>
                   <div className="candidate-position">
-                    {candidate.experience || 'Expérience non spécifiée'}
+                    {candidate.position || candidate.experience || 'Poste non spécifié'}
                   </div>
                   <div className="candidate-meta">
                     <span className="candidate-location">
                       <Icons.MapPin size={14} />
-                      {candidate.address || 'Localisation masquée'}
+                      {candidate.address || 'Adresse non spécifiée'}
                     </span>
                     {candidate.availability && (
                       <span className="candidate-availability">
@@ -200,6 +187,29 @@ const DashboardEntreprise = () => {
                     )}
                   </div>
                 )}
+
+                <div className="candidate-actions">
+                  <button
+                    className="candidate-action-btn profile-btn"
+                    onClick={() => {
+                      setSelectedCandidate(candidate);
+                      setShowProfileModal(true);
+                    }}
+                  >
+                    <Icons.User size={14} />
+                    Profil
+                  </button>
+                  <button
+                    className="candidate-action-btn view-btn"
+                    onClick={() => {
+                      // Action neutre pour le moment
+                      console.log('Voir candidat:', candidate.firstName, candidate.lastName);
+                    }}
+                  >
+                    <Icons.Eye size={14} />
+                    Voir
+                  </button>
+                </div>
 
                 <div className="candidate-footer">
                   <span className="applied-date">
@@ -413,6 +423,105 @@ const DashboardEntreprise = () => {
           {renderContent()}
         </div>
       </main>
+
+      {/* Modal Profil Candidat */}
+      <AnimatePresence>
+        {showProfileModal && selectedCandidate && (
+          <motion.div
+            className="profile-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowProfileModal(false)}
+          >
+            <motion.div
+              className="profile-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="profile-modal-header">
+                <div className="profile-modal-avatar">
+                  {selectedCandidate.firstName.charAt(0)}{selectedCandidate.lastName.charAt(0)}
+                </div>
+                <div className="profile-modal-info">
+                  <h3>{selectedCandidate.firstName} {selectedCandidate.lastName}</h3>
+                  <p>{selectedCandidate.experience || 'Expérience non spécifiée'}</p>
+                </div>
+                <button
+                  className="profile-modal-close"
+                  onClick={() => setShowProfileModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+
+              <div className="profile-modal-content">
+                <div className="profile-section">
+                  <h4>Description</h4>
+                  <p>{selectedCandidate.bio || 'Aucune description disponible.'}</p>
+                </div>
+
+                <div className="profile-section">
+                  <h4>Compétences</h4>
+                  <div className="profile-skills">
+                    {selectedCandidate.skills && selectedCandidate.skills.length > 0 ? (
+                      selectedCandidate.skills.map((skill, index) => (
+                        <span key={index} className="profile-skill-tag">{skill}</span>
+                      ))
+                    ) : (
+                      <p>Aucune compétence spécifiée.</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="profile-section">
+                  <h4>Informations de contact</h4>
+                  <div className="profile-contact-info">
+                    <div className="contact-item">
+                      <Icons.Mail size={16} />
+                      <span>{selectedCandidate.email}</span>
+                    </div>
+                    {selectedCandidate.phone && (
+                      <div className="contact-item">
+                        <Icons.Phone size={16} />
+                        <span>{selectedCandidate.phone}</span>
+                      </div>
+                    )}
+                    {selectedCandidate.linkedinUrl && (
+                      <div className="contact-item">
+                        <Icons.ExternalLink size={16} />
+                        <a href={selectedCandidate.linkedinUrl} target="_blank" rel="noopener noreferrer">
+                          LinkedIn
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="profile-section">
+                  <h4>Informations supplémentaires</h4>
+                  <div className="profile-details">
+                    <div className="detail-item">
+                      <strong>Localisation:</strong> {selectedCandidate.address || 'Non spécifiée'}
+                    </div>
+                    <div className="detail-item">
+                      <strong>Éducation:</strong> {selectedCandidate.education || 'Non spécifiée'}
+                    </div>
+                    <div className="detail-item">
+                      <strong>Disponibilité:</strong> {selectedCandidate.availability || 'Non spécifiée'}
+                    </div>
+                    <div className="detail-item">
+                      <strong>Profil créé le:</strong> {new Date(selectedCandidate.createdAt).toLocaleDateString('fr-FR')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
