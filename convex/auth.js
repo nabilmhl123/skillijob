@@ -104,6 +104,7 @@ export const signup = mutation({
     companyName: v.optional(v.string()),
     phone: v.optional(v.string()),
     position: v.optional(v.string()),
+    termsAccepted: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     // Valider l'email
@@ -139,6 +140,8 @@ export const signup = mutation({
       companyName: args.companyName,
       phone: args.phone,
       position: args.position,
+      emailVerified: false,
+      termsAccepted: args.termsAccepted || false,
       createdAt: Date.now(),
     });
 
@@ -530,6 +533,98 @@ export const resetPassword = mutation({
     return {
       success: true,
       message: "Mot de passe réinitialisé avec succès"
+    };
+  },
+});
+
+// ==================== VÉRIFICATION D'EMAIL ====================
+
+/**
+ * Envoi d'un email de vérification
+ */
+export const sendVerificationEmail = mutation({
+  args: {
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    if (!user) {
+      throw new Error("Utilisateur introuvable");
+    }
+
+    if (user.emailVerified) {
+      throw new Error("Email déjà vérifié");
+    }
+
+    // Générer un token unique
+    const verificationToken = crypto.randomUUID();
+    const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 heures
+
+    // Invalider les anciens tokens
+    const oldTokens = await ctx.db
+      .query("emailVerificationTokens")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("used"), false))
+      .collect();
+
+    for (const token of oldTokens) {
+      await ctx.db.patch(token._id, { used: true });
+    }
+
+    // Créer le nouveau token
+    await ctx.db.insert("emailVerificationTokens", {
+      userId: args.userId,
+      token: verificationToken,
+      expiresAt,
+      used: false,
+    });
+
+    // TODO: Envoyer l'email avec le lien de vérification
+    // Le lien serait : https://votresite.com/verify-email?token={verificationToken}
+
+    return {
+      success: true,
+      message: "Email de vérification envoyé",
+      // Pour le développement uniquement, retourner le token
+      verificationToken: verificationToken,
+    };
+  },
+});
+
+/**
+ * Vérification de l'email avec un token
+ */
+export const verifyEmail = mutation({
+  args: {
+    token: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const verificationToken = await ctx.db
+      .query("emailVerificationTokens")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (!verificationToken) {
+      throw new Error("Token invalide");
+    }
+
+    if (verificationToken.used) {
+      throw new Error("Ce token a déjà été utilisé");
+    }
+
+    if (verificationToken.expiresAt < Date.now()) {
+      throw new Error("Ce token a expiré");
+    }
+
+    // Marquer l'email comme vérifié
+    await ctx.db.patch(verificationToken.userId, { emailVerified: true });
+
+    // Marquer le token comme utilisé
+    await ctx.db.patch(verificationToken._id, { used: true });
+
+    return {
+      success: true,
+      message: "Email vérifié avec succès"
     };
   },
 });

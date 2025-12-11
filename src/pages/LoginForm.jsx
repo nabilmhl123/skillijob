@@ -21,10 +21,14 @@ const LoginForm = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
 
   const navigate = useNavigate();
   const signup = useMutation(api.auth.signup);
   const signin = useMutation(api.auth.signin);
+  const requestPasswordReset = useMutation(api.auth.requestPasswordReset);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -64,6 +68,7 @@ const LoginForm = () => {
           companyName: formData.companyName || undefined,
           phone: formData.phone || undefined,
           position: formData.position || undefined,
+          termsAccepted: true, // Assuming checkbox is checked since required
         });
 
         // Stocker le token dans localStorage
@@ -125,6 +130,24 @@ const LoginForm = () => {
   const switchUserType = (type) => {
     setUserType(type);
     resetForm();
+  };
+
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();
+    setResetMessage('');
+    setLoading(true);
+
+    try {
+      const result = await requestPasswordReset({ email: resetEmail });
+      setResetMessage(result.message);
+      if (result.resetToken) {
+        console.log('Reset token (dev only):', result.resetToken);
+      }
+    } catch (err) {
+      setResetMessage(err.message || 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const candidateBenefits = [
@@ -429,7 +452,7 @@ const LoginForm = () => {
                   <input type="checkbox" />
                   <span>Se souvenir de moi</span>
                 </label>
-                <a href="#" className="forgot-link">Mot de passe oublié ?</a>
+                <button type="button" className="forgot-link" onClick={() => setShowPasswordReset(true)}>Mot de passe oublié ?</button>
               </div>
             )}
 
@@ -486,6 +509,72 @@ const LoginForm = () => {
           </div>
         </div>
       </div>
+
+      {/* Password Reset Modal */}
+      <AnimatePresence>
+        {showPasswordReset && (
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowPasswordReset(false)}
+          >
+            <motion.div
+              className="modal-content"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h3>Réinitialiser le mot de passe</h3>
+                <button
+                  type="button"
+                  className="modal-close"
+                  onClick={() => setShowPasswordReset(false)}
+                >
+                  ×
+                </button>
+              </div>
+
+              <form onSubmit={handlePasswordReset} className="modal-body">
+                <p>Entrez votre adresse email pour recevoir un lien de réinitialisation.</p>
+
+                <div className="form-group">
+                  <label htmlFor="resetEmail">Email</label>
+                  <input
+                    type="email"
+                    id="resetEmail"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    required
+                    placeholder="votre.email@exemple.com"
+                  />
+                </div>
+
+                {resetMessage && (
+                  <div style={{
+                    padding: '12px',
+                    marginBottom: '16px',
+                    backgroundColor: resetMessage.includes('succès') ? '#e6f7e6' : '#fee',
+                    border: `1px solid ${resetMessage.includes('succès') ? '#cfc' : '#fcc'}`,
+                    borderRadius: '8px',
+                    color: resetMessage.includes('succès') ? '#363' : '#c33',
+                    fontSize: '14px'
+                  }}>
+                    {resetMessage}
+                  </div>
+                )}
+
+                <button type="submit" className="auth-submit-btn" disabled={loading}>
+                  {loading ? 'Envoi...' : 'Envoyer le lien'}
+                </button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

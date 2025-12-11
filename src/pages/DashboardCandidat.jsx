@@ -16,12 +16,12 @@ const DashboardCandidat = () => {
 
   const token = getAuthToken();
 
-  // Pour l'instant, on utilise des données mockées
-  // Les API seront réactivées plus tard
-  const jobOffers = [];
+  // Données réelles depuis Convex
+  const publishedJobs = useQuery(api.jobs.getPublishedJobs) || [];
+  const jobOffers = publishedJobs;
   const myApplications = [];
   const applicationStats = null;
-  const recommendations = [];
+  const recommendations = publishedJobs.slice(0, 5); // Utiliser les offres publiées comme recommandations temporaires
   const experiences = [];
   const educations = [];
 
@@ -362,15 +362,13 @@ const DashboardCandidat = () => {
       <div className="section-header"><h2>⚡ Alertes Emploi</h2></div>
       <div className="dashboard-section">
         <div className="jobs-list">
-          {['Développeur Full Stack - Paris - 50K€+', 'Designer UI/UX - Remote - 45K€+', 'Data Scientist - Paris - 55K€+'].map((a, i) => {
-            const [titre, loc, sal] = a.split(' - ');
-            return (
-              <div key={i} className="job-item">
-                <div className="job-info"><h3>{titre}</h3><div className="job-stats"><span>{loc}</span><span className="dot">•</span><span>{sal}</span></div></div>
-                <span className="status status-actif">Active</span>
-              </div>
-            );
-          })}
+          <div className="job-item">
+            <div className="job-info">
+              <h3>Aucune alerte active</h3>
+              <p>Créez des alertes pour recevoir des offres par email</p>
+            </div>
+            <button className="action-btn">Créer une alerte</button>
+          </div>
         </div>
       </div>
     </section>
@@ -585,11 +583,8 @@ const DashboardCandidat = () => {
       <div className="dashboard-section">
         <h2>CV Actuel</h2>
         <div style={{ marginTop: '1.5rem' }}>
-          <p><strong>Dernière mise à jour:</strong> 15 Oct 2025</p>
-          <p><strong>Visibilité:</strong> Public</p>
-          <p><strong>Téléchargements:</strong> 23</p>
-          <button className="action-btn" style={{ marginTop: '1.5rem' }}><Icons.FileText size={16} />Télécharger mon CV</button>
-          <button className="action-btn" style={{ marginTop: '0.5rem', marginLeft: '1rem' }}><Icons.FileText size={16} />Modifier mon CV</button>
+          <p>Vous n'avez pas encore créé de CV</p>
+          <button className="action-btn" style={{ marginTop: '1.5rem' }}><Icons.FileText size={16} />Créer mon CV</button>
         </div>
       </div>
     </section>
@@ -600,15 +595,13 @@ const DashboardCandidat = () => {
       <div className="section-header"><h2>📁 Mes Documents</h2></div>
       <div className="dashboard-section">
         <div className="jobs-list">
-          {['CV_Jean_Dupont.pdf - 2.3 MB - 15 Oct 2025', 'Lettre_Motivation.pdf - 450 KB - 10 Oct 2025', 'Portfolio.pdf - 8.5 MB - 05 Oct 2025'].map((d, i) => {
-            const [nom, taille, date] = d.split(' - ');
-            return (
-              <div key={i} className="job-item">
-                <div className="job-info"><h3>{nom}</h3><div className="job-stats"><span>{taille}</span><span className="dot">•</span><span>{date}</span></div></div>
-                <button className="action-btn"><Icons.FileText size={16} />Télécharger</button>
-              </div>
-            );
-          })}
+          <div className="job-item">
+            <div className="job-info">
+              <h3>Aucun document</h3>
+              <p>Vous n'avez pas encore ajouté de documents</p>
+            </div>
+            <button className="action-btn"><Icons.FileText size={16} />Ajouter un document</button>
+          </div>
         </div>
       </div>
     </section>
@@ -618,9 +611,11 @@ const DashboardCandidat = () => {
     <section className="opportunities-section">
       <div className="section-header"><h2>🎯 Mes Compétences</h2></div>
       <div className="proposal-cards">
-        <motion.div className="proposal-card"><h3>Frontend</h3><p>React, Vue.js, TypeScript, HTML/CSS, Tailwind</p><div className="progress-container"><div className="progress-bar"><div className="progress-fill" style={{ width: '90%' }}></div></div><span className="progress-label">90%</span></div></motion.div>
-        <motion.div className="proposal-card"><h3>Backend</h3><p>Node.js, Python, PostgreSQL, MongoDB, REST APIs</p><div className="progress-container"><div className="progress-bar"><div className="progress-fill" style={{ width: '85%' }}></div></div><span className="progress-label">85%</span></div></motion.div>
-        <motion.div className="proposal-card"><h3>DevOps</h3><p>Docker, CI/CD, AWS, Git, Linux</p><div className="progress-container"><div className="progress-bar"><div className="progress-fill" style={{ width: '75%' }}></div></div><span className="progress-label">75%</span></div></motion.div>
+        <motion.div className="proposal-card">
+          <h3>Aucune compétence ajoutée</h3>
+          <p>Ajoutez vos compétences pour améliorer vos recommandations</p>
+          <button className="action-btn" style={{ marginTop: '1rem' }}>Ajouter des compétences</button>
+        </motion.div>
       </div>
     </section>
   );
@@ -630,12 +625,9 @@ const DashboardCandidat = () => {
       <div className="section-header"><h2>⚙️ Mes Préférences</h2></div>
       <div className="dashboard-section">
         <h2>Préférences de Recherche</h2>
-        <div style={{ display: 'grid', gap: '1rem', marginTop: '1.5rem' }}>
-          <div><strong>Type de poste:</strong> CDI, Télétravail</div>
-          <div><strong>Salaire minimum:</strong> 50 000€</div>
-          <div><strong>Localisation:</strong> Paris, Lyon, Remote</div>
-          <div><strong>Disponibilité:</strong> Immédiate</div>
-          <div><strong>Notifications:</strong> Email + SMS</div>
+        <div style={{ marginTop: '1.5rem' }}>
+          <p>Vous n'avez pas encore défini vos préférences de recherche</p>
+          <button className="action-btn" style={{ marginTop: '1rem' }}>Définir mes préférences</button>
         </div>
       </div>
     </section>
@@ -646,15 +638,15 @@ const DashboardCandidat = () => {
       <div className="section-header"><h2>✉️ Mes Messages</h2></div>
       <div className="dashboard-section">
         <div className="applications-list">
-          {['Google France - Invitation entretien - Il y a 2 heures', 'Airbnb - Demande d\'informations - Il y a 1 jour', 'Alan - Offre d\'emploi - Il y a 3 jours'].map((m, i) => {
-            const [comp, sujet, date] = m.split(' - ');
-            return (
-              <div key={i} className="application-item">
-                <div className="candidate-info"><div className="candidate-avatar"><Icons.Mail size={20} /></div><div><h3>{comp}</h3><p className="position-name">{sujet}</p></div></div>
-                <div className="application-meta"><span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{date}</span></div>
+          <div className="application-item">
+            <div className="candidate-info">
+              <div className="candidate-avatar"><Icons.Mail size={20} /></div>
+              <div>
+                <h3>Aucun message</h3>
+                <p className="position-name">Vous n'avez pas encore de messages</p>
               </div>
-            );
-          })}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -665,11 +657,15 @@ const DashboardCandidat = () => {
       <div className="section-header"><h2>🔔 Notifications</h2></div>
       <div className="dashboard-section">
         <div className="applications-list">
-          {['Nouvelle offre correspond à vos critères - Il y a 1 heure', 'Votre candidature chez Google a été vue - Il y a 3 heures', 'Rappel: Entretien demain chez Airbnb - Il y a 1 jour'].map((n, i) => (
-            <div key={i} className="application-item">
-              <div className="candidate-info"><div className="candidate-avatar"><Icons.Zap size={20} /></div><div><h3>{n.split(' - ')[0]}</h3><p className="position-name">{n.split(' - ')[1]}</p></div></div>
+          <div className="application-item">
+            <div className="candidate-info">
+              <div className="candidate-avatar"><Icons.Zap size={20} /></div>
+              <div>
+                <h3>Aucune notification</h3>
+                <p className="position-name">Vous n'avez pas de nouvelles notifications</p>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>

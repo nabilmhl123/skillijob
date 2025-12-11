@@ -9,6 +9,8 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as candidates from "../candidates.js";
+import type * as jobs from "../jobs.js";
 import type * as newsletter from "../newsletter.js";
 
 import type {
@@ -27,6 +29,8 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  candidates: typeof candidates;
+  jobs: typeof jobs;
   newsletter: typeof newsletter;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
