@@ -31,6 +31,14 @@ const DashboardEntreprise = () => {
   const [showJobModal, setShowJobModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  // Filter modals
+  const [showExperienceModal, setShowExperienceModal] = useState(false);
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const [showRemoteModal, setShowRemoteModal] = useState(false);
+  const [showEducationModal, setShowEducationModal] = useState(false);
+  const [showAvailabilityModal, setShowAvailabilityModal] = useState(false);
+  const [showContractModal, setShowContractModal] = useState(false);
+
   const { user, token } = useAuth();
   const navigate = useNavigate();
 
@@ -298,204 +306,78 @@ const DashboardEntreprise = () => {
           </div>
         </div>
 
-        {/* Filtres sous forme d'onglets */}
-        <div className="filter-tabs">
-          <div className="filter-tab-group">
-            <label>Expérience</label>
-            <div className="tab-buttons">
-              <button
-                className={`tab-btn ${experienceLevel === 'all' ? 'active' : ''}`}
-                onClick={() => setExperienceLevel('all')}
-              >
-                Tous
-              </button>
-              <button
-                className={`tab-btn ${experienceLevel === 'junior' ? 'active' : ''}`}
-                onClick={() => setExperienceLevel('junior')}
-              >
-                Junior
-              </button>
-              <button
-                className={`tab-btn ${experienceLevel === 'confirmed' ? 'active' : ''}`}
-                onClick={() => setExperienceLevel('confirmed')}
-              >
-                Confirmé
-              </button>
-              <button
-                className={`tab-btn ${experienceLevel === 'senior' ? 'active' : ''}`}
-                onClick={() => setExperienceLevel('senior')}
-              >
-                Senior
-              </button>
-            </div>
-          </div>
+        {/* Filtres sous forme d'onglets horizontaux */}
+        <div className="filter-tabs-horizontal">
+          <button
+            className="filter-tab-btn"
+            onClick={() => setShowExperienceModal(true)}
+          >
+            <Icons.Filter size={16} />
+            Expérience
+            {experienceLevel !== 'all' && <span className="filter-indicator"></span>}
+          </button>
 
-          <div className="filter-tab-group">
-            <label>Localisation</label>
-            <input
-              type="text"
-              className="location-input"
-              placeholder="Ville ou région"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-          </div>
+          <button
+            className="filter-tab-btn"
+            onClick={() => setShowLocationModal(true)}
+          >
+            <Icons.MapPin size={16} />
+            Localisation
+            {location && <span className="filter-indicator"></span>}
+          </button>
 
-          <div className="filter-tab-group">
-            <label>Télétravail</label>
-            <div className="tab-buttons">
-              <button
-                className={`tab-btn ${remoteWork === 'all' ? 'active' : ''}`}
-                onClick={() => setRemoteWork('all')}
-              >
-                Indifférent
-              </button>
-              <button
-                className={`tab-btn ${remoteWork === 'no' ? 'active' : ''}`}
-                onClick={() => setRemoteWork('no')}
-              >
-                Non
-              </button>
-              <button
-                className={`tab-btn ${remoteWork === 'partial' ? 'active' : ''}`}
-                onClick={() => setRemoteWork('partial')}
-              >
-                Partiel
-              </button>
-              <button
-                className={`tab-btn ${remoteWork === 'full' ? 'active' : ''}`}
-                onClick={() => setRemoteWork('full')}
-              >
-                Complet
-              </button>
-            </div>
-          </div>
+          <button
+            className="filter-tab-btn"
+            onClick={() => setShowRemoteModal(true)}
+          >
+            <Icons.Building size={16} />
+            Télétravail
+            {remoteWork !== 'all' && <span className="filter-indicator"></span>}
+          </button>
 
-          <div className="filter-tab-group">
-            <label>Formation</label>
-            <div className="tab-buttons">
-              <button
-                className={`tab-btn ${educationLevel === 'all' ? 'active' : ''}`}
-                onClick={() => setEducationLevel('all')}
-              >
-                Tous niveaux
-              </button>
-              <button
-                className={`tab-btn ${educationLevel === 'bac' ? 'active' : ''}`}
-                onClick={() => setEducationLevel('bac')}
-              >
-                Bac
-              </button>
-              <button
-                className={`tab-btn ${educationLevel === 'bac+2' ? 'active' : ''}`}
-                onClick={() => setEducationLevel('bac+2')}
-              >
-                Bac+2
-              </button>
-              <button
-                className={`tab-btn ${educationLevel === 'bac+3' ? 'active' : ''}`}
-                onClick={() => setEducationLevel('bac+3')}
-              >
-                Bac+3
-              </button>
-              <button
-                className={`tab-btn ${educationLevel === 'master' ? 'active' : ''}`}
-                onClick={() => setEducationLevel('master')}
-              >
-                Master
-              </button>
-            </div>
-          </div>
+          <button
+            className="filter-tab-btn"
+            onClick={() => setShowEducationModal(true)}
+          >
+            <Icons.BookOpen size={16} />
+            Formation
+            {educationLevel !== 'all' && <span className="filter-indicator"></span>}
+          </button>
 
-          <div className="filter-tab-group">
-            <label>Disponibilité</label>
-            <div className="tab-buttons">
-              <button
-                className={`tab-btn ${availability === 'all' ? 'active' : ''}`}
-                onClick={() => setAvailability('all')}
-              >
-                Toutes
-              </button>
-              <button
-                className={`tab-btn ${availability === 'immediate' ? 'active' : ''}`}
-                onClick={() => setAvailability('immediate')}
-              >
-                Immédiate
-              </button>
-              <button
-                className={`tab-btn ${availability === '1_month' ? 'active' : ''}`}
-                onClick={() => setAvailability('1_month')}
-              >
-                1 mois
-              </button>
-              <button
-                className={`tab-btn ${availability === '3_months' ? 'active' : ''}`}
-                onClick={() => setAvailability('3_months')}
-              >
-                3 mois
-              </button>
-            </div>
-          </div>
+          <button
+            className="filter-tab-btn"
+            onClick={() => setShowAvailabilityModal(true)}
+          >
+            <Icons.Clock size={16} />
+            Disponibilité
+            {availability !== 'all' && <span className="filter-indicator"></span>}
+          </button>
 
-          <div className="filter-tab-group">
-            <label>Contrat</label>
-            <div className="tab-buttons">
-              <button
-                className={`tab-btn ${contractType === 'all' ? 'active' : ''}`}
-                onClick={() => setContractType('all')}
-              >
-                Tous types
-              </button>
-              <button
-                className={`tab-btn ${contractType === 'cdi' ? 'active' : ''}`}
-                onClick={() => setContractType('cdi')}
-              >
-                CDI
-              </button>
-              <button
-                className={`tab-btn ${contractType === 'cdd' ? 'active' : ''}`}
-                onClick={() => setContractType('cdd')}
-              >
-                CDD
-              </button>
-              <button
-                className={`tab-btn ${contractType === 'freelance' ? 'active' : ''}`}
-                onClick={() => setContractType('freelance')}
-              >
-                Freelance
-              </button>
-              <button
-                className={`tab-btn ${contractType === 'stage' ? 'active' : ''}`}
-                onClick={() => setContractType('stage')}
-              >
-                Stage
-              </button>
-              <button
-                className={`tab-btn ${contractType === 'alternance' ? 'active' : ''}`}
-                onClick={() => setContractType('alternance')}
-              >
-                Alternance
-              </button>
-            </div>
-          </div>
+          <button
+            className="filter-tab-btn"
+            onClick={() => setShowContractModal(true)}
+          >
+            <Icons.FileText size={16} />
+            Contrat
+            {contractType !== 'all' && <span className="filter-indicator"></span>}
+          </button>
 
-          <div className="filter-actions">
-            <button
-              className="clear-filters-btn"
-              onClick={() => {
-                setExperienceLevel('all');
-                setLocation('');
-                setRemoteWork('all');
-                setEducationLevel('all');
-                setEducationType('all');
-                setAvailability('all');
-                setContractType('all');
-                setSearchTerm('');
-              }}
-            >
-              Effacer tous les filtres
-            </button>
-          </div>
+          <button
+            className="clear-filters-btn"
+            onClick={() => {
+              setExperienceLevel('all');
+              setLocation('');
+              setRemoteWork('all');
+              setEducationLevel('all');
+              setEducationType('all');
+              setAvailability('all');
+              setContractType('all');
+              setSearchTerm('');
+            }}
+          >
+            <Icons.X size={16} />
+            Effacer
+          </button>
         </div>
 
 
@@ -970,6 +852,438 @@ const DashboardEntreprise = () => {
                   >
                     <Icons.X size={16} />
                     Supprimer définitivement
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Filter Modals */}
+      {/* Experience Modal */}
+      <AnimatePresence>
+        {showExperienceModal && (
+          <motion.div
+            className="filter-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowExperienceModal(false)}
+          >
+            <motion.div
+              className="filter-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="filter-modal-header">
+                <h3>Niveau d'expérience</h3>
+                <button
+                  className="filter-modal-close"
+                  onClick={() => setShowExperienceModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+              <div className="filter-modal-content">
+                <div className="filter-options">
+                  <button
+                    className={`filter-option ${experienceLevel === 'all' ? 'active' : ''}`}
+                    onClick={() => {
+                      setExperienceLevel('all');
+                      setShowExperienceModal(false);
+                    }}
+                  >
+                    Tous niveaux
+                  </button>
+                  <button
+                    className={`filter-option ${experienceLevel === 'junior' ? 'active' : ''}`}
+                    onClick={() => {
+                      setExperienceLevel('junior');
+                      setShowExperienceModal(false);
+                    }}
+                  >
+                    Junior ({'<'} 2 ans)
+                  </button>
+                  <button
+                    className={`filter-option ${experienceLevel === 'confirmed' ? 'active' : ''}`}
+                    onClick={() => {
+                      setExperienceLevel('confirmed');
+                      setShowExperienceModal(false);
+                    }}
+                  >
+                    Confirmé (2-5 ans)
+                  </button>
+                  <button
+                    className={`filter-option ${experienceLevel === 'senior' ? 'active' : ''}`}
+                    onClick={() => {
+                      setExperienceLevel('senior');
+                      setShowExperienceModal(false);
+                    }}
+                  >
+                    Senior ({'>'} 5 ans)
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Location Modal */}
+      <AnimatePresence>
+        {showLocationModal && (
+          <motion.div
+            className="filter-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowLocationModal(false)}
+          >
+            <motion.div
+              className="filter-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="filter-modal-header">
+                <h3>Localisation</h3>
+                <button
+                  className="filter-modal-close"
+                  onClick={() => setShowLocationModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+              <div className="filter-modal-content">
+                <input
+                  type="text"
+                  className="filter-location-input"
+                  placeholder="Ville ou région"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  autoFocus
+                />
+                <div className="filter-modal-actions">
+                  <button
+                    className="filter-apply-btn"
+                    onClick={() => setShowLocationModal(false)}
+                  >
+                    Appliquer
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Remote Work Modal */}
+      <AnimatePresence>
+        {showRemoteModal && (
+          <motion.div
+            className="filter-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowRemoteModal(false)}
+          >
+            <motion.div
+              className="filter-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="filter-modal-header">
+                <h3>Télétravail</h3>
+                <button
+                  className="filter-modal-close"
+                  onClick={() => setShowRemoteModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+              <div className="filter-modal-content">
+                <div className="filter-options">
+                  <button
+                    className={`filter-option ${remoteWork === 'all' ? 'active' : ''}`}
+                    onClick={() => {
+                      setRemoteWork('all');
+                      setShowRemoteModal(false);
+                    }}
+                  >
+                    Indifférent
+                  </button>
+                  <button
+                    className={`filter-option ${remoteWork === 'no' ? 'active' : ''}`}
+                    onClick={() => {
+                      setRemoteWork('no');
+                      setShowRemoteModal(false);
+                    }}
+                  >
+                    Non
+                  </button>
+                  <button
+                    className={`filter-option ${remoteWork === 'partial' ? 'active' : ''}`}
+                    onClick={() => {
+                      setRemoteWork('partial');
+                      setShowRemoteModal(false);
+                    }}
+                  >
+                    Partiel
+                  </button>
+                  <button
+                    className={`filter-option ${remoteWork === 'full' ? 'active' : ''}`}
+                    onClick={() => {
+                      setRemoteWork('full');
+                      setShowRemoteModal(false);
+                    }}
+                  >
+                    Complet
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Education Modal */}
+      <AnimatePresence>
+        {showEducationModal && (
+          <motion.div
+            className="filter-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowEducationModal(false)}
+          >
+            <motion.div
+              className="filter-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="filter-modal-header">
+                <h3>Niveau d'études</h3>
+                <button
+                  className="filter-modal-close"
+                  onClick={() => setShowEducationModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+              <div className="filter-modal-content">
+                <div className="filter-options">
+                  <button
+                    className={`filter-option ${educationLevel === 'all' ? 'active' : ''}`}
+                    onClick={() => {
+                      setEducationLevel('all');
+                      setShowEducationModal(false);
+                    }}
+                  >
+                    Tous niveaux
+                  </button>
+                  <button
+                    className={`filter-option ${educationLevel === 'bac' ? 'active' : ''}`}
+                    onClick={() => {
+                      setEducationLevel('bac');
+                      setShowEducationModal(false);
+                    }}
+                  >
+                    Bac
+                  </button>
+                  <button
+                    className={`filter-option ${educationLevel === 'bac+2' ? 'active' : ''}`}
+                    onClick={() => {
+                      setEducationLevel('bac+2');
+                      setShowEducationModal(false);
+                    }}
+                  >
+                    Bac+2
+                  </button>
+                  <button
+                    className={`filter-option ${educationLevel === 'bac+3' ? 'active' : ''}`}
+                    onClick={() => {
+                      setEducationLevel('bac+3');
+                      setShowEducationModal(false);
+                    }}
+                  >
+                    Bac+3
+                  </button>
+                  <button
+                    className={`filter-option ${educationLevel === 'master' ? 'active' : ''}`}
+                    onClick={() => {
+                      setEducationLevel('master');
+                      setShowEducationModal(false);
+                    }}
+                  >
+                    Master
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Availability Modal */}
+      <AnimatePresence>
+        {showAvailabilityModal && (
+          <motion.div
+            className="filter-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowAvailabilityModal(false)}
+          >
+            <motion.div
+              className="filter-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="filter-modal-header">
+                <h3>Disponibilité</h3>
+                <button
+                  className="filter-modal-close"
+                  onClick={() => setShowAvailabilityModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+              <div className="filter-modal-content">
+                <div className="filter-options">
+                  <button
+                    className={`filter-option ${availability === 'all' ? 'active' : ''}`}
+                    onClick={() => {
+                      setAvailability('all');
+                      setShowAvailabilityModal(false);
+                    }}
+                  >
+                    Toutes
+                  </button>
+                  <button
+                    className={`filter-option ${availability === 'immediate' ? 'active' : ''}`}
+                    onClick={() => {
+                      setAvailability('immediate');
+                      setShowAvailabilityModal(false);
+                    }}
+                  >
+                    Immédiate
+                  </button>
+                  <button
+                    className={`filter-option ${availability === '1_month' ? 'active' : ''}`}
+                    onClick={() => {
+                      setAvailability('1_month');
+                      setShowAvailabilityModal(false);
+                    }}
+                  >
+                    1 mois
+                  </button>
+                  <button
+                    className={`filter-option ${availability === '3_months' ? 'active' : ''}`}
+                    onClick={() => {
+                      setAvailability('3_months');
+                      setShowAvailabilityModal(false);
+                    }}
+                  >
+                    3 mois
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Contract Modal */}
+      <AnimatePresence>
+        {showContractModal && (
+          <motion.div
+            className="filter-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowContractModal(false)}
+          >
+            <motion.div
+              className="filter-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="filter-modal-header">
+                <h3>Type de contrat</h3>
+                <button
+                  className="filter-modal-close"
+                  onClick={() => setShowContractModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+              <div className="filter-modal-content">
+                <div className="filter-options">
+                  <button
+                    className={`filter-option ${contractType === 'all' ? 'active' : ''}`}
+                    onClick={() => {
+                      setContractType('all');
+                      setShowContractModal(false);
+                    }}
+                  >
+                    Tous types
+                  </button>
+                  <button
+                    className={`filter-option ${contractType === 'cdi' ? 'active' : ''}`}
+                    onClick={() => {
+                      setContractType('cdi');
+                      setShowContractModal(false);
+                    }}
+                  >
+                    CDI
+                  </button>
+                  <button
+                    className={`filter-option ${contractType === 'cdd' ? 'active' : ''}`}
+                    onClick={() => {
+                      setContractType('cdd');
+                      setShowContractModal(false);
+                    }}
+                  >
+                    CDD
+                  </button>
+                  <button
+                    className={`filter-option ${contractType === 'freelance' ? 'active' : ''}`}
+                    onClick={() => {
+                      setContractType('freelance');
+                      setShowContractModal(false);
+                    }}
+                  >
+                    Freelance
+                  </button>
+                  <button
+                    className={`filter-option ${contractType === 'stage' ? 'active' : ''}`}
+                    onClick={() => {
+                      setContractType('stage');
+                      setShowContractModal(false);
+                    }}
+                  >
+                    Stage
+                  </button>
+                  <button
+                    className={`filter-option ${contractType === 'alternance' ? 'active' : ''}`}
+                    onClick={() => {
+                      setContractType('alternance');
+                      setShowContractModal(false);
+                    }}
+                  >
+                    Alternance
                   </button>
                 </div>
               </div>
