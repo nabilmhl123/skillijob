@@ -33,7 +33,6 @@ const DashboardEntreprise = () => {
 
   // Filter modals
   const [showExperienceModal, setShowExperienceModal] = useState(false);
-  const [showLocationModal, setShowLocationModal] = useState(false);
   const [showRemoteModal, setShowRemoteModal] = useState(false);
   const [showEducationModal, setShowEducationModal] = useState(false);
   const [showAvailabilityModal, setShowAvailabilityModal] = useState(false);
@@ -304,6 +303,17 @@ const DashboardEntreprise = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+
+          <div className="location-search-bar">
+            <Icons.MapPin size={18} />
+            <input
+              type="text"
+              className="location-search-input"
+              placeholder="Localisation (ville, région...)"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+          </div>
         </div>
 
         {/* Filtres sous forme d'onglets horizontaux */}
@@ -317,14 +327,6 @@ const DashboardEntreprise = () => {
             {experienceLevel !== 'all' && <span className="filter-indicator"></span>}
           </button>
 
-          <button
-            className="filter-tab-btn"
-            onClick={() => setShowLocationModal(true)}
-          >
-            <Icons.MapPin size={16} />
-            Localisation
-            {location && <span className="filter-indicator"></span>}
-          </button>
 
           <button
             className="filter-tab-btn"
@@ -932,54 +934,6 @@ const DashboardEntreprise = () => {
         )}
       </AnimatePresence>
 
-      {/* Location Modal */}
-      <AnimatePresence>
-        {showLocationModal && (
-          <motion.div
-            className="filter-modal-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowLocationModal(false)}
-          >
-            <motion.div
-              className="filter-modal"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="filter-modal-header">
-                <h3>Localisation</h3>
-                <button
-                  className="filter-modal-close"
-                  onClick={() => setShowLocationModal(false)}
-                >
-                  <Icons.X size={20} />
-                </button>
-              </div>
-              <div className="filter-modal-content">
-                <input
-                  type="text"
-                  className="filter-location-input"
-                  placeholder="Ville ou région"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  autoFocus
-                />
-                <div className="filter-modal-actions">
-                  <button
-                    className="filter-apply-btn"
-                    onClick={() => setShowLocationModal(false)}
-                  >
-                    Appliquer
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Remote Work Modal */}
       <AnimatePresence>
