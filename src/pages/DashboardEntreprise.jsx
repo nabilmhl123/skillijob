@@ -12,7 +12,7 @@ import './DashboardEntreprise.css';
 // Dashboard entreprise avec données réelles de Convex
 
 const DashboardEntreprise = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('candidates');
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBy, setFilterBy] = useState('all');
@@ -96,7 +96,6 @@ const DashboardEntreprise = () => {
   };
 
   const menuItems = [
-    { id: 'overview', icon: 'Target', label: 'Vue d\'ensemble', section: 'main' },
     { id: 'candidates', icon: 'Users', label: 'Candidats', section: 'main' },
 
     { id: 'publish-header', label: 'PUBLICATION', isHeader: true },
@@ -115,8 +114,6 @@ const DashboardEntreprise = () => {
   // Fonction pour rendre le contenu selon la section active
   const renderContent = () => {
     switch(activeTab) {
-      case 'overview':
-        return renderOverview();
       case 'jobs':
         return renderJobs();
       case 'candidates':
@@ -128,7 +125,7 @@ const DashboardEntreprise = () => {
       case 'settings':
         return renderSettings();
       default:
-        return renderOverview();
+        return renderCandidates();
     }
   };
 
@@ -149,127 +146,6 @@ const DashboardEntreprise = () => {
       return matchesSearch && matchesFilter;
     });
 
-  const renderOverview = () => (
-    <>
-      <section className="candidates-overview-section">
-
-        {/* Barre de recherche et filtres */}
-        <div className="search-filter-container">
-          <div className="search-bar">
-            <Icons.Search size={18} />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Rechercher par compétences, expérience..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          <select
-            className="filter-select"
-            value={filterBy}
-            onChange={(e) => setFilterBy(e.target.value)}
-          >
-            <option value="all">Tous les profils</option>
-            <option value="available">Disponibles</option>
-            <option value="experienced">Expérimentés (3+ ans)</option>
-          </select>
-        </div>
-
-        {/* Grille des profils anonymisés */}
-        <div className="candidates-grid">
-          {filteredCandidates.length > 0 ? (
-            filteredCandidates.map((candidate) => (
-              <motion.div
-                key={candidate._id}
-                className="candidate-card"
-                whileHover={{ y: -2 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                {/* En-tête avec badge rond et label */}
-                <div className="candidate-header">
-                  <div className="candidate-avatar">
-                    {candidate.firstName.charAt(0)}{candidate.lastName.charAt(0)}
-                  </div>
-                  <span className="candidate-label">Profil candidat</span>
-                </div>
-
-                {/* Informations principales */}
-                <div className="candidate-info">
-                  <div className="candidate-name">
-                    {candidate.firstName} {candidate.lastName}
-                  </div>
-
-                  <div className="candidate-profile-text">
-                    {candidate.bio && (
-                      <p className="candidate-bio">
-                        {candidate.bio.length > 80
-                          ? candidate.bio.substring(0, 80) + '...'
-                          : candidate.bio
-                        }
-                      </p>
-                    )}
-
-                    <p className="candidate-details-line">
-                      📍 {candidate.address || 'Localisation non renseignée'} •
-                      🎓 {candidate.experience || 'Expérience non spécifiée'} •
-                      ⏱️ Disponibilité : {candidate.availability || '—'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Compétences */}
-                {candidate.skills && candidate.skills.length > 0 && (
-                  <div className="candidate-skills">
-                    {candidate.skills.slice(0, 3).map((skill, index) => (
-                      <span key={index} className="skill-tag">{skill}</span>
-                    ))}
-                    {candidate.skills.length > 3 && (
-                      <span className="skill-more">+{candidate.skills.length - 3}</span>
-                    )}
-                  </div>
-                )}
-
-                {/* Pied de card */}
-                <div className="candidate-footer">
-                  <button
-                    className="candidate-action-btn profile-btn"
-                    onClick={() => {
-                      setSelectedCandidate(candidate);
-                      setShowProfileModal(true);
-                    }}
-                  >
-                    Profil
-                  </button>
-                  <button
-                    className="candidate-action-btn view-btn"
-                    onClick={() => {
-                      // Action neutre pour le moment
-                      console.log('Voir candidat:', candidate.firstName, candidate.lastName);
-                    }}
-                  >
-                    <Icons.Eye size={14} />
-                    Voir
-                  </button>
-                  <span className="candidate-created-date">
-                    Profil créé le {new Date(candidate.createdAt).toLocaleDateString('fr-FR')}
-                  </span>
-                </div>
-              </motion.div>
-            ))
-          ) : (
-            <div className="no-candidates">
-              <Icons.Users size={48} />
-              <h3>Aucun profil trouvé</h3>
-              <p>Ajustez vos critères de recherche ou revenez plus tard.</p>
-            </div>
-          )}
-        </div>
-      </section>
-    </>
-  );
 
   const renderJobs = () => {
     try {
@@ -403,16 +279,125 @@ const DashboardEntreprise = () => {
   };
 
   const renderCandidates = () => (
-    <section className="candidates-section">
-      <div className="section-header">
-        <h2>Candidatures Reçues</h2>
-      </div>
-      <div className="coming-soon">
-        <Icons.Users size={48} />
-        <h2>Fonctionnalité à venir</h2>
-        <p>La gestion des candidatures sera bientôt disponible.</p>
-      </div>
-    </section>
+    <>
+      <section className="candidates-overview-section">
+
+        {/* Barre de recherche et filtres */}
+        <div className="search-filter-container">
+          <div className="search-bar">
+            <Icons.Search size={18} />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Rechercher par compétences, expérience..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <select
+            className="filter-select"
+            value={filterBy}
+            onChange={(e) => setFilterBy(e.target.value)}
+          >
+            <option value="all">Tous les profils</option>
+            <option value="available">Disponibles</option>
+            <option value="experienced">Expérimentés (3+ ans)</option>
+          </select>
+        </div>
+
+        {/* Grille des profils anonymisés */}
+        <div className="candidates-grid">
+          {filteredCandidates.length > 0 ? (
+            filteredCandidates.map((candidate) => (
+              <motion.div
+                key={candidate._id}
+                className="candidate-card"
+                whileHover={{ y: -2 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                {/* En-tête avec badge rond et label */}
+                <div className="candidate-header">
+                  <div className="candidate-avatar">
+                    {candidate.firstName.charAt(0)}{candidate.lastName.charAt(0)}
+                  </div>
+                  <span className="candidate-label">Profil candidat</span>
+                </div>
+
+                {/* Informations principales */}
+                <div className="candidate-info">
+                  <div className="candidate-name">
+                    {candidate.firstName} {candidate.lastName}
+                  </div>
+
+                  <div className="candidate-profile-text">
+                    {candidate.bio && (
+                      <p className="candidate-bio">
+                        {candidate.bio.length > 80
+                          ? candidate.bio.substring(0, 80) + '...'
+                          : candidate.bio
+                        }
+                      </p>
+                    )}
+
+                    <p className="candidate-details-line">
+                      📍 {candidate.address || 'Localisation non renseignée'} •
+                      🎓 {candidate.experience || 'Expérience non spécifiée'} •
+                      ⏱️ Disponibilité : {candidate.availability || '—'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Compétences */}
+                {candidate.skills && candidate.skills.length > 0 && (
+                  <div className="candidate-skills">
+                    {candidate.skills.slice(0, 3).map((skill, index) => (
+                      <span key={index} className="skill-tag">{skill}</span>
+                    ))}
+                    {candidate.skills.length > 3 && (
+                      <span className="skill-more">+{candidate.skills.length - 3}</span>
+                    )}
+                  </div>
+                )}
+
+                {/* Pied de card */}
+                <div className="candidate-footer">
+                  <button
+                    className="candidate-action-btn profile-btn"
+                    onClick={() => {
+                      setSelectedCandidate(candidate);
+                      setShowProfileModal(true);
+                    }}
+                  >
+                    Profil
+                  </button>
+                  <button
+                    className="candidate-action-btn view-btn"
+                    onClick={() => {
+                      // Action neutre pour le moment
+                      console.log('Voir candidat:', candidate.firstName, candidate.lastName);
+                    }}
+                  >
+                    <Icons.Eye size={14} />
+                    Voir
+                  </button>
+                  <span className="candidate-created-date">
+                    Profil créé le {new Date(candidate.createdAt).toLocaleDateString('fr-FR')}
+                  </span>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="no-candidates">
+              <Icons.Users size={48} />
+              <h3>Aucun profil trouvé</h3>
+              <p>Ajustez vos critères de recherche ou revenez plus tard.</p>
+            </div>
+          )}
+        </div>
+      </section>
+    </>
   );
 
   const renderAnalytics = () => (
