@@ -629,11 +629,11 @@ const DashboardEntreprise = () => {
             >
               <div className="profile-modal-header">
                 <div className="profile-modal-avatar">
-                  {(selectedCandidate?.firstName?.charAt(0) || '?')}{(selectedCandidate?.lastName?.charAt(0) || '?')}
+                  {(typeof selectedCandidate?.firstName === 'string' ? selectedCandidate.firstName.charAt(0) : '?')}{(typeof selectedCandidate?.lastName === 'string' ? selectedCandidate.lastName.charAt(0) : '?')}
                 </div>
                 <div className="profile-modal-info">
-                  <h3>{selectedCandidate?.firstName || 'Prénom'} {selectedCandidate?.lastName || 'Nom'}</h3>
-                  <p>{selectedCandidate?.experience || 'Expérience non spécifiée'}</p>
+                  <h3>{(typeof selectedCandidate?.firstName === 'string' ? selectedCandidate.firstName : 'Prénom') || 'Prénom'} {(typeof selectedCandidate?.lastName === 'string' ? selectedCandidate.lastName : 'Nom') || 'Nom'}</h3>
+                  <p>{typeof selectedCandidate?.experience === 'string' ? selectedCandidate.experience : 'Expérience non spécifiée'}</p>
                 </div>
                 <button
                   className="profile-modal-close"
@@ -646,7 +646,7 @@ const DashboardEntreprise = () => {
               <div className="profile-modal-content">
                 <div className="profile-section">
                   <h4>Description</h4>
-                  <p>{selectedCandidate?.bio || 'Aucune description disponible.'}</p>
+                  <p>{typeof selectedCandidate?.bio === 'string' ? selectedCandidate.bio : 'Aucune description disponible.'}</p>
                 </div>
 
                 <div className="profile-section">
@@ -654,7 +654,7 @@ const DashboardEntreprise = () => {
                   <div className="profile-skills">
                     {selectedCandidate?.skills && Array.isArray(selectedCandidate.skills) && selectedCandidate.skills.length > 0 ? (
                       selectedCandidate.skills.map((skill, index) => (
-                        <span key={index} className="profile-skill-tag">{skill}</span>
+                        <span key={index} className="profile-skill-tag">{typeof skill === 'string' ? skill : 'Compétence'}</span>
                       ))
                     ) : (
                       <p>Aucune compétence spécifiée.</p>
@@ -665,19 +665,19 @@ const DashboardEntreprise = () => {
                 <div className="profile-section">
                   <h4>Informations de contact</h4>
                   <div className="profile-contact-info">
-                    {selectedCandidate?.email && (
+                    {typeof selectedCandidate?.email === 'string' && selectedCandidate.email && (
                       <div className="contact-item">
                         <Icons.Mail size={16} />
                         <span>{selectedCandidate.email}</span>
                       </div>
                     )}
-                    {selectedCandidate?.phone && (
+                    {typeof selectedCandidate?.phone === 'string' && selectedCandidate.phone && (
                       <div className="contact-item">
                         <Icons.Phone size={16} />
                         <span>{selectedCandidate.phone}</span>
                       </div>
                     )}
-                    {selectedCandidate?.linkedinUrl && (
+                    {typeof selectedCandidate?.linkedinUrl === 'string' && selectedCandidate.linkedinUrl && (
                       <div className="contact-item">
                         <Icons.ExternalLink size={16} />
                         <a href={selectedCandidate.linkedinUrl} target="_blank" rel="noopener noreferrer">
@@ -692,13 +692,13 @@ const DashboardEntreprise = () => {
                   <h4>Informations supplémentaires</h4>
                   <div className="profile-details">
                     <div className="detail-item">
-                      <strong>Localisation:</strong> {selectedCandidate?.address || 'Non spécifiée'}
+                      <strong>Localisation:</strong> {typeof selectedCandidate?.address === 'string' ? selectedCandidate.address : 'Non spécifiée'}
                     </div>
                     <div className="detail-item">
-                      <strong>Éducation:</strong> {selectedCandidate?.education || 'Non spécifiée'}
+                      <strong>Éducation:</strong> {typeof selectedCandidate?.education === 'string' ? selectedCandidate.education : 'Non spécifiée'}
                     </div>
                     <div className="detail-item">
-                      <strong>Disponibilité:</strong> {selectedCandidate?.availability || 'Non spécifiée'}
+                      <strong>Disponibilité:</strong> {typeof selectedCandidate?.availability === 'string' ? selectedCandidate.availability : 'Non spécifiée'}
                     </div>
                     <div className="detail-item">
                       <strong>Profil créé le:</strong> {selectedCandidate?.createdAt ? new Date(selectedCandidate.createdAt).toLocaleDateString('fr-FR') : 'Date inconnue'}
