@@ -15,11 +15,23 @@ export const createProfile = mutation({
     bio: v.optional(v.string()),
     skills: v.array(v.string()),
     experience: v.optional(v.string()),
+    experienceLevel: v.optional(v.string()),
     education: v.optional(v.string()),
+    educationLevel: v.optional(v.string()),
+    educationType: v.optional(v.string()),
+    languages: v.optional(v.array(v.object({
+      language: v.string(),
+      level: v.string()
+    }))),
+    certifications: v.optional(v.array(v.string())),
+    tools: v.optional(v.array(v.string())),
+    softSkills: v.optional(v.array(v.string())),
     resumeUrl: v.optional(v.string()),
     linkedinUrl: v.optional(v.string()),
     portfolioUrl: v.optional(v.string()),
     availability: v.optional(v.string()),
+    contractType: v.optional(v.string()),
+    remoteWork: v.optional(v.string()),
     salaryExpectation: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
@@ -50,11 +62,20 @@ export const createProfile = mutation({
       bio: args.bio,
       skills: args.skills,
       experience: args.experience,
+      experienceLevel: args.experienceLevel,
       education: args.education,
+      educationLevel: args.educationLevel,
+      educationType: args.educationType,
+      languages: args.languages,
+      certifications: args.certifications,
+      tools: args.tools,
+      softSkills: args.softSkills,
       resumeUrl: args.resumeUrl,
       linkedinUrl: args.linkedinUrl,
       portfolioUrl: args.portfolioUrl,
       availability: args.availability,
+      contractType: args.contractType,
+      remoteWork: args.remoteWork,
       salaryExpectation: args.salaryExpectation,
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -119,44 +140,121 @@ export const getAllProfiles = query({
 export const searchProfiles = query({
   args: {
     searchTerm: v.optional(v.string()),
-    filterBy: v.optional(v.string()),
+    experienceLevel: v.optional(v.string()),
+    location: v.optional(v.string()),
+    remoteWork: v.optional(v.string()),
+    educationLevel: v.optional(v.string()),
+    educationType: v.optional(v.string()),
+    skills: v.optional(v.array(v.string())),
+    languages: v.optional(v.array(v.string())),
+    availability: v.optional(v.string()),
+    contractType: v.optional(v.string()),
+    softSkills: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
-    const { searchTerm, filterBy } = args;
+    const {
+      searchTerm,
+      experienceLevel,
+      location,
+      remoteWork,
+      educationLevel,
+      educationType,
+      skills,
+      languages,
+      availability,
+      contractType,
+      softSkills
+    } = args;
 
     let query = ctx.db.query("candidateProfiles");
 
-    // Appliquer les filtres
-    if (filterBy && filterBy !== 'all') {
-      if (filterBy === 'available') {
-        query = query.filter((q) => q.eq(q.field("availability"), "available"));
-      } else if (filterBy === 'experienced') {
-        query = query.filter((q) => q.neq(q.field("experience"), undefined))
-                     .filter((q) => q.field("experience").includes("ans"));
-      }
+    // Appliquer les filtres avancés
+    if (experienceLevel && experienceLevel !== 'all') {
+      query = query.filter((q) => q.eq(q.field("experienceLevel"), experienceLevel));
     }
 
-    const profiles = await query.collect();
+    if (remoteWork && remoteWork !== 'all') {
+      query = query.filter((q) => q.eq(q.field("remoteWork"), remoteWork));
+    }
 
-    // Appliquer la recherche textuelle côté serveur
+    if (educationLevel && educationLevel !== 'all') {
+      query = query.filter((q) => q.eq(q.field("educationLevel"), educationLevel));
+    }
+
+    if (educationType && educationType !== 'all') {
+      query = query.filter((q) => q.eq(q.field("educationType"), educationType));
+    }
+
+    if (availability && availability !== 'all') {
+      query = query.filter((q) => q.eq(q.field("availability"), availability));
+    }
+
+    if (contractType && contractType !== 'all') {
+      query = query.filter((q) => q.eq(q.field("contractType"), contractType));
+    }
+
+    // Filtrage par localisation (ville dans address)
+    if (location && location.trim() !== '') {
+      const locationLower = location.toLowerCase().trim();
+      query = query.filter((q) => {
+        const address = q.field("address");
+        return address !== undefined && address.toLowerCase().includes(locationLower);
+      });
+    }
+
+    let profiles = await query.collect();
+
+    // Appliquer les filtres sur arrays (skills, languages, softSkills) côté client
+    if (skills && skills.length > 0) {
+      profiles = profiles.filter(profile =>
+        profile.skills && skills.some(skill =>
+          profile.skills.some(profileSkill =>
+            profileSkill.toLowerCase().includes(skill.toLowerCase())
+          )
+        )
+      );
+    }
+
+    if (languages && languages.length > 0) {
+      profiles = profiles.filter(profile =>
+        profile.languages && languages.some(lang =>
+          profile.languages.some(profileLang =>
+            profileLang.language.toLowerCase().includes(lang.toLowerCase())
+          )
+        )
+      );
+    }
+
+    if (softSkills && softSkills.length > 0) {
+      profiles = profiles.filter(profile =>
+        profile.softSkills && softSkills.some(skill =>
+          profile.softSkills.some(profileSkill =>
+            profileSkill.toLowerCase().includes(skill.toLowerCase())
+          )
+        )
+      );
+    }
+
+    // Appliquer la recherche textuelle full-text
     if (searchTerm && searchTerm.trim() !== '') {
       const searchLower = searchTerm.toLowerCase().trim();
-      return profiles.filter(profile => {
-        const matchesSearch =
-          // Recherche dans les compétences
-          (profile.skills && profile.skills.some(skill =>
-            skill.toLowerCase().includes(searchLower)
-          )) ||
-          // Recherche dans la bio
-          (profile.bio && profile.bio.toLowerCase().includes(searchLower)) ||
-          // Recherche dans l'expérience
-          (profile.experience && profile.experience.toLowerCase().includes(searchLower)) ||
-          // Recherche dans le prénom
-          (profile.firstName && profile.firstName.toLowerCase().includes(searchLower)) ||
-          // Recherche dans le nom
-          (profile.lastName && profile.lastName.toLowerCase().includes(searchLower));
+      profiles = profiles.filter(profile => {
+        const searchableFields = [
+          profile.firstName,
+          profile.lastName,
+          profile.bio,
+          profile.experience,
+          profile.education,
+          ...(profile.skills || []),
+          ...(profile.certifications || []),
+          ...(profile.tools || []),
+          ...(profile.languages ? profile.languages.map(l => l.language) : []),
+          ...(profile.softSkills || []),
+        ].filter(field => field !== undefined && field !== null);
 
-        return matchesSearch;
+        return searchableFields.some(field =>
+          typeof field === 'string' && field.toLowerCase().includes(searchLower)
+        );
       });
     }
 

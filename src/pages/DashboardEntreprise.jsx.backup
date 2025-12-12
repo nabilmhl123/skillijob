@@ -23,8 +23,11 @@ const DashboardEntreprise = () => {
   const [remoteWork, setRemoteWork] = useState('all');
   const [educationLevel, setEducationLevel] = useState('all');
   const [educationType, setEducationType] = useState('all');
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [availability, setAvailability] = useState('all');
   const [contractType, setContractType] = useState('all');
+  const [selectedSoftSkills, setSelectedSoftSkills] = useState([]);
 
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -49,8 +52,11 @@ const DashboardEntreprise = () => {
     remoteWork: remoteWork !== 'all' ? remoteWork : undefined,
     educationLevel: educationLevel !== 'all' ? educationLevel : undefined,
     educationType: educationType !== 'all' ? educationType : undefined,
+    skills: selectedSkills.length > 0 ? selectedSkills : undefined,
+    languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
     availability: availability !== 'all' ? availability : undefined,
     contractType: contractType !== 'all' ? contractType : undefined,
+    softSkills: selectedSoftSkills.length > 0 ? selectedSoftSkills : undefined,
   });
   const filteredCandidates = filteredCandidatesQuery || [];
 
@@ -324,9 +330,9 @@ const DashboardEntreprise = () => {
                   <label>Expérience</label>
                   <select value={experienceLevel} onChange={(e) => setExperienceLevel(e.target.value)}>
                     <option value="all">Tous niveaux</option>
-                    <option value="junior">Junior ({'<'} 2 ans)</option>
+                    <option value="junior">Junior (< 2 ans)</option>
                     <option value="confirmed">Confirmé (2-5 ans)</option>
-                    <option value="senior">Senior ({'>'} 5 ans)</option>
+                    <option value="senior">Senior (> 5 ans)</option>
                   </select>
                 </div>
 
@@ -400,6 +406,75 @@ const DashboardEntreprise = () => {
                 </div>
               </div>
 
+              {/* Compétences, Langues, Soft Skills */}
+              <div className="multi-select-filters">
+                <div className="filter-group">
+                  <label>Compétences</label>
+                  <div className="multi-select">
+                    {['React', 'JavaScript', 'Python', 'Java', 'PHP', 'Node.js', 'Vue.js', 'Angular', 'SQL', 'MongoDB', 'AWS', 'Docker'].map(skill => (
+                      <label key={skill} className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={selectedSkills.includes(skill)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedSkills([...selectedSkills, skill]);
+                            } else {
+                              setSelectedSkills(selectedSkills.filter(s => s !== skill));
+                            }
+                          }}
+                        />
+                        {skill}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="filter-group">
+                  <label>Langues</label>
+                  <div className="multi-select">
+                    {['Français', 'Anglais', 'Espagnol', 'Allemand', 'Italien', 'Chinois'].map(lang => (
+                      <label key={lang} className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={selectedLanguages.includes(lang)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedLanguages([...selectedLanguages, lang]);
+                            } else {
+                              setSelectedLanguages(selectedLanguages.filter(l => l !== lang));
+                            }
+                          }}
+                        />
+                        {lang}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="filter-group">
+                  <label>Soft Skills</label>
+                  <div className="multi-select">
+                    {['Leadership', 'Créatif', 'Autonome', 'Rigoureux', 'Communicatif', 'Organisé'].map(skill => (
+                      <label key={skill} className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={selectedSoftSkills.includes(skill)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedSoftSkills([...selectedSoftSkills, skill]);
+                            } else {
+                              setSelectedSoftSkills(selectedSoftSkills.filter(s => s !== skill));
+                            }
+                          }}
+                        />
+                        {skill}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               {/* Boutons de contrôle */}
               <div className="filter-actions">
                 <button
@@ -410,8 +485,11 @@ const DashboardEntreprise = () => {
                     setRemoteWork('all');
                     setEducationLevel('all');
                     setEducationType('all');
+                    setSelectedSkills([]);
+                    setSelectedLanguages([]);
                     setAvailability('all');
                     setContractType('all');
+                    setSelectedSoftSkills([]);
                     setSearchTerm('');
                   }}
                 >

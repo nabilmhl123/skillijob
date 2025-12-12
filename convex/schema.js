@@ -75,16 +75,33 @@ export default defineSchema({
     bio: v.optional(v.string()),
     skills: v.array(v.string()),
     experience: v.optional(v.string()),
+    experienceLevel: v.optional(v.string()), // 'junior', 'confirmed', 'senior'
     education: v.optional(v.string()),
+    educationLevel: v.optional(v.string()), // 'bac', 'bac+2', 'bac+3', 'master', etc.
+    educationType: v.optional(v.string()), // 'university', 'engineering_school', 'business_school'
+    languages: v.optional(v.array(v.object({
+      language: v.string(),
+      level: v.string() // 'basic', 'intermediate', 'fluent', 'native'
+    }))),
+    certifications: v.optional(v.array(v.string())),
+    tools: v.optional(v.array(v.string())),
+    softSkills: v.optional(v.array(v.string())),
     resumeUrl: v.optional(v.string()),
     linkedinUrl: v.optional(v.string()),
     portfolioUrl: v.optional(v.string()),
-    availability: v.optional(v.string()),
+    availability: v.optional(v.string()), // 'immediate', '1_month', '3_months', etc.
+    contractType: v.optional(v.string()), // 'cdi', 'cdd', 'freelance', 'stage', 'alternance'
+    remoteWork: v.optional(v.string()), // 'no', 'partial', 'full'
     salaryExpectation: v.optional(v.number()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
-  .index("by_userId", ["userId"]),
+  .index("by_userId", ["userId"])
+  .index("by_experienceLevel", ["experienceLevel"])
+  .index("by_educationLevel", ["educationLevel"])
+  .index("by_availability", ["availability"])
+  .index("by_contractType", ["contractType"])
+  .index("by_remoteWork", ["remoteWork"]),
 
   educations: defineTable({
     candidateId: v.id("candidateProfiles"),
