@@ -432,7 +432,7 @@ const DashboardEntreprise = () => {
                   </div>
 
                   <div className="candidate-profile-text">
-                    {candidate.bio && (
+                    {candidate.bio && typeof candidate.bio === 'string' && (
                       <p className="candidate-bio">
                         {candidate.bio.length > 80
                           ? candidate.bio.substring(0, 80) + '...'
@@ -450,7 +450,7 @@ const DashboardEntreprise = () => {
                 </div>
 
                 {/* Compétences */}
-                {candidate.skills && candidate.skills.length > 0 && (
+                {candidate.skills && Array.isArray(candidate.skills) && candidate.skills.length > 0 && (
                   <div className="candidate-skills">
                     {candidate.skills.slice(0, 3).map((skill, index) => (
                       <span key={index} className="skill-tag">{skill}</span>
@@ -485,7 +485,7 @@ const DashboardEntreprise = () => {
                     {isUnlocked ? 'Profil débloqué' : 'Débloquer le profil'}
                   </button>
                   <span className="candidate-created-date">
-                    Profil créé le {new Date(candidate.createdAt).toLocaleDateString('fr-FR')}
+                    Profil créé le {candidate.createdAt ? new Date(candidate.createdAt).toLocaleDateString('fr-FR') : 'Date inconnue'}
                   </span>
                 </div>
               </motion.div>
