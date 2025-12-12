@@ -629,11 +629,11 @@ const DashboardEntreprise = () => {
             >
               <div className="profile-modal-header">
                 <div className="profile-modal-avatar">
-                  {selectedCandidate.firstName?.charAt(0) || '?'}{selectedCandidate.lastName?.charAt(0) || '?'}
+                  {(selectedCandidate?.firstName?.charAt(0) || '?')}{(selectedCandidate?.lastName?.charAt(0) || '?')}
                 </div>
                 <div className="profile-modal-info">
-                  <h3>{selectedCandidate.firstName || 'Prénom'} {selectedCandidate.lastName || 'Nom'}</h3>
-                  <p>{selectedCandidate.experience || 'Expérience non spécifiée'}</p>
+                  <h3>{selectedCandidate?.firstName || 'Prénom'} {selectedCandidate?.lastName || 'Nom'}</h3>
+                  <p>{selectedCandidate?.experience || 'Expérience non spécifiée'}</p>
                 </div>
                 <button
                   className="profile-modal-close"
@@ -646,13 +646,13 @@ const DashboardEntreprise = () => {
               <div className="profile-modal-content">
                 <div className="profile-section">
                   <h4>Description</h4>
-                  <p>{selectedCandidate.bio || 'Aucune description disponible.'}</p>
+                  <p>{selectedCandidate?.bio || 'Aucune description disponible.'}</p>
                 </div>
 
                 <div className="profile-section">
                   <h4>Compétences</h4>
                   <div className="profile-skills">
-                    {selectedCandidate.skills && selectedCandidate.skills.length > 0 ? (
+                    {selectedCandidate?.skills && Array.isArray(selectedCandidate.skills) && selectedCandidate.skills.length > 0 ? (
                       selectedCandidate.skills.map((skill, index) => (
                         <span key={index} className="profile-skill-tag">{skill}</span>
                       ))
@@ -665,17 +665,19 @@ const DashboardEntreprise = () => {
                 <div className="profile-section">
                   <h4>Informations de contact</h4>
                   <div className="profile-contact-info">
-                    <div className="contact-item">
-                      <Icons.Mail size={16} />
-                      <span>{selectedCandidate.email}</span>
-                    </div>
-                    {selectedCandidate.phone && (
+                    {selectedCandidate?.email && (
+                      <div className="contact-item">
+                        <Icons.Mail size={16} />
+                        <span>{selectedCandidate.email}</span>
+                      </div>
+                    )}
+                    {selectedCandidate?.phone && (
                       <div className="contact-item">
                         <Icons.Phone size={16} />
                         <span>{selectedCandidate.phone}</span>
                       </div>
                     )}
-                    {selectedCandidate.linkedinUrl && (
+                    {selectedCandidate?.linkedinUrl && (
                       <div className="contact-item">
                         <Icons.ExternalLink size={16} />
                         <a href={selectedCandidate.linkedinUrl} target="_blank" rel="noopener noreferrer">
@@ -690,16 +692,16 @@ const DashboardEntreprise = () => {
                   <h4>Informations supplémentaires</h4>
                   <div className="profile-details">
                     <div className="detail-item">
-                      <strong>Localisation:</strong> {selectedCandidate.address || 'Non spécifiée'}
+                      <strong>Localisation:</strong> {selectedCandidate?.address || 'Non spécifiée'}
                     </div>
                     <div className="detail-item">
-                      <strong>Éducation:</strong> {selectedCandidate.education || 'Non spécifiée'}
+                      <strong>Éducation:</strong> {selectedCandidate?.education || 'Non spécifiée'}
                     </div>
                     <div className="detail-item">
-                      <strong>Disponibilité:</strong> {selectedCandidate.availability || 'Non spécifiée'}
+                      <strong>Disponibilité:</strong> {selectedCandidate?.availability || 'Non spécifiée'}
                     </div>
                     <div className="detail-item">
-                      <strong>Profil créé le:</strong> {new Date(selectedCandidate.createdAt).toLocaleDateString('fr-FR')}
+                      <strong>Profil créé le:</strong> {selectedCandidate?.createdAt ? new Date(selectedCandidate.createdAt).toLocaleDateString('fr-FR') : 'Date inconnue'}
                     </div>
                   </div>
                 </div>
