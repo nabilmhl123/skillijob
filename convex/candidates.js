@@ -254,8 +254,8 @@ export const searchProfiles = query({
 });
 
 /**
- * Récupérer un profil spécifique par ID
- */
+  * Récupérer un profil spécifique par ID
+  */
 export const getProfileById = query({
   args: {
     profileId: v.id("candidateProfiles"),
@@ -268,5 +268,86 @@ export const getProfileById = query({
     }
 
     return profile;
+  },
+});
+
+/**
+  * Débloquer un profil candidat (pour les entreprises)
+  */
+export const unlockProfile = mutation({
+  args: {
+    token: v.string(),
+    candidateId: v.id("candidateProfiles"),
+  },
+  handler: async (ctx, args) => {
+    // Vérifier la session utilisateur
+    const session = await ctx.db
+      .query("sessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (!session || session.expiresAt < Date.now()) {
+      throw new Error("Session invalide ou expirée");
+    }
+
+    // Vérifier que c'est une entreprise
+    const user = await ctx.db.get(session.userId);
+    if (!user || user.userType !== "company") {
+      throw new Error("Seules les entreprises peuvent débloquer des profils");
+    }
+
+    // Vérifier que le profil candidat existe
+    const candidateProfile = await ctx.db.get(args.candidateId);
+    if (!candidateProfile) {
+      throw new Error("Profil candidat non trouvé");
+    }
+
+    // Vérifier si déjà débloqué
+    const existingUnlock = await ctx.db
+      .query("unlockedProfiles")
+      .withIndex("by_company_candidate", (q) =>
+        q.eq("companyId", session.userId).eq("candidateId", args.candidateId)
+      )
+      .first();
+
+    if (existingUnlock) {
+      throw new Error("Profil déjà débloqué");
+    }
+
+    // Débloquer le profil
+    await ctx.db.insert("unlockedProfiles", {
+      companyId: session.userId,
+      candidateId: args.candidateId,
+      unlockedAt: Date.now(),
+    });
+
+    return {
+      message: "Profil débloqué avec succès"
+    };
+  },
+});
+
+/**
+  * Récupérer tous les profils débloqués pour une entreprise
+  */
+export const getUnlockedProfiles = query({
+  args: {
+    token: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Vérifier la session
+    const session = await ctx.db
+      .query("sessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (!session || session.expiresAt < Date.now()) {
+      return [];
+    }
+
+    return await ctx.db
+      .query("unlockedProfiles")
+      .withIndex("by_companyId", (q) => q.eq("companyId", session.userId))
+      .collect();
   },
 });

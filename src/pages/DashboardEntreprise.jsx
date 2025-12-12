@@ -73,6 +73,13 @@ const DashboardEntreprise = () => {
     );
   }
 
+  // Profils débloqués
+  const unlockedProfilesQuery = useQuery(api.candidates.getUnlockedProfiles, { token });
+  const unlockedProfiles = unlockedProfilesQuery || [];
+
+  // Mutations
+  const unlockProfileMutation = useMutation(api.candidates.unlockProfile);
+
   // Mutations pour la gestion des offres
   const deleteJobMutation = useMutation(api.jobs.deleteJob);
 
@@ -400,14 +407,16 @@ const DashboardEntreprise = () => {
         {/* Grille des profils anonymisés */}
         <div className="candidates-grid">
           {finalFilteredCandidates.length > 0 ? (
-            finalFilteredCandidates.map((candidate) => (
-              <motion.div
-                key={candidate._id}
-                className="candidate-card"
-                whileHover={{ y: -2 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
+            finalFilteredCandidates.map((candidate) => {
+              const isUnlocked = unlockedProfiles.some(u => u.candidateId === candidate._id);
+              return (
+                <motion.div
+                  key={candidate._id}
+                  className="candidate-card"
+                  whileHover={{ y: -2 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
                 {/* En-tête avec badge rond et label */}
                 <div className="candidate-header">
                   <div className="candidate-avatar">
@@ -464,22 +473,24 @@ const DashboardEntreprise = () => {
                     Voir le profil
                   </button>
                   <button
-                    className="candidate-action-btn view-btn"
+                    className={`candidate-action-btn unlock-btn ${isUnlocked ? 'unlocked' : ''}`}
                     onClick={() => {
-                      // Action de déblocage à implémenter
-                      console.log('Débloquer profil:', candidate.firstName, candidate.lastName);
+                      if (!isUnlocked) {
+                        unlockProfileMutation({ token, candidateId: candidate._id });
+                      }
                     }}
+                    disabled={isUnlocked}
                   >
                     <Icons.Unlock size={14} />
-                    Débloquer le profil
+                    {isUnlocked ? 'Profil débloqué' : 'Débloquer le profil'}
                   </button>
                   <span className="candidate-created-date">
                     Profil créé le {new Date(candidate.createdAt).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
               </motion.div>
-            ))
-          ) : (
+            );
+          }) ) : (
             <div className="no-candidates">
               <Icons.Users size={48} />
               <h3>Aucun profil trouvé</h3>
