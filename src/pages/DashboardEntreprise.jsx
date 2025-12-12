@@ -15,7 +15,6 @@ const DashboardEntreprise = () => {
   const [activeTab, setActiveTab] = useState('candidates');
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
   // Advanced filters state
   const [experienceLevel, setExperienceLevel] = useState('all');
@@ -297,130 +296,208 @@ const DashboardEntreprise = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-
-          <button
-            className="filter-toggle-btn"
-            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-          >
-            <Icons.Filter size={16} />
-            Filtres avancés
-            {showAdvancedFilters ? <Icons.ChevronUp size={14} /> : <Icons.ChevronDown size={14} />}
-          </button>
         </div>
 
-        {/* Filtres avancés */}
-        <AnimatePresence>
-          {showAdvancedFilters && (
-            <motion.div
-              className="advanced-filters"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+        {/* Filtres sous forme d'onglets */}
+        <div className="filter-tabs">
+          <div className="filter-tab-group">
+            <label>Expérience</label>
+            <div className="tab-buttons">
+              <button
+                className={`tab-btn ${experienceLevel === 'all' ? 'active' : ''}`}
+                onClick={() => setExperienceLevel('all')}
+              >
+                Tous
+              </button>
+              <button
+                className={`tab-btn ${experienceLevel === 'junior' ? 'active' : ''}`}
+                onClick={() => setExperienceLevel('junior')}
+              >
+                Junior
+              </button>
+              <button
+                className={`tab-btn ${experienceLevel === 'confirmed' ? 'active' : ''}`}
+                onClick={() => setExperienceLevel('confirmed')}
+              >
+                Confirmé
+              </button>
+              <button
+                className={`tab-btn ${experienceLevel === 'senior' ? 'active' : ''}`}
+                onClick={() => setExperienceLevel('senior')}
+              >
+                Senior
+              </button>
+            </div>
+          </div>
+
+          <div className="filter-tab-group">
+            <label>Localisation</label>
+            <input
+              type="text"
+              className="location-input"
+              placeholder="Ville ou région"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+          </div>
+
+          <div className="filter-tab-group">
+            <label>Télétravail</label>
+            <div className="tab-buttons">
+              <button
+                className={`tab-btn ${remoteWork === 'all' ? 'active' : ''}`}
+                onClick={() => setRemoteWork('all')}
+              >
+                Indifférent
+              </button>
+              <button
+                className={`tab-btn ${remoteWork === 'no' ? 'active' : ''}`}
+                onClick={() => setRemoteWork('no')}
+              >
+                Non
+              </button>
+              <button
+                className={`tab-btn ${remoteWork === 'partial' ? 'active' : ''}`}
+                onClick={() => setRemoteWork('partial')}
+              >
+                Partiel
+              </button>
+              <button
+                className={`tab-btn ${remoteWork === 'full' ? 'active' : ''}`}
+                onClick={() => setRemoteWork('full')}
+              >
+                Complet
+              </button>
+            </div>
+          </div>
+
+          <div className="filter-tab-group">
+            <label>Formation</label>
+            <div className="tab-buttons">
+              <button
+                className={`tab-btn ${educationLevel === 'all' ? 'active' : ''}`}
+                onClick={() => setEducationLevel('all')}
+              >
+                Tous niveaux
+              </button>
+              <button
+                className={`tab-btn ${educationLevel === 'bac' ? 'active' : ''}`}
+                onClick={() => setEducationLevel('bac')}
+              >
+                Bac
+              </button>
+              <button
+                className={`tab-btn ${educationLevel === 'bac+2' ? 'active' : ''}`}
+                onClick={() => setEducationLevel('bac+2')}
+              >
+                Bac+2
+              </button>
+              <button
+                className={`tab-btn ${educationLevel === 'bac+3' ? 'active' : ''}`}
+                onClick={() => setEducationLevel('bac+3')}
+              >
+                Bac+3
+              </button>
+              <button
+                className={`tab-btn ${educationLevel === 'master' ? 'active' : ''}`}
+                onClick={() => setEducationLevel('master')}
+              >
+                Master
+              </button>
+            </div>
+          </div>
+
+          <div className="filter-tab-group">
+            <label>Disponibilité</label>
+            <div className="tab-buttons">
+              <button
+                className={`tab-btn ${availability === 'all' ? 'active' : ''}`}
+                onClick={() => setAvailability('all')}
+              >
+                Toutes
+              </button>
+              <button
+                className={`tab-btn ${availability === 'immediate' ? 'active' : ''}`}
+                onClick={() => setAvailability('immediate')}
+              >
+                Immédiate
+              </button>
+              <button
+                className={`tab-btn ${availability === '1_month' ? 'active' : ''}`}
+                onClick={() => setAvailability('1_month')}
+              >
+                1 mois
+              </button>
+              <button
+                className={`tab-btn ${availability === '3_months' ? 'active' : ''}`}
+                onClick={() => setAvailability('3_months')}
+              >
+                3 mois
+              </button>
+            </div>
+          </div>
+
+          <div className="filter-tab-group">
+            <label>Contrat</label>
+            <div className="tab-buttons">
+              <button
+                className={`tab-btn ${contractType === 'all' ? 'active' : ''}`}
+                onClick={() => setContractType('all')}
+              >
+                Tous types
+              </button>
+              <button
+                className={`tab-btn ${contractType === 'cdi' ? 'active' : ''}`}
+                onClick={() => setContractType('cdi')}
+              >
+                CDI
+              </button>
+              <button
+                className={`tab-btn ${contractType === 'cdd' ? 'active' : ''}`}
+                onClick={() => setContractType('cdd')}
+              >
+                CDD
+              </button>
+              <button
+                className={`tab-btn ${contractType === 'freelance' ? 'active' : ''}`}
+                onClick={() => setContractType('freelance')}
+              >
+                Freelance
+              </button>
+              <button
+                className={`tab-btn ${contractType === 'stage' ? 'active' : ''}`}
+                onClick={() => setContractType('stage')}
+              >
+                Stage
+              </button>
+              <button
+                className={`tab-btn ${contractType === 'alternance' ? 'active' : ''}`}
+                onClick={() => setContractType('alternance')}
+              >
+                Alternance
+              </button>
+            </div>
+          </div>
+
+          <div className="filter-actions">
+            <button
+              className="clear-filters-btn"
+              onClick={() => {
+                setExperienceLevel('all');
+                setLocation('');
+                setRemoteWork('all');
+                setEducationLevel('all');
+                setEducationType('all');
+                setAvailability('all');
+                setContractType('all');
+                setSearchTerm('');
+              }}
             >
-              <div className="filters-grid">
-                {/* Expérience */}
-                <div className="filter-group">
-                  <label>Expérience</label>
-                  <select value={experienceLevel} onChange={(e) => setExperienceLevel(e.target.value)}>
-                    <option value="all">Tous niveaux</option>
-                    <option value="junior">Junior ({'<'} 2 ans)</option>
-                    <option value="confirmed">Confirmé (2-5 ans)</option>
-                    <option value="senior">Senior ({'>'} 5 ans)</option>
-                  </select>
-                </div>
+              Effacer tous les filtres
+            </button>
+          </div>
+        </div>
 
-                {/* Localisation */}
-                <div className="filter-group">
-                  <label>Localisation</label>
-                  <input
-                    type="text"
-                    placeholder="Ville ou région"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                  />
-                </div>
-
-                {/* Télétravail */}
-                <div className="filter-group">
-                  <label>Télétravail</label>
-                  <select value={remoteWork} onChange={(e) => setRemoteWork(e.target.value)}>
-                    <option value="all">Indifférent</option>
-                    <option value="no">Non</option>
-                    <option value="partial">Partiel</option>
-                    <option value="full">Complet</option>
-                  </select>
-                </div>
-
-                {/* Formation */}
-                <div className="filter-group">
-                  <label>Niveau d'études</label>
-                  <select value={educationLevel} onChange={(e) => setEducationLevel(e.target.value)}>
-                    <option value="all">Tous niveaux</option>
-                    <option value="bac">Bac</option>
-                    <option value="bac+2">Bac+2</option>
-                    <option value="bac+3">Bac+3</option>
-                    <option value="master">Master</option>
-                  </select>
-                </div>
-
-                {/* Type de formation */}
-                <div className="filter-group">
-                  <label>Type de formation</label>
-                  <select value={educationType} onChange={(e) => setEducationType(e.target.value)}>
-                    <option value="all">Tous types</option>
-                    <option value="university">Université</option>
-                    <option value="engineering_school">École d'ingénieurs</option>
-                    <option value="business_school">École de commerce</option>
-                  </select>
-                </div>
-
-                {/* Disponibilité */}
-                <div className="filter-group">
-                  <label>Disponibilité</label>
-                  <select value={availability} onChange={(e) => setAvailability(e.target.value)}>
-                    <option value="all">Toutes</option>
-                    <option value="immediate">Immédiate</option>
-                    <option value="1_month">1 mois</option>
-                    <option value="3_months">3 mois</option>
-                  </select>
-                </div>
-
-                {/* Contrat recherché */}
-                <div className="filter-group">
-                  <label>Contrat recherché</label>
-                  <select value={contractType} onChange={(e) => setContractType(e.target.value)}>
-                    <option value="all">Tous types</option>
-                    <option value="cdi">CDI</option>
-                    <option value="cdd">CDD</option>
-                    <option value="freelance">Freelance</option>
-                    <option value="stage">Stage</option>
-                    <option value="alternance">Alternance</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Boutons de contrôle */}
-              <div className="filter-actions">
-                <button
-                  className="clear-filters-btn"
-                  onClick={() => {
-                    setExperienceLevel('all');
-                    setLocation('');
-                    setRemoteWork('all');
-                    setEducationLevel('all');
-                    setEducationType('all');
-                    setAvailability('all');
-                    setContractType('all');
-                    setSearchTerm('');
-                  }}
-                >
-                  Effacer tous les filtres
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Grille des profils anonymisés */}
         <div className="candidates-grid">
