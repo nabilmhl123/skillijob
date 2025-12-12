@@ -188,44 +188,39 @@ const DashboardEntreprise = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
               >
+                {/* En-tête avec badge rond et label */}
                 <div className="candidate-header">
                   <div className="candidate-avatar">
                     {candidate.firstName.charAt(0)}{candidate.lastName.charAt(0)}
                   </div>
-                  <div className="candidate-match">
-                    <span className="match-label">Profil candidat</span>
-                  </div>
+                  <span className="candidate-label">Profil candidat</span>
                 </div>
 
+                {/* Informations principales */}
                 <div className="candidate-info">
                   <div className="candidate-name">
                     {candidate.firstName} {candidate.lastName}
                   </div>
-                  <div className="candidate-position">
-                    {candidate.position || candidate.experience || 'Poste non spécifié'}
-                  </div>
-                  <div className="candidate-meta">
-                    <span className="candidate-location">
-                      <Icons.MapPin size={14} />
-                      {candidate.address || 'Adresse non spécifiée'}
-                    </span>
-                    {candidate.availability && (
-                      <span className="candidate-availability">
-                        Disponibilité: {candidate.availability}
-                      </span>
+
+                  <div className="candidate-profile-text">
+                    {candidate.bio && (
+                      <p className="candidate-bio">
+                        {candidate.bio.length > 80
+                          ? candidate.bio.substring(0, 80) + '...'
+                          : candidate.bio
+                        }
+                      </p>
                     )}
+
+                    <p className="candidate-details-line">
+                      📍 {candidate.address || 'Localisation non renseignée'} •
+                      🎓 {candidate.experience || 'Expérience non spécifiée'} •
+                      ⏱️ Disponibilité : {candidate.availability || '—'}
+                    </p>
                   </div>
                 </div>
 
-                {candidate.bio && (
-                  <div className="candidate-description">
-                    {candidate.bio.length > 100
-                      ? candidate.bio.substring(0, 100) + '...'
-                      : candidate.bio
-                    }
-                  </div>
-                )}
-
+                {/* Compétences */}
                 {candidate.skills && candidate.skills.length > 0 && (
                   <div className="candidate-skills">
                     {candidate.skills.slice(0, 3).map((skill, index) => (
@@ -237,7 +232,8 @@ const DashboardEntreprise = () => {
                   </div>
                 )}
 
-                <div className="candidate-actions">
+                {/* Pied de card */}
+                <div className="candidate-footer">
                   <button
                     className="candidate-action-btn profile-btn"
                     onClick={() => {
@@ -245,7 +241,6 @@ const DashboardEntreprise = () => {
                       setShowProfileModal(true);
                     }}
                   >
-                    <Icons.User size={14} />
                     Profil
                   </button>
                   <button
@@ -258,11 +253,8 @@ const DashboardEntreprise = () => {
                     <Icons.Eye size={14} />
                     Voir
                   </button>
-                </div>
-
-                <div className="candidate-footer">
-                  <span className="applied-date">
-                    Profil créé {new Date(candidate.createdAt).toLocaleDateString('fr-FR')}
+                  <span className="candidate-created-date">
+                    Profil créé le {new Date(candidate.createdAt).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
               </motion.div>
