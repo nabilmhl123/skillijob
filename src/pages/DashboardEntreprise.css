@@ -443,13 +443,141 @@
 }
 
 /* ===================================
-    JOBS SECTION - TABLEAU DES OFFRES
+    JOBS SECTION - CARTES DES OFFRES
     =================================== */
 
 .jobs-section {
   margin-bottom: 3rem;
 }
 
+.jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.job-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.job-card:hover {
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.job-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+}
+
+.job-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.job-title-section {
+  flex: 1;
+}
+
+.job-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.job-department {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.job-card-content {
+  margin-bottom: 1.5rem;
+}
+
+.job-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.job-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.job-meta svg {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.job-stats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.job-card-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.delete-btn {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.delete-btn:hover {
+  background: var(--danger);
+  color: var(--white);
+}
+
+/* Ancien tableau (gardé pour compatibilité) */
 .jobs-table-container {
   background: var(--white);
   border-radius: var(--radius-xl);
@@ -2374,6 +2502,123 @@ input:focus-visible {
 }
 
 /* ===================================
+    LOADING AND ERROR STATES
+    =================================== */
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  color: var(--text-secondary);
+  gap: 1rem;
+}
+
+.loading-state svg {
+  animation: spin 1s linear infinite;
+  color: var(--primary);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  color: var(--text-secondary);
+  gap: 1rem;
+}
+
+.error-state svg {
+  color: var(--danger);
+  opacity: 0.8;
+}
+
+.error-state h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.error-state p {
+  font-size: 0.875rem;
+  margin: 0;
+  text-align: center;
+  max-width: 400px;
+}
+
+/* ===================================
+    JOB MODALS
+    =================================== */
+
+.job-modal .profile-modal-avatar {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+}
+
+.delete-modal .profile-modal-avatar {
+  background: linear-gradient(135deg, var(--danger) 0%, #ff6b6b 100%);
+}
+
+.delete-avatar svg {
+  color: var(--white);
+}
+
+.delete-warning {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.delete-warning p {
+  margin: 0.5rem 0;
+  color: var(--text);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.cancel-btn {
+  background: var(--white);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.cancel-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text);
+}
+
+.confirm-delete {
+  background: var(--danger);
+  color: var(--white);
+  border: 1px solid var(--danger);
+}
+
+.confirm-delete:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+/* ===================================
     CANDIDATE ACTIONS & MODAL
     =================================== */
 
@@ -2604,6 +2849,35 @@ input:focus-visible {
   .candidate-card {
     padding: 1.25rem;
     min-height: auto;
+  }
+
+  .jobs-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .job-card {
+    padding: 1.5rem;
+  }
+
+  .job-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .job-title-section {
+    width: 100%;
+  }
+
+  .job-card-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .action-btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .stats-grid {

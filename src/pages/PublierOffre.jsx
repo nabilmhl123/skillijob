@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
@@ -9,8 +9,10 @@ import './PublierOffre.css';
 
 const PublierOffre = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { token } = useAuth();
   const createJob = useMutation(api.jobs.createJob);
+  const updateJob = useMutation(api.jobs.updateJob);
   const publishJob = useMutation(api.jobs.publishJob);
 
   // États du formulaire
@@ -61,6 +63,10 @@ const PublierOffre = () => {
   const [autoSaveStatus, setAutoSaveStatus] = useState('saved');
   const [lastSaved, setLastSaved] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
+
+  // États pour l'édition
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingJob, setEditingJob] = useState(null);
 
 
   // Données de référence
@@ -152,7 +158,7 @@ const PublierOffre = () => {
     'Technologie', 'Finance', 'Santé', 'Éducation', 'Commerce',
     'Industrie', 'Énergie', 'Transport', 'Immobilier', 'Tourisme',
     'Médias', 'Télécommunications', 'Automobile', 'Agroalimentaire',
-    'Cosmétique', 'Mode', 'Sport', 'Environnement', 'ONG', 'Autre'
+    'Cosmétique', 'Mode', 'Sport', 'Environnement', 'Marketing', 'ONG', 'Autre'
   ];
 
   const departments = [
@@ -359,6 +365,56 @@ const PublierOffre = () => {
     }
   }, [autoSaveStatus, formData]);
 
+  // Pré-remplir le formulaire si on édite une offre
+  useEffect(() => {
+    const state = location.state;
+    if (state && state.editJob && state.isEditing) {
+      const job = state.editJob;
+      setIsEditing(true);
+      setEditingJob(job);
+
+      // Pré-remplir le formulaire avec les données de l'offre
+      setFormData({
+        title: job.title || '',
+        description: job.description || '',
+        requirements: job.requirements || [''],
+        location: job.location || '',
+        type: job.type || 'full-time',
+        department: job.department || '',
+        industry: job.industry || '',
+        experienceLevel: job.experienceLevel || '',
+        educationLevel: job.educationLevel || '',
+        languages: job.languages && job.languages.length > 0 ? job.languages : [{ language: '', level: 'intermediate' }],
+        remoteWork: job.remoteWork || 'no',
+        workingHours: job.workingHours || '',
+        contractDuration: job.contractDuration || '',
+        skills: job.skills || [],
+        tools: job.tools || [],
+        softSkills: job.softSkills || [],
+        certifications: job.certifications || [],
+        benefits: job.benefits || [],
+        companyDescription: job.companyDescription || '',
+        teamSize: job.teamSize ? job.teamSize.toString() : '',
+        officeAddress: job.officeAddress || '',
+        applicationProcess: job.applicationProcess || [],
+        contactEmail: job.contactEmail || '',
+        contactPhone: job.contactPhone || '',
+        parking: job.parking || false,
+        catering: job.catering || false,
+        trainingBudget: job.trainingBudget || false,
+        careerDevelopment: job.careerDevelopment || false,
+        diversity: job.diversity || false,
+        urgent: job.urgent || false,
+        internalReference: job.internalReference || '',
+        salaryMin: job.salaryMin ? job.salaryMin.toString() : '',
+        salaryMax: job.salaryMax ? job.salaryMax.toString() : '',
+        startDate: job.startDate ? new Date(job.startDate).toISOString().split('T')[0] : '',
+        applicationDeadline: job.applicationDeadline ? new Date(job.applicationDeadline).toISOString().split('T')[0] : '',
+        expiresAt: job.expiresAt ? new Date(job.expiresAt).toISOString().split('T')[0] : ''
+      });
+    }
+  }, [location.state]);
+
   // Validation avancée
   const validateForm = () => {
     // Validation de base
@@ -469,60 +525,30 @@ const PublierOffre = () => {
         ...(formData.expiresAt && { expiresAt: new Date(formData.expiresAt).getTime() })
       };
 
-      const result = await createJob(jobData);
+      let result;
+      if (isEditing && editingJob) {
+        // Mise à jour d'une offre existante
+        result = await updateJob({
+          ...jobData,
+          jobId: editingJob._id
+        });
+      } else {
+        // Création d'une nouvelle offre
+        result = await createJob(jobData);
 
-      // Publier automatiquement l'offre après création
-      await publishJob({ token, jobId: result.jobId });
+        // Publier automatiquement l'offre après création
+        await publishJob({ token, jobId: result.jobId });
+      }
 
       setSuccess(true);
 
-      // Rester dans le formulaire pour permettre de créer une nouvelle offre
+      // Rediriger vers le dashboard après succès
       setTimeout(() => {
-        // Reset le formulaire pour permettre une nouvelle création
-        setFormData({
-          title: '',
-          description: '',
-          requirements: [''],
-          location: '',
-          type: 'full-time',
-          department: '',
-          industry: '',
-          experienceLevel: '',
-          educationLevel: '',
-          languages: [{ language: '', level: 'intermediate' }],
-          remoteWork: 'no',
-          workingHours: '',
-          contractDuration: '',
-          skills: [],
-          tools: [],
-          softSkills: [],
-          certifications: [],
-          benefits: [],
-          companyDescription: '',
-          teamSize: '',
-          officeAddress: '',
-          applicationProcess: [],
-          contactEmail: '',
-          contactPhone: '',
-          parking: false,
-          catering: false,
-          trainingBudget: false,
-          careerDevelopment: false,
-          diversity: false,
-          urgent: false,
-          internalReference: '',
-          salaryMin: '',
-          salaryMax: '',
-          startDate: '',
-          applicationDeadline: '',
-          expiresAt: ''
-        });
-        setSuccess(false);
-        setCurrentStep(0);
-      }, 3000);
+        navigate('/dashboard-entreprise');
+      }, 2000);
 
     } catch (err) {
-      setError(err.message || 'Une erreur est survenue lors de la création de l\'offre');
+      setError(err.message || `Une erreur est survenue lors de ${isEditing ? 'la mise à jour' : 'la création'} de l'offre`);
     } finally {
       setLoading(false);
     }
@@ -609,8 +635,8 @@ const PublierOffre = () => {
           >
             <Icons.Check size={64} />
           </motion.div>
-          <h2>Offre publiée avec succès !</h2>
-          <p>Le formulaire sera réinitialisé automatiquement pour vous permettre de créer une nouvelle offre.</p>
+          <h2>{isEditing ? 'Offre modifiée avec succès !' : 'Offre publiée avec succès !'}</h2>
+          <p>{isEditing ? 'Vos modifications ont été enregistrées.' : 'Votre offre est maintenant visible par les candidats.'}</p>
         </div>
       </div>
     );
@@ -658,8 +684,8 @@ const PublierOffre = () => {
             </div>
           </div>
 
-          <h1>Publier une offre d'emploi</h1>
-          <p>Créez une offre d'emploi détaillée et attractive pour attirer les meilleurs talents</p>
+          <h1>{isEditing ? 'Modifier l\'offre d\'emploi' : 'Publier une offre d\'emploi'}</h1>
+          <p>{isEditing ? 'Modifiez les détails de votre offre d\'emploi' : 'Créez une offre d\'emploi détaillée et attractive pour attirer les meilleurs talents'}</p>
         </div>
 
         {error && (

@@ -18,19 +18,68 @@ const DashboardEntreprise = () => {
   const [filterBy, setFilterBy] = useState('all');
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [showJobModal, setShowJobModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const { user, token } = useAuth();
   const navigate = useNavigate();
 
   // Données réelles depuis Convex
-  const companyJobs = useQuery(api.jobs.getCompanyJobs, { token }) || [];
-  const jobStats = useQuery(api.jobs.getJobStats, { token }) || {};
-  const recruitmentStats = useQuery(api.jobs.getRecruitmentStats, { token }) || {};
-  const allCandidates = useQuery(api.candidates.getAllProfiles) || [];
+  const companyJobsQuery = useQuery(api.jobs.getCompanyJobs, { token });
+  const companyJobs = companyJobsQuery || [];
+  const jobStatsQuery = useQuery(api.jobs.getJobStats, { token });
+  const jobStats = jobStatsQuery || {};
+  const recruitmentStatsQuery = useQuery(api.jobs.getRecruitmentStats, { token });
+  const recruitmentStats = recruitmentStatsQuery || {};
+  const allCandidatesQuery = useQuery(api.candidates.getAllProfiles);
+  const allCandidates = allCandidatesQuery || [];
+
+  // Mutations pour la gestion des offres
+  const deleteJobMutation = useMutation(api.jobs.deleteJob);
 
   // Fonction pour naviguer vers la publication d'offre
   const handlePublishOffer = () => {
     navigate('/publier-offre');
+  };
+
+  // Gestion des actions sur les offres
+  const handleViewJob = (job) => {
+    if (job) {
+      setSelectedJob(job);
+      setShowJobModal(true);
+    }
+  };
+
+  const handleEditJob = (job) => {
+    // Naviguer vers le formulaire avec les données de l'offre pour édition
+    navigate('/publier-offre', {
+      state: {
+        editJob: job,
+        isEditing: true
+      }
+    });
+  };
+
+  const handleDeleteJob = (job) => {
+    if (job) {
+      setSelectedJob(job);
+      setShowDeleteModal(true);
+    }
+  };
+
+  const confirmDeleteJob = async () => {
+    if (selectedJob) {
+      try {
+        await deleteJobMutation({ token, jobId: selectedJob._id });
+        setShowDeleteModal(false);
+        setSelectedJob(null);
+        // La liste se mettra à jour automatiquement grâce à la query
+      } catch (error) {
+        console.error('Erreur lors de la suppression:', error);
+        // TODO: Afficher une notification d'erreur
+      }
+    }
   };
 
   // Formater le salaire
@@ -230,78 +279,136 @@ const DashboardEntreprise = () => {
     </>
   );
 
-  const renderJobs = () => (
-    <section className="jobs-section">
-      <div className="section-header">
-        <h2>Mes Offres d'Emploi</h2>
-        <button className="primary-btn" onClick={handlePublishOffer}>
-          <Icons.Plus size={16} />
-          Nouvelle offre
-        </button>
-      </div>
+  const renderJobs = () => {
+    try {
+      return (
+        <section className="jobs-section">
+          <div className="section-header">
+            <h2>Mes Offres d'Emploi</h2>
+            <button className="primary-btn" onClick={handlePublishOffer}>
+              <Icons.Plus size={16} />
+              Nouvelle offre
+            </button>
+          </div>
 
-      <div className="jobs-table-container">
-        <table className="jobs-table">
-          <thead>
-            <tr>
-              <th>Poste</th>
-              <th>Statut</th>
-              <th>Candidatures</th>
-              <th>Vues</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {companyJobs.length > 0 ? (
+          <div className="jobs-grid">
+            {companyJobsQuery === undefined ? (
+              <div className="loading-state">
+                <Icons.Loader size={32} />
+                <p>Chargement des offres...</p>
+              </div>
+            ) : companyJobs.length > 0 ? (
               companyJobs.map((job) => (
-                <tr key={job._id}>
-                  <td className="job-title-cell">
-                    <div className="job-title">{job.title}</div>
-                    <div className="job-department">{job.department}</div>
-                  </td>
-                  <td>
-                    <span className={`status-badge status-${job.status === 'published' ? 'green' : 'yellow'}`}>
-                      {job.status === 'published' ? 'Publiée' : 'Brouillon'}
-                    </span>
-                  </td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>{formatDate(job.createdAt)}</td>
-                  <td>
-                    <div className="job-actions">
-                      <button className="action-btn view-btn">
-                        <Icons.Eye size={14} />
-                      </button>
-                      <button className="action-btn edit-btn">
-                        <Icons.Edit size={14} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" className="no-jobs">
-                  <div className="no-jobs-content">
-                    <Icons.Briefcase size={48} />
-                    <h3>Aucune offre publiée</h3>
-                    <p>Vous n'avez pas encore publié d'offres d'emploi.</p>
-                    <button
-                      className="create-first-job-btn"
-                      onClick={handlePublishOffer}
-                    >
-                      Créer ma première offre
-                    </button>
+            <motion.div
+              key={job._id}
+              className="job-card"
+              whileHover={{ y: -2 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <div className="job-card-header">
+                <div className="job-title-section">
+                  <h3 className="job-title">{job?.title || 'Titre non disponible'}</h3>
+                  <span className="status-badge status-green">
+                    Publiée
+                  </span>
+                </div>
+                <div className="job-department">{job?.department || 'Département non spécifié'}</div>
+              </div>
+
+              <div className="job-card-content">
+                <div className="job-info">
+                  <div className="job-meta">
+                    <Icons.MapPin size={14} />
+                    <span>{job?.location || 'Non spécifiée'}</span>
                   </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  <div className="job-meta">
+                    <Icons.Clock size={14} />
+                    <span>{job?.createdAt ? formatDate(job.createdAt) : 'Date inconnue'}</span>
+                  </div>
+                </div>
+
+                <div className="job-stats">
+                  <div className="stat-item">
+                    <span className="stat-label">Candidatures</span>
+                    <span className="stat-value">0</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Vues</span>
+                    <span className="stat-value">0</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="job-card-actions">
+                <button
+                  className="action-btn view-btn"
+                  title="Voir les détails"
+                  onClick={() => handleViewJob(job)}
+                >
+                  <Icons.Eye size={16} />
+                  Voir
+                </button>
+                <button
+                  className="action-btn edit-btn"
+                  title="Modifier l'offre"
+                  onClick={() => handleEditJob(job)}
+                >
+                  <Icons.Edit size={16} />
+                  Modifier
+                </button>
+                <button
+                  className="action-btn delete-btn"
+                  title="Supprimer l'offre"
+                  onClick={() => handleDeleteJob(job)}
+                >
+                  <Icons.X size={16} />
+                  Supprimer
+                </button>
+              </div>
+            </motion.div>
+          ))
+        ) : (
+          <div className="no-jobs">
+            <div className="no-jobs-content">
+              <Icons.Briefcase size={48} />
+              <h3>Aucune offre publiée</h3>
+              <p>Vous n'avez pas encore publié d'offres d'emploi.</p>
+              <button
+                className="create-first-job-btn"
+                onClick={handlePublishOffer}
+              >
+                Créer ma première offre
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </section>
-  );
+      );
+    } catch (error) {
+      console.error('Erreur dans renderJobs:', error);
+      return (
+        <section className="jobs-section">
+          <div className="section-header">
+            <h2>Mes Offres d'Emploi</h2>
+            <button className="primary-btn" onClick={handlePublishOffer}>
+              <Icons.Plus size={16} />
+              Nouvelle offre
+            </button>
+          </div>
+          <div className="error-state">
+            <Icons.AlertCircle size={48} />
+            <h3>Erreur de chargement</h3>
+            <p>Une erreur s'est produite lors du chargement des offres.</p>
+            <button onClick={() => window.location.reload()} className="primary-btn">
+              Recharger la page
+            </button>
+          </div>
+        </section>
+      );
+    }
+  };
 
   const renderCandidates = () => (
     <section className="candidates-section">
@@ -390,20 +497,20 @@ const DashboardEntreprise = () => {
           <div className="header-content">
             <div className="header-stats">
               <div className="stat-item">
-                <span className="stat-label">Offres actives</span>
-                <span className="stat-value">{jobStats.published || 0}</span>
+                <span className="stat-label">Offres publiées</span>
+                <span className="stat-value">{jobStats?.total || 0}</span>
               </div>
               <div className="stat-item">
                 <span className="stat-label">Profils consultés</span>
-                <span className="stat-value">{recruitmentStats.profilesViewed || 0}</span>
+                <span className="stat-value">{recruitmentStats?.profilesViewed || 0}</span>
               </div>
               <div className="stat-item">
                 <span className="stat-label">Profils débloqués</span>
-                <span className="stat-value">{recruitmentStats.profilesUnlocked || 0}</span>
+                <span className="stat-value">{recruitmentStats?.profilesUnlocked || 0}</span>
               </div>
               <div className="stat-item">
                 <span className="stat-label">Crédits restants</span>
-                <span className="stat-value">{recruitmentStats.creditsRemaining || 0}</span>
+                <span className="stat-value">{recruitmentStats?.creditsRemaining || 0}</span>
               </div>
             </div>
 
@@ -516,6 +623,184 @@ const DashboardEntreprise = () => {
                       <strong>Profil créé le:</strong> {new Date(selectedCandidate.createdAt).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Détails Offre */}
+      <AnimatePresence>
+        {showJobModal && selectedJob && (
+          <motion.div
+            className="profile-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowJobModal(false)}
+          >
+            <motion.div
+              className="profile-modal job-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="profile-modal-header">
+                <div className="profile-modal-avatar job-avatar">
+                  <Icons.Briefcase size={24} />
+                </div>
+                <div className="profile-modal-info">
+                  <h3>{selectedJob.title}</h3>
+                  <p>{selectedJob.department} • {selectedJob.location || 'Localisation non spécifiée'}</p>
+                </div>
+                <button
+                  className="profile-modal-close"
+                  onClick={() => setShowJobModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+
+              <div className="profile-modal-content">
+                <div className="profile-section">
+                  <h4>Description du poste</h4>
+                  <p>{selectedJob.description || 'Aucune description disponible.'}</p>
+                </div>
+
+                {selectedJob.requirements && selectedJob.requirements.length > 0 && (
+                  <div className="profile-section">
+                    <h4>Exigences</h4>
+                    <ul>
+                      {selectedJob.requirements.map((req, index) => (
+                        <li key={index}>{req}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {selectedJob.skills && selectedJob.skills.length > 0 && (
+                  <div className="profile-section">
+                    <h4>Compétences requises</h4>
+                    <div className="profile-skills">
+                      {selectedJob.skills.map((skill, index) => (
+                        <span key={index} className="profile-skill-tag">{skill}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="profile-section">
+                  <h4>Informations sur l'offre</h4>
+                  <div className="profile-details">
+                    <div className="detail-item">
+                      <strong>Type de contrat:</strong> {selectedJob.type || 'Non spécifié'}
+                    </div>
+                    <div className="detail-item">
+                      <strong>Secteur:</strong> {selectedJob.industry || 'Non spécifié'}
+                    </div>
+                    <div className="detail-item">
+                      <strong>Niveau d'expérience:</strong> {selectedJob.experienceLevel || 'Non spécifié'}
+                    </div>
+                    {selectedJob.salaryMin && (
+                      <div className="detail-item">
+                        <strong>Salaire:</strong> {selectedJob.salaryMin}€ - {selectedJob.salaryMax}€ par an
+                      </div>
+                    )}
+                    <div className="detail-item">
+                      <strong>Statut:</strong>
+                      <span className="status-badge status-green">
+                        Publiée
+                      </span>
+                    </div>
+                    <div className="detail-item">
+                      <strong>Créée le:</strong> {new Date(selectedJob.createdAt).toLocaleDateString('fr-FR')}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    className="action-btn edit-btn"
+                    onClick={() => {
+                      handleEditJob(selectedJob);
+                      setShowJobModal(false);
+                    }}
+                  >
+                    <Icons.Edit size={16} />
+                    Modifier l'offre
+                  </button>
+                  <button
+                    className="action-btn delete-btn"
+                    onClick={() => {
+                      handleDeleteJob(selectedJob);
+                      setShowJobModal(false);
+                    }}
+                  >
+                    <Icons.X size={16} />
+                    Supprimer l'offre
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Confirmation Suppression */}
+      <AnimatePresence>
+        {showDeleteModal && selectedJob && (
+          <motion.div
+            className="profile-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowDeleteModal(false)}
+          >
+            <motion.div
+              className="profile-modal delete-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="profile-modal-header">
+                <div className="profile-modal-avatar delete-avatar">
+                  <Icons.AlertCircle size={24} />
+                </div>
+                <div className="profile-modal-info">
+                  <h3>Confirmer la suppression</h3>
+                  <p>Êtes-vous sûr de vouloir supprimer cette offre ?</p>
+                </div>
+                <button
+                  className="profile-modal-close"
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+
+              <div className="profile-modal-content">
+                <div className="delete-warning">
+                  <p><strong>Offre :</strong> {selectedJob.title}</p>
+                  <p>Cette action est irréversible. L'offre sera définitivement supprimée.</p>
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    className="action-btn cancel-btn"
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    className="action-btn delete-btn confirm-delete"
+                    onClick={confirmDeleteJob}
+                  >
+                    <Icons.X size={16} />
+                    Supprimer définitivement
+                  </button>
                 </div>
               </div>
             </motion.div>

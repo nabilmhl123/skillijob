@@ -23,6 +23,8 @@ export const AuthProvider = ({ children }) => {
   const signin = useMutation(api.auth.signin);
   const signup = useMutation(api.auth.signup);
   const signoutMutation = useMutation(api.auth.signout);
+  const updateProfileMutation = useMutation(api.auth.updateProfile);
+  const changePasswordMutation = useMutation(api.auth.changePassword);
   const getCurrentUser = useQuery(
     token ? api.auth.getCurrentUser : 'skip',
     token ? { token } : 'skip'
@@ -77,12 +79,31 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Fonction de mise à jour du profil
+  const updateProfile = async (data) => {
+    if (!token) {
+      throw new Error('Non authentifié');
+    }
+    return await updateProfileMutation({ token, ...data });
+  };
+
+  // Fonction de changement de mot de passe
+  const changePassword = async (currentPassword, newPassword) => {
+    if (!token) {
+      throw new Error('Non authentifié');
+    }
+    return await changePasswordMutation({ token, currentPassword, newPassword });
+  };
+
   const value = {
     user,
     token,
     login,
     register,
     logout,
+    updateProfile,
+    changePassword,
+    currentUser: user,
     isAuthenticated: !!user,
     isLoading: token && !user,
   };
