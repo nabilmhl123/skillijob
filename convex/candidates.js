@@ -236,11 +236,11 @@ export const searchProfiles = query({
           profile.bio,
           profile.experience,
           profile.education,
-          ...(profile.skills || []),
-          ...(profile.certifications || []),
-          ...(profile.tools || []),
-          ...(profile.languages ? profile.languages.map(l => l.language) : []),
-          ...(profile.softSkills || []),
+          ...(Array.isArray(profile.skills) ? profile.skills : []),
+          ...(Array.isArray(profile.certifications) ? profile.certifications : []),
+          ...(Array.isArray(profile.tools) ? profile.tools : []),
+          ...(Array.isArray(profile.languages) ? profile.languages.map(l => l.language) : []),
+          ...(Array.isArray(profile.softSkills) ? profile.softSkills : []),
         ].filter(field => field !== undefined && field !== null);
 
         return searchableFields.some(field =>
