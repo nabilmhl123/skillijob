@@ -461,17 +461,17 @@ const DashboardEntreprise = () => {
                       setShowProfileModal(true);
                     }}
                   >
-                    Profil
+                    Voir le profil
                   </button>
                   <button
                     className="candidate-action-btn view-btn"
                     onClick={() => {
-                      // Action neutre pour le moment
-                      console.log('Voir candidat:', candidate.firstName, candidate.lastName);
+                      // Action de déblocage à implémenter
+                      console.log('Débloquer profil:', candidate.firstName, candidate.lastName);
                     }}
                   >
-                    <Icons.Eye size={14} />
-                    Voir
+                    <Icons.Unlock size={14} />
+                    Débloquer le profil
                   </button>
                   <span className="candidate-created-date">
                     Profil créé le {new Date(candidate.createdAt).toLocaleDateString('fr-FR')}
