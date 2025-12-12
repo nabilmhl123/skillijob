@@ -6,6 +6,7 @@ import { useAuth } from '../components/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import Icons from '../components/shared/Icons';
 import ProfileSection from '../components/dashboard/ProfileSection';
+import useDebounce from '../hooks/useDebounce';
 import './DashboardEntreprise.css';
 
 
@@ -41,6 +42,10 @@ const DashboardEntreprise = () => {
   const { user, token } = useAuth();
   const navigate = useNavigate();
 
+  // Debounced values for search
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const debouncedLocation = useDebounce(location, 300);
+
   // Données réelles depuis Convex
   const companyJobsQuery = useQuery(api.jobs.getCompanyJobs, { token });
   const companyJobs = companyJobsQuery || [];
@@ -49,9 +54,8 @@ const DashboardEntreprise = () => {
   const recruitmentStatsQuery = useQuery(api.jobs.getRecruitmentStats, { token });
   const recruitmentStats = recruitmentStatsQuery || {};
   const filteredCandidatesQuery = useQuery(api.candidates.searchProfiles, {
-    searchTerm: searchTerm || undefined,
+    searchTerm: debouncedSearchTerm || undefined,
     experienceLevel: experienceLevel !== 'all' ? experienceLevel : undefined,
-    location: location || undefined,
     remoteWork: remoteWork !== 'all' ? remoteWork : undefined,
     educationLevel: educationLevel !== 'all' ? educationLevel : undefined,
     educationType: educationType !== 'all' ? educationType : undefined,
@@ -59,6 +63,15 @@ const DashboardEntreprise = () => {
     contractType: contractType !== 'all' ? contractType : undefined,
   });
   const filteredCandidates = filteredCandidatesQuery || [];
+
+  // Filtrage client-side pour la localisation
+  let finalFilteredCandidates = filteredCandidates;
+  if (debouncedLocation && debouncedLocation.trim() !== '') {
+    const locationLower = debouncedLocation.toLowerCase().trim();
+    finalFilteredCandidates = filteredCandidates.filter(candidate =>
+      candidate.address && candidate.address.toLowerCase().includes(locationLower)
+    );
+  }
 
   // Mutations pour la gestion des offres
   const deleteJobMutation = useMutation(api.jobs.deleteJob);
@@ -314,6 +327,7 @@ const DashboardEntreprise = () => {
               onChange={(e) => setLocation(e.target.value)}
             />
           </div>
+
         </div>
 
         {/* Filtres sous forme d'onglets horizontaux */}
@@ -385,8 +399,8 @@ const DashboardEntreprise = () => {
 
         {/* Grille des profils anonymisés */}
         <div className="candidates-grid">
-          {filteredCandidates.length > 0 ? (
-            filteredCandidates.map((candidate) => (
+          {finalFilteredCandidates.length > 0 ? (
+            finalFilteredCandidates.map((candidate) => (
               <motion.div
                 key={candidate._id}
                 className="candidate-card"
@@ -397,7 +411,7 @@ const DashboardEntreprise = () => {
                 {/* En-tête avec badge rond et label */}
                 <div className="candidate-header">
                   <div className="candidate-avatar">
-                    {candidate.firstName.charAt(0)}{candidate.lastName.charAt(0)}
+                    {candidate.firstName?.charAt(0) || '?'}{candidate.lastName?.charAt(0) || '?'}
                   </div>
                   <span className="candidate-label">Profil candidat</span>
                 </div>
@@ -604,10 +618,10 @@ const DashboardEntreprise = () => {
             >
               <div className="profile-modal-header">
                 <div className="profile-modal-avatar">
-                  {selectedCandidate.firstName.charAt(0)}{selectedCandidate.lastName.charAt(0)}
+                  {selectedCandidate.firstName?.charAt(0) || '?'}{selectedCandidate.lastName?.charAt(0) || '?'}
                 </div>
                 <div className="profile-modal-info">
-                  <h3>{selectedCandidate.firstName} {selectedCandidate.lastName}</h3>
+                  <h3>{selectedCandidate.firstName || 'Prénom'} {selectedCandidate.lastName || 'Nom'}</h3>
                   <p>{selectedCandidate.experience || 'Expérience non spécifiée'}</p>
                 </div>
                 <button

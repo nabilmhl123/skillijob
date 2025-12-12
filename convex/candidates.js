@@ -141,7 +141,6 @@ export const searchProfiles = query({
   args: {
     searchTerm: v.optional(v.string()),
     experienceLevel: v.optional(v.string()),
-    location: v.optional(v.string()),
     remoteWork: v.optional(v.string()),
     educationLevel: v.optional(v.string()),
     educationType: v.optional(v.string()),
@@ -155,7 +154,6 @@ export const searchProfiles = query({
     const {
       searchTerm,
       experienceLevel,
-      location,
       remoteWork,
       educationLevel,
       educationType,
@@ -193,51 +191,44 @@ export const searchProfiles = query({
       query = query.filter((q) => q.eq(q.field("contractType"), contractType));
     }
 
-    // Filtrage par localisation (ville dans address)
-    if (location && location.trim() !== '') {
-      const locationLower = location.toLowerCase().trim();
-      query = query.filter((q) => {
-        const address = q.field("address");
-        return address !== undefined && address.toLowerCase().includes(locationLower);
-      });
-    }
+    // Filtrage par localisation déplacé côté client pour éviter les timeouts
 
     let profiles = await query.collect();
 
     // Appliquer les filtres sur arrays (skills, languages, softSkills) côté client
-    if (skills && skills.length > 0) {
+    if (skills && Array.isArray(skills) && skills.length > 0) {
       profiles = profiles.filter(profile =>
-        profile.skills && skills.some(skill =>
-          profile.skills.some(profileSkill =>
-            profileSkill.toLowerCase().includes(skill.toLowerCase())
+        profile.skills && Array.isArray(profile.skills) && skills.some(skill =>
+          typeof skill === 'string' && profile.skills.some(profileSkill =>
+            typeof profileSkill === 'string' && profileSkill.toLowerCase().includes(skill.toLowerCase())
           )
         )
       );
     }
 
-    if (languages && languages.length > 0) {
+    if (languages && Array.isArray(languages) && languages.length > 0) {
       profiles = profiles.filter(profile =>
-        profile.languages && languages.some(lang =>
-          profile.languages.some(profileLang =>
-            profileLang.language.toLowerCase().includes(lang.toLowerCase())
+        profile.languages && Array.isArray(profile.languages) && languages.some(lang =>
+          typeof lang === 'string' && profile.languages.some(profileLang =>
+            profileLang && typeof profileLang.language === 'string' && profileLang.language.toLowerCase().includes(lang.toLowerCase())
           )
         )
       );
     }
 
-    if (softSkills && softSkills.length > 0) {
+    if (softSkills && Array.isArray(softSkills) && softSkills.length > 0) {
       profiles = profiles.filter(profile =>
-        profile.softSkills && softSkills.some(skill =>
-          profile.softSkills.some(profileSkill =>
-            profileSkill.toLowerCase().includes(skill.toLowerCase())
+        profile.softSkills && Array.isArray(profile.softSkills) && softSkills.some(skill =>
+          typeof skill === 'string' && profile.softSkills.some(profileSkill =>
+            typeof profileSkill === 'string' && profileSkill.toLowerCase().includes(skill.toLowerCase())
           )
         )
       );
     }
 
     // Appliquer la recherche textuelle full-text
-    if (searchTerm && searchTerm.trim() !== '') {
-      const searchLower = searchTerm.toLowerCase().trim();
+    if (searchTerm && typeof searchTerm === 'string' && searchTerm.trim() !== '') {
+      const searchLower = String(searchTerm).toLowerCase().trim();
       profiles = profiles.filter(profile => {
         const searchableFields = [
           profile.firstName,

@@ -1998,6 +1998,7 @@ input:focus-visible {
   padding: 0.5rem 1rem;
   min-width: 400px;
   max-width: 600px;
+  height: 48px;
   transition: var(--transition);
 }
 
@@ -2033,6 +2034,7 @@ input:focus-visible {
   border-radius: var(--radius-lg);
   padding: 0.5rem 1rem;
   min-width: 250px;
+  height: 48px;
   transition: var(--transition);
 }
 
@@ -2040,6 +2042,7 @@ input:focus-visible {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(108, 0, 255, 0.1);
 }
+
 
 .location-search-bar svg {
   color: var(--text-secondary);
@@ -2057,6 +2060,10 @@ input:focus-visible {
 
 .location-search-input::placeholder {
   color: var(--text-secondary);
+}
+
+.location-search-input:focus {
+  outline: none;
 }
 
 /* ===================================
