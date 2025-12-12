@@ -31,6 +31,12 @@ const SectorsSection = () => {
       icon: '💼'
     },
     {
+      name: 'Marketing',
+      description: 'Communication & Digital',
+      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
+      icon: '📈'
+    },
+    {
       name: 'BTP',
       description: 'Construction & Bâtiment',
       image: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&q=80',
@@ -96,7 +102,7 @@ const SectorsSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2>Présent dans 8 secteurs d'activité</h2>
+          <h2>Présent dans 9 secteurs d'activité</h2>
           <p className="sectors-subtitle">
             Nous accompagnons les entreprises et talents dans tous les domaines clés de l'économie française
           </p>

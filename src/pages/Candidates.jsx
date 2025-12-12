@@ -1,21 +1,26 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import HeroSection from '../components/shared/HeroSection';
 import Button from '../components/shared/Button';
 import PartnerLogo from '../components/shared/PartnerLogo';
 import Icons from '../components/shared/Icons';
+import CandidateForm from '../components/forms/CandidateForm';
 import candidatImage from '../assets/images/image_candidat.png';
+import franceTravailLogo from '../assets/images/francetravail.jpg';
 import './Candidates.css';
 
 const Candidates = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const partners = [
-    { name: 'Manpower', color: '#0050A0', domain: 'manpower.fr' },
-    { name: 'Randstad', color: '#003DA5', domain: 'randstad.fr' },
-    { name: 'Adecco', color: '#E30613', domain: 'adecco.fr' },
-    { name: 'France Travail', color: '#FFC845', domain: 'francetravail.fr' },
-    { name: 'Indeed', color: '#2164F3', domain: 'indeed.com' },
-    { name: 'Monster', color: '#6E46AE', domain: 'monster.fr' },
-    { name: 'LinkedIn', color: '#0A66C2', domain: 'linkedin.com' },
-    { name: 'APEC', color: '#00A0DC', domain: 'apec.fr' }
+    { name: '', color: '#0050A0', domain: 'unml.info' },
+    { name: '', color: '#003DA5', domain: 'bpifrance.fr' },
+    { name: '', color: '#E30613', domain: 'bge.asso.fr' },
+    { name: '', color: '#FFC845', domain: 'francetravail.fr', logo: franceTravailLogo },
+    { name: '', color: '#2164F3', domain: 'indeed.com' },
+    { name: '', color: '#6E46AE', domain: 'monster.fr' },
+    { name: '', color: '#0A66C2', domain: 'linkedin.com' },
+    { name: '', color: '#00A0DC', domain: 'apec.fr' }
   ];
 
   // Dupliquer les partenaires pour un défilement infini
@@ -66,7 +71,7 @@ const Candidates = () => {
         subtitle="Déposez votre CV gratuitement. Notre équipe RH optimise votre profil et vous met en relation avec des recruteurs qui recherchent vraiment vos compétences."
         badges={heroBadges}
         buttons={heroButtons}
-        image={candidatImage}
+        // image={candidatImage}
         imageAlt="Candidat Skillijob"
       />
 
@@ -98,7 +103,16 @@ const Candidates = () => {
                 {duplicatedPartners.map((partner, index) => (
                   <div key={index} className="partners-carousel-slide">
                     <div className="partner-card">
-                      <PartnerLogo name={partner.name} color={partner.color} domain={partner.domain} />
+                      {partner.logo ? (
+                        <img
+                          src={partner.logo}
+                          alt={partner.name}
+                          className="partner-logo-image"
+                          style={{ maxHeight: '120px', maxWidth: '240px', objectFit: 'contain' }}
+                        />
+                      ) : (
+                        <PartnerLogo name={partner.name} color={partner.color} domain={partner.domain} />
+                      )}
                       <div className="partner-name" style={{ color: partner.color }}>
                         {partner.name}
                       </div>
@@ -114,32 +128,43 @@ const Candidates = () => {
       {/* Why Skillijob Section */}
       <section className="section why-section">
         <div className="container">
-          <div className="why-content">
-            <h2 className="why-main-title">Skillijob, une nouvelle façon de trouver un emploi.</h2>
-            <div className="why-tagline">
-              <span>Simple.</span>
-              <span>Rapide.</span>
-              <span>Efficace.</span>
-            </div>
-            <p className="why-intro">
-              On ne vous fait pas courir après les annonces : on vous met en relation avec des entreprises qui recherchent réellement votre profil.
-            </p>
-          </div>
-
-          <div className="features-cards-pro">
-            <div className="feature-card-pro">
-              <h3>Un seul dépôt</h3>
-              <p>Un seul dépôt suffit. Notre équipe RH qualifie votre dossier et propose des postes adaptés.</p>
+          <div className="why-layout-grid">
+            <div className="why-content-left">
+              <h2 className="why-main-title">Skillijob, une nouvelle façon de trouver un emploi.</h2>
+              <div className="why-tagline">
+                <span>Simple.</span>
+                <span>Rapide.</span>
+                <span>Efficace.</span>
+              </div>
+              <p className="why-intro">
+                On ne vous fait pas courir après les annonces : on vous met en relation avec des entreprises qui recherchent réellement votre profil.
+              </p>
             </div>
 
-            <div className="feature-card-pro">
-              <h3>Offres réelles</h3>
-              <p>Fini les annonces périmées. Les entreprises sur Skillijob recrutent vraiment.</p>
-            </div>
+            <div className="why-features-right">
+              <div className="feature-card-compact">
+                <div className="feature-icon">1</div>
+                <div className="feature-content">
+                  <h3>Un seul dépôt</h3>
+                  <p>Un seul dépôt suffit. Notre équipe RH qualifie votre dossier et propose des postes adaptés.</p>
+                </div>
+              </div>
 
-            <div className="feature-card-pro">
-              <h3>Contact direct</h3>
-              <p>Profil visible auprès de 500 recruteurs partenaires. Contact direct pour entretien.</p>
+              <div className="feature-card-compact">
+                <div className="feature-icon">2</div>
+                <div className="feature-content">
+                  <h3>Offres réelles</h3>
+                  <p>Fini les annonces périmées. Les entreprises sur Skillijob recrutent vraiment.</p>
+                </div>
+              </div>
+
+              <div className="feature-card-compact">
+                <div className="feature-icon">3</div>
+                <div className="feature-content">
+                  <h3>Contact direct</h3>
+                  <p>Profil visible auprès de 500 recruteurs partenaires. Contact direct pour entretien.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -180,6 +205,204 @@ const Candidates = () => {
               </div>
             </div>
           </div>
+
+          <div className="steps-cta">
+            <Button variant="primary" size="large" href="https://form.jotform.com/252881502955059" external>
+              Déposer mon CV
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="section testimonials-candidates-section">
+        <div className="container">
+          <div className="testimonials-candidates-header">
+            <h2 className="testimonials-candidates-title">Ils ont trouvé grâce à Skillijob</h2>
+            <p className="testimonials-candidates-subtitle">Des candidats accompagnés, valorisés et recrutés plus vite.</p>
+          </div>
+
+          <div className="testimonials-candidates-carousel">
+            <div className="testimonials-candidates-track">
+              {/* Premier set de témoignages */}
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Contacté en 48h pour deux entretiens. Simple et efficace."
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">David</span>
+                  <span className="author-role">Chauffeur PL</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "CV retravaillé, meilleurs retours. J'ai signé en 3 semaines."
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Lucas</span>
+                  <span className="author-role">Technicien maintenance</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Enfin des offres proches, adaptées à mes horaires."
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Sonia</span>
+                  <span className="author-role">Cariste</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Visible sur 500 entreprises, c'est hyper rassurant !"
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Marie</span>
+                  <span className="author-role">Aide-soignante</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Pas de candidatures à répéter. Mon profil fait le job."
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Karim</span>
+                  <span className="author-role">Agent de sécurité</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Super accompagnement RH. Mon CV a été transformé !"
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Pauline</span>
+                  <span className="author-role">Secrétaire médicale</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "J'ai trouvé un CDI près de chez moi en 2 semaines."
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Thomas</span>
+                  <span className="author-role">Mécanicien auto</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Gratuit et efficace. Merci Skillijob !"
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Amina</span>
+                  <span className="author-role">Vendeuse en prêt-à-porter</span>
+                </div>
+              </div>
+
+              {/* Duplication pour défilement infini */}
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Contacté en 48h pour deux entretiens. Simple et efficace."
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">David</span>
+                  <span className="author-role">Chauffeur PL</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "CV retravaillé, meilleurs retours. J'ai signé en 3 semaines."
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Lucas</span>
+                  <span className="author-role">Technicien maintenance</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Enfin des offres proches, adaptées à mes horaires."
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Sonia</span>
+                  <span className="author-role">Cariste</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Visible sur 500 entreprises, c'est hyper rassurant !"
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Marie</span>
+                  <span className="author-role">Aide-soignante</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Pas de candidatures à répéter. Mon profil fait le job."
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Karim</span>
+                  <span className="author-role">Agent de sécurité</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Super accompagnement RH. Mon CV a été transformé !"
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Pauline</span>
+                  <span className="author-role">Secrétaire médicale</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "J'ai trouvé un CDI près de chez moi en 2 semaines."
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Thomas</span>
+                  <span className="author-role">Mécanicien auto</span>
+                </div>
+              </div>
+
+              <div className="testimonial-candidate-card">
+                <div className="testimonial-candidate-stars">★★★★★</div>
+                <p className="testimonial-candidate-text">
+                  "Gratuit et efficace. Merci Skillijob !"
+                </p>
+                <div className="testimonial-candidate-author">
+                  <span className="author-name">Amina</span>
+                  <span className="author-role">Vendeuse en prêt-à-porter</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -193,30 +416,19 @@ const Candidates = () => {
             </p>
           </div>
 
-          <div className="faq-carousel-wrapper">
-            <div className="faq-carousel-container">
-              <motion.div
-                className="faq-carousel-track"
-                animate={{ x: [0, -100 * faqs.length] }}
-                transition={{
-                  x: {
-                    repeat: Infinity,
-                    repeatType: "loop",
-                    duration: 40,
-                    ease: "linear"
-                  }
-                }}
-              >
-                {[...faqs, ...faqs, ...faqs].map((faq, index) => (
-                  <div key={index} className="faq-carousel-item">
-                    <div className="faq-item">
-                      <h3 className="faq-question-new">{faq.question}</h3>
-                      <p className="faq-answer-new">{faq.answer}</p>
-                    </div>
-                  </div>
-                ))}
-              </motion.div>
-            </div>
+          <div className="faq-list-simple">
+            {faqs.map((faq, index) => (
+              <div key={index} className="faq-item-simple">
+                <h3 className="faq-question-simple">{faq.question}</h3>
+                <p className="faq-answer-simple">{faq.answer}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="faq-cta">
+            <Link to="/faq" className="faq-link-button">
+              Voir toutes les questions
+            </Link>
           </div>
         </div>
       </section>
@@ -257,6 +469,11 @@ const Candidates = () => {
           </div>
         </div>
       </section>
+
+      {/* Candidate Form Modal */}
+      <AnimatePresence>
+        {isFormOpen && <CandidateForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />}
+      </AnimatePresence>
     </main>
   );
 };

@@ -69,6 +69,7 @@ const HeroSection = ({
                     size={button.size || 'large'}
                     href={button.href}
                     external={button.external}
+                    onClick={button.onClick}
                     icon={button.icon}
                   >
                     {button.text}

@@ -1,0 +1,3 @@
+# Redirections pour React Router (Single Page Application)
+# Toutes les routes doivent pointer vers index.html
+/*    /index.html   200

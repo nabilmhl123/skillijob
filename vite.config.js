@@ -10,6 +10,19 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: false, // Désactiver les sourcemaps en production pour réduire la taille
+    minify: 'esbuild', // Minification rapide avec esbuild
+    target: 'es2015', // Support des navigateurs modernes
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Séparer les dépendances volumineuses pour un meilleur caching
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'animation-vendor': ['framer-motion'],
+          'convex-vendor': ['convex']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000 // Augmenter la limite pour éviter les warnings
   }
 })

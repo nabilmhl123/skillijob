@@ -1,0 +1,239 @@
+.newsletter-admin {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 2rem;
+}
+
+.newsletter-admin-header {
+  margin-bottom: 2rem;
+}
+
+.newsletter-admin-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1.5rem;
+}
+
+.newsletter-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.95rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.newsletter-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  align-items: center;
+}
+
+.search-bar {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 12px;
+  padding: 0 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar svg {
+  color: #94a3b8;
+  margin-right: 0.75rem;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 1rem 0;
+  font-size: 1rem;
+  color: #1e293b;
+}
+
+.search-bar input::placeholder {
+  color: #94a3b8;
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+.export-btn:hover {
+  background: var(--primary-2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.export-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.newsletter-table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.newsletter-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.newsletter-table thead {
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+}
+
+.newsletter-table th {
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  font-weight: 600;
+  color: white;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.newsletter-table tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 0.2s ease;
+}
+
+.newsletter-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.newsletter-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.newsletter-table td {
+  padding: 1.25rem 1.5rem;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.email-cell {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.source-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.source-popup {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.source-footer {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.source-unknown {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.no-data {
+  text-align: center;
+  color: #94a3b8;
+  padding: 3rem !important;
+  font-style: italic;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  font-size: 1.25rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .newsletter-admin {
+    padding: 1rem;
+  }
+
+  .newsletter-admin-header h1 {
+    font-size: 2rem;
+  }
+
+  .newsletter-actions {
+    flex-direction: column;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
+  .export-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .newsletter-table-container {
+    overflow-x: auto;
+  }
+
+  .newsletter-table {
+    min-width: 600px;
+  }
+
+  .newsletter-table th,
+  .newsletter-table td {
+    padding: 1rem;
+    font-size: 0.875rem;
+  }
+}

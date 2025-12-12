@@ -9,6 +9,8 @@ Site web moderne et performant pour Skillijob, la plateforme qui connecte candid
 - **Framer Motion** - Animations fluides et modernes
 - **Vite** - Build tool ultra-rapide
 - **CSS3** - Styles personnalisés avec variables CSS
+- **Convex** - Backend-as-a-Service pour l'authentification et la base de données
+- **bcrypt.js** - Hachage sécurisé des mots de passe
 
 ## 📁 Structure du projet
 
@@ -109,9 +111,19 @@ Placez vos images dans le dossier `/public/` :
 
 ## 📄 Pages disponibles
 
+### Pages Publiques
 - `/` - Page d'accueil
 - `/candidats` - Page dédiée aux candidats
 - `/entreprises` - Page dédiée aux entreprises
+- `/login` - Connexion et inscription
+
+### Pages Protégées (Authentification requise)
+- `/dashboard-candidat` - Dashboard pour les candidats
+- `/dashboard-entreprise` - Dashboard pour les entreprises
+- `/profile` - Gestion du profil utilisateur
+- `/paiements` - Gestion des paiements
+
+Pour plus d'informations sur l'authentification, voir [SECURITY_FEATURES.md](SECURITY_FEATURES.md)
 
 ## 🧩 Composants principaux
 
@@ -164,12 +176,22 @@ Modal avec animations :
 - SEO optimisé
 - Performance optimisée
 
+### ✅ Nouvellement ajouté (v1.1.0)
+
+- **Système d'authentification complet** avec Convex
+- **Hachage sécurisé des mots de passe** (bcrypt)
+- **Dashboard candidat/entreprise** avec protection des routes
+- **Espace de gestion des profils** avec modification et changement de mot de passe
+- **Hook personnalisé useAuth** pour une utilisation simplifiée
+- **Protection avancée des routes** par type d'utilisateur
+
 ### 🔜 À venir
 
 - Page de paiement
-- Système d'authentification
-- Dashboard candidat/entreprise
-- Espace de gestion des profils
+- Upload de CV pour les candidats
+- Publication d'offres pour les entreprises
+- Système de matching candidat/entreprise
+- Messagerie interne
 
 ## 📱 Responsive Design
 

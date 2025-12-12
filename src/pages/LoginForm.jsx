@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMutation } from 'convex/react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../../convex/_generated/api';
 import Icons from '../components/shared/Icons';
 import './LoginForm.css';
 
@@ -16,18 +19,93 @@ const LoginForm = () => {
     phone: '',
     position: ''
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
+
+  const navigate = useNavigate();
+  const signup = useMutation(api.auth.signup);
+  const signin = useMutation(api.auth.signin);
+  const requestPasswordReset = useMutation(api.auth.requestPasswordReset);
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    setError(''); // Clear error when user types
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', { userType, authMode, formData });
-    // TODO: Implement authentication logic
+    setError('');
+    setLoading(true);
+
+    try {
+      if (authMode === 'signup') {
+        // Validation pour l'inscription
+        if (formData.password !== formData.confirmPassword) {
+          setError('Les mots de passe ne correspondent pas');
+          setLoading(false);
+          return;
+        }
+
+        if (formData.password.length < 6) {
+          setError('Le mot de passe doit contenir au moins 6 caractères');
+          setLoading(false);
+          return;
+        }
+
+        // Appel à la mutation signup
+        const result = await signup({
+          email: formData.email,
+          password: formData.password,
+          userType,
+          firstName: formData.firstName || undefined,
+          lastName: formData.lastName || undefined,
+          companyName: formData.companyName || undefined,
+          phone: formData.phone || undefined,
+          position: formData.position || undefined,
+          termsAccepted: true, // Assuming checkbox is checked since required
+        });
+
+        // Stocker le token dans localStorage
+        localStorage.setItem('authToken', result.token);
+        localStorage.setItem('userId', result.userId);
+        localStorage.setItem('userType', result.userType);
+
+        // Rediriger vers le dashboard approprié
+        if (result.userType === 'candidate') {
+          navigate('/dashboard-candidat');
+        } else {
+          navigate('/dashboard-entreprise');
+        }
+      } else {
+        // Connexion
+        const result = await signin({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        // Stocker le token dans localStorage
+        localStorage.setItem('authToken', result.token);
+        localStorage.setItem('userId', result.userId);
+        localStorage.setItem('userType', result.userType);
+
+        // Rediriger vers le dashboard approprié
+        if (result.userType === 'candidate') {
+          navigate('/dashboard-candidat');
+        } else {
+          navigate('/dashboard-entreprise');
+        }
+      }
+    } catch (err) {
+      setError(err.message || 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const resetForm = () => {
@@ -41,6 +119,7 @@ const LoginForm = () => {
       phone: '',
       position: ''
     });
+    setError('');
   };
 
   const switchAuthMode = () => {
@@ -51,6 +130,24 @@ const LoginForm = () => {
   const switchUserType = (type) => {
     setUserType(type);
     resetForm();
+  };
+
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();
+    setResetMessage('');
+    setLoading(true);
+
+    try {
+      const result = await requestPasswordReset({ email: resetEmail });
+      setResetMessage(result.message);
+      if (result.resetToken) {
+        console.log('Reset token (dev only):', result.resetToken);
+      }
+    } catch (err) {
+      setResetMessage(err.message || 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const candidateBenefits = [
@@ -161,6 +258,21 @@ const LoginForm = () => {
               Entreprise
             </button>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div style={{
+              padding: '12px',
+              marginBottom: '16px',
+              backgroundColor: '#fee',
+              border: '1px solid #fcc',
+              borderRadius: '8px',
+              color: '#c33',
+              fontSize: '14px'
+            }}>
+              {error}
+            </div>
+          )}
 
           {/* Form */}
           <form className="auth-form" onSubmit={handleSubmit}>
@@ -287,7 +399,7 @@ const LoginForm = () => {
             <div className="form-group">
               <label htmlFor="email">Email {authMode === 'signup' && '*'}</label>
               <div className="input-with-icon">
-                <Icons.Mail size={20} className="input-icon" />
+                {/* <Icons.Mail size={20} className="input-icon" /> */}
                 <input
                   type="email"
                   id="email"
@@ -340,7 +452,7 @@ const LoginForm = () => {
                   <input type="checkbox" />
                   <span>Se souvenir de moi</span>
                 </label>
-                <a href="#" className="forgot-link">Mot de passe oublié ?</a>
+                <button type="button" className="forgot-link" onClick={() => setShowPasswordReset(true)}>Mot de passe oublié ?</button>
               </div>
             )}
 
@@ -356,8 +468,8 @@ const LoginForm = () => {
               </div>
             )}
 
-            <button type="submit" className="auth-submit-btn">
-              {authMode === 'signin' ? 'Se connecter' : "S'inscrire"}
+            <button type="submit" className="auth-submit-btn" disabled={loading}>
+              {loading ? 'Chargement...' : (authMode === 'signin' ? 'Se connecter' : "S'inscrire")}
             </button>
           </form>
 
@@ -397,6 +509,72 @@ const LoginForm = () => {
           </div>
         </div>
       </div>
+
+      {/* Password Reset Modal */}
+      <AnimatePresence>
+        {showPasswordReset && (
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowPasswordReset(false)}
+          >
+            <motion.div
+              className="modal-content"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h3>Réinitialiser le mot de passe</h3>
+                <button
+                  type="button"
+                  className="modal-close"
+                  onClick={() => setShowPasswordReset(false)}
+                >
+                  ×
+                </button>
+              </div>
+
+              <form onSubmit={handlePasswordReset} className="modal-body">
+                <p>Entrez votre adresse email pour recevoir un lien de réinitialisation.</p>
+
+                <div className="form-group">
+                  <label htmlFor="resetEmail">Email</label>
+                  <input
+                    type="email"
+                    id="resetEmail"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    required
+                    placeholder="votre.email@exemple.com"
+                  />
+                </div>
+
+                {resetMessage && (
+                  <div style={{
+                    padding: '12px',
+                    marginBottom: '16px',
+                    backgroundColor: resetMessage.includes('succès') ? '#e6f7e6' : '#fee',
+                    border: `1px solid ${resetMessage.includes('succès') ? '#cfc' : '#fcc'}`,
+                    borderRadius: '8px',
+                    color: resetMessage.includes('succès') ? '#363' : '#c33',
+                    fontSize: '14px'
+                  }}>
+                    {resetMessage}
+                  </div>
+                )}
+
+                <button type="submit" className="auth-submit-btn" disabled={loading}>
+                  {loading ? 'Envoi...' : 'Envoyer le lien'}
+                </button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

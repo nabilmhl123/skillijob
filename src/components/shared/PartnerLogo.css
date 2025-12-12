@@ -1,14 +1,14 @@
 .partner-logo {
-  width: 70px;
-  height: 70px;
-  border-radius: 12px;
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all var(--transition-normal);
   background: var(--white);
-  padding: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 .partner-logo-fallback {

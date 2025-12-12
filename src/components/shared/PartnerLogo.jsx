@@ -22,22 +22,22 @@ const PartnerLogo = ({ name, color, domain }) => {
   if (imageError) {
     return (
       <div className="partner-logo partner-logo-fallback" style={{ backgroundColor: `${color}15` }}>
-        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id={`gradient-${name}`} x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" style={{ stopColor: color, stopOpacity: 0.2 }} />
               <stop offset="100%" style={{ stopColor: color, stopOpacity: 0.05 }} />
             </linearGradient>
           </defs>
-          <circle cx="30" cy="30" r="28" fill={`url(#gradient-${name})`} />
-          <circle cx="30" cy="30" r="27" fill="none" stroke={color} strokeWidth="1.5" opacity="0.3" />
+          <circle cx="50" cy="50" r="46" fill={`url(#gradient-${name})`} />
+          <circle cx="50" cy="50" r="45" fill="none" stroke={color} strokeWidth="2" opacity="0.3" />
           <text
-            x="30"
-            y="30"
+            x="50"
+            y="50"
             textAnchor="middle"
             dominantBaseline="central"
             fill={color}
-            fontSize="20"
+            fontSize="32"
             fontWeight="700"
             fontFamily="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
             letterSpacing="1"

@@ -76,8 +76,9 @@
 
 /* Sizes */
 .btn-small {
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   font-size: 0.8rem;
+  height: 40px;
 }
 
 .btn-medium {

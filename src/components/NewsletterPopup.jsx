@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMutation } from 'convex/react';
+import { api } from '../../convex/_generated/api';
 import './NewsletterPopup.css';
 
 const NewsletterPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const subscribeToNewsletter = useMutation(api.newsletter.subscribe);
 
   useEffect(() => {
     // Vérifier si le popup a déjà été fermé dans cette session
@@ -26,18 +32,35 @@ const NewsletterPopup = () => {
     sessionStorage.setItem('newsletterPopupClosed', 'true');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError('');
 
-    // TODO: Intégrer avec votre service d'emailing (Mailchimp, Sendinblue, etc.)
-    console.log('Newsletter subscription:', email);
+    try {
+      // Enregistrer l'email dans Convex
+      const result = await subscribeToNewsletter({
+        email: email,
+        source: 'popup',
+      });
 
-    setIsSubmitted(true);
+      console.log('Newsletter subscription result:', result);
 
-    // Fermer le popup après 2 secondes
-    setTimeout(() => {
-      handleClose();
-    }, 2000);
+      if (result.alreadySubscribed) {
+        console.log('Email already subscribed');
+      }
+
+      setIsSubmitted(true);
+
+      // Fermer le popup après 2 secondes
+      setTimeout(() => {
+        handleClose();
+      }, 2000);
+    } catch (err) {
+      console.error('Newsletter subscription error:', err);
+      setError(err.message || 'Une erreur est survenue. Veuillez réessayer.');
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -101,14 +124,22 @@ const NewsletterPopup = () => {
                     />
                   </div>
 
-                  <button type="submit" className="newsletter-submit-btn">
-                    S'abonner
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
+                  <button type="submit" className="newsletter-submit-btn" disabled={isLoading}>
+                    {isLoading ? 'Inscription...' : "S'abonner"}
+                    {!isLoading && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                      </svg>
+                    )}
                   </button>
                 </form>
+
+                {error && (
+                  <p className="newsletter-popup-error" style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.5rem' }}>
+                    {error}
+                  </p>
+                )}
 
                 <p className="newsletter-popup-privacy">
                   🔒 Vos données sont sécurisées. Pas de spam.

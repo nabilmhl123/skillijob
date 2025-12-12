@@ -1,139 +1,110 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '../../convex/_generated/api';
+import { useAuth } from '../components/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 import Icons from '../components/shared/Icons';
+import ProfileSection from '../components/dashboard/ProfileSection';
 import './DashboardEntreprise.css';
 
+
+// Dashboard entreprise avec données réelles de Convex
+
 const DashboardEntreprise = () => {
-  const [activeTab, setActiveTab] = useState('sales-hub');
-  const [activeFilter, setActiveFilter] = useState('new');
-  const [activeSection, setActiveSection] = useState('overview');
+  const [activeTab, setActiveTab] = useState('overview');
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterBy, setFilterBy] = useState('all');
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [showJobModal, setShowJobModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Données fictives pour le tableau d'opportunités
-  const opportunities = [
-    {
-      id: 1,
-      company: 'Sophie Martin',
-      category: 'Développeur Full Stack React/Node.js',
-      reviewDate: '24 Oct 2025',
-      budget: '50K€ - 60K€',
-      status: 'Reviewing',
-      statusColor: 'blue'
-    },
-    {
-      id: 2,
-      company: 'Thomas Dubois',
-      category: 'Designer UI/UX Senior',
-      reviewDate: '23 Oct 2025',
-      budget: '42K€ - 52K€',
-      status: 'Pending',
-      statusColor: 'yellow'
-    },
-    {
-      id: 3,
-      company: 'Marie Lefebvre',
-      category: 'Chef de Projet Digital',
-      reviewDate: '22 Oct 2025',
-      budget: '55K€ - 65K€',
-      status: 'Approved',
-      statusColor: 'green'
-    },
-    {
-      id: 4,
-      company: 'Pierre Rousseau',
-      category: 'Développeur Backend Python',
-      reviewDate: '21 Oct 2025',
-      budget: '48K€ - 58K€',
-      status: 'Reviewing',
-      statusColor: 'blue'
-    },
-    {
-      id: 5,
-      company: 'Camille Bernard',
-      category: 'Data Scientist',
-      reviewDate: '20 Oct 2025',
-      budget: '52K€ - 62K€',
-      status: 'Approved',
-      statusColor: 'green'
-    },
-    {
-      id: 6,
-      company: 'Lucas Moreau',
-      category: 'Développeur Frontend Vue.js',
-      reviewDate: '19 Oct 2025',
-      budget: '45K€ - 55K€',
-      status: 'Pending',
-      statusColor: 'yellow'
-    },
-    {
-      id: 7,
-      company: 'Emma Petit',
-      category: 'Product Owner',
-      reviewDate: '18 Oct 2025',
-      budget: '50K€ - 60K€',
-      status: 'Reviewing',
-      statusColor: 'blue'
-    },
-    {
-      id: 8,
-      company: 'Alexandre Roux',
-      category: 'DevOps Engineer',
-      reviewDate: '17 Oct 2025',
-      budget: '53K€ - 63K€',
-      status: 'Approved',
-      statusColor: 'green'
-    },
-  ];
+  const { user, token } = useAuth();
+  const navigate = useNavigate();
 
-  // Données pour les cartes de gestion
-  const proposalCards = [
-    {
-      id: 1,
-      title: 'Révision des CV',
-      budget: '8 candidatures',
-      description: 'Examiner les profils pour le poste Développeur Full Stack',
-      progress: 65
-    },
-    {
-      id: 2,
-      title: 'Entretiens Programmés',
-      budget: '12 entretiens',
-      description: 'Planifier les entretiens de cette semaine',
-      progress: 45
-    },
-    {
-      id: 3,
-      title: 'Offres à Envoyer',
-      budget: '5 offres',
-      description: 'Finaliser et envoyer les propositions d\'embauche',
-      progress: 80
+  // Données réelles depuis Convex
+  const companyJobsQuery = useQuery(api.jobs.getCompanyJobs, { token });
+  const companyJobs = companyJobsQuery || [];
+  const jobStatsQuery = useQuery(api.jobs.getJobStats, { token });
+  const jobStats = jobStatsQuery || {};
+  const recruitmentStatsQuery = useQuery(api.jobs.getRecruitmentStats, { token });
+  const recruitmentStats = recruitmentStatsQuery || {};
+  const allCandidatesQuery = useQuery(api.candidates.getAllProfiles);
+  const allCandidates = allCandidatesQuery || [];
+
+  // Mutations pour la gestion des offres
+  const deleteJobMutation = useMutation(api.jobs.deleteJob);
+
+  // Fonction pour naviguer vers la publication d'offre
+  const handlePublishOffer = () => {
+    navigate('/publier-offre');
+  };
+
+  // Gestion des actions sur les offres
+  const handleViewJob = (job) => {
+    if (job) {
+      setSelectedJob(job);
+      setShowJobModal(true);
     }
-  ];
+  };
+
+  const handleEditJob = (job) => {
+    // Naviguer vers le formulaire avec les données de l'offre pour édition
+    navigate('/publier-offre', {
+      state: {
+        editJob: job,
+        isEditing: true
+      }
+    });
+  };
+
+  const handleDeleteJob = (job) => {
+    if (job) {
+      setSelectedJob(job);
+      setShowDeleteModal(true);
+    }
+  };
+
+  const confirmDeleteJob = async () => {
+    if (selectedJob) {
+      try {
+        await deleteJobMutation({ token, jobId: selectedJob._id });
+        setShowDeleteModal(false);
+        setSelectedJob(null);
+        // La liste se mettra à jour automatiquement grâce à la query
+      } catch (error) {
+        console.error('Erreur lors de la suppression:', error);
+        // TODO: Afficher une notification d'erreur
+      }
+    }
+  };
+
+  // Formater le salaire
+  const formatSalary = (job) => {
+    if (job.salaryMin && job.salaryMax) {
+      return `${job.salaryMin}€ - ${job.salaryMax}€`;
+    }
+    return 'Non spécifié';
+  };
+
+  // Formater la date
+  const formatDate = (timestamp) => {
+    return new Date(timestamp).toLocaleDateString('fr-FR');
+  };
 
   const menuItems = [
     { id: 'overview', icon: 'Target', label: 'Vue d\'ensemble', section: 'main' },
-    { id: 'analytics', icon: 'BarChart', label: 'Analytiques', section: 'main' },
+    { id: 'candidates', icon: 'Users', label: 'Candidats', section: 'main' },
 
-    { id: 'recruitment-header', label: 'RECRUTEMENT', isHeader: true },
-    { id: 'candidates', icon: 'Users', label: 'Tous les candidats', section: 'recruitment' },
-    { id: 'applications', icon: 'Package', label: 'Candidatures reçues', section: 'recruitment' },
-    { id: 'pipeline', icon: 'TrendingUp', label: 'Pipeline de recrutement', section: 'recruitment' },
-    { id: 'interviews', icon: 'MessageCircle', label: 'Entretiens', section: 'recruitment' },
-    { id: 'offers-sent', icon: 'Mail', label: 'Offres envoyées', section: 'recruitment' },
+    { id: 'publish-header', label: 'PUBLICATION', isHeader: true },
+    { id: 'jobs', icon: 'Briefcase', label: 'Mes offres', section: 'main' },
 
-    { id: 'jobs-header', label: 'OFFRES D\'EMPLOI', isHeader: true },
-    { id: 'active-jobs', icon: 'Briefcase', label: 'Offres actives', section: 'jobs' },
-    { id: 'draft-jobs', icon: 'FileText', label: 'Brouillons', section: 'jobs' },
-    { id: 'archived-jobs', icon: 'File', label: 'Archivées', section: 'jobs' },
-    { id: 'templates', icon: 'File', label: 'Modèles d\'offres', section: 'jobs' },
-
-    { id: 'team-header', label: 'ÉQUIPE & ENTREPRISE', isHeader: true },
-    { id: 'team', icon: 'Users', label: 'Membres de l\'équipe', section: 'team' },
-    { id: 'company-profile', icon: 'Building', label: 'Profil entreprise', section: 'team' },
-    { id: 'settings', icon: 'Target', label: 'Paramètres', section: 'team' },
-
-    { id: 'finance-header', label: 'FACTURATION', isHeader: true },
-    { id: 'invoices', icon: 'File', label: 'Factures', section: 'finance' },
-    { id: 'subscription', icon: 'Package', label: 'Abonnement', section: 'finance' },
+    { id: 'profile-header', label: 'PROFIL', isHeader: true },
+    { id: 'profile', icon: 'User', label: 'Mon profil', section: 'profile' },
+    { id: 'settings', icon: 'Target', label: 'Paramètres', section: 'profile' },
   ];
 
   const IconComponent = ({ name, size = 20 }) => {
@@ -143,384 +114,343 @@ const DashboardEntreprise = () => {
 
   // Fonction pour rendre le contenu selon la section active
   const renderContent = () => {
-    switch(activeSection) {
+    switch(activeTab) {
       case 'overview':
         return renderOverview();
-      case 'analytics':
-        return renderAnalytics();
+      case 'jobs':
+        return renderJobs();
       case 'candidates':
         return renderCandidates();
-      case 'applications':
-        return renderApplications();
-      case 'pipeline':
-        return renderPipeline();
-      case 'interviews':
-        return renderInterviews();
-      case 'offers-sent':
-        return renderOffersSent();
-      case 'active-jobs':
-        return renderActiveJobs();
-      case 'draft-jobs':
-        return renderDraftJobs();
-      case 'archived-jobs':
-        return renderArchivedJobs();
-      case 'templates':
-        return renderTemplates();
-      case 'team':
-        return renderTeam();
-      case 'company-profile':
-        return renderCompanyProfile();
+      case 'analytics':
+        return renderAnalytics();
+      case 'profile':
+        return renderProfile();
       case 'settings':
         return renderSettings();
-      case 'invoices':
-        return renderInvoices();
-      case 'subscription':
-        return renderSubscription();
       default:
         return renderOverview();
     }
   };
 
+  // Filtrage et recherche des candidats
+  const filteredCandidates = allCandidates
+    .filter(candidate => {
+      const matchesSearch = searchTerm === '' ||
+        candidate.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (candidate.bio && candidate.bio.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (candidate.experience && candidate.experience.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (candidate.firstName && candidate.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (candidate.lastName && candidate.lastName.toLowerCase().includes(searchTerm.toLowerCase()));
+
+      const matchesFilter = filterBy === 'all' ||
+        (filterBy === 'available' && candidate.availability === 'available') ||
+        (filterBy === 'experienced' && candidate.experience && candidate.experience.includes('ans'));
+
+      return matchesSearch && matchesFilter;
+    });
+
   const renderOverview = () => (
     <>
-      <section className="opportunities-section">
-        <div className="section-header">
-          <h2>Opportunités Récentes</h2>
-          <div className="filter-pills">
-            <button className={`pill ${activeFilter === 'new' ? 'active' : ''}`} onClick={() => setActiveFilter('new')}>Nouveau</button>
-            <button className={`pill ${activeFilter === 'close' ? 'active' : ''}`} onClick={() => setActiveFilter('close')}>Clôturé</button>
-            <button className={`pill ${activeFilter === 'engage' ? 'active' : ''}`} onClick={() => setActiveFilter('engage')}>Engagé</button>
+      <section className="candidates-overview-section">
+
+        {/* Barre de recherche et filtres */}
+        <div className="search-filter-container">
+          <div className="search-bar">
+            <Icons.Search size={18} />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Rechercher par compétences, expérience..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
+
+          <select
+            className="filter-select"
+            value={filterBy}
+            onChange={(e) => setFilterBy(e.target.value)}
+          >
+            <option value="all">Tous les profils</option>
+            <option value="available">Disponibles</option>
+            <option value="experienced">Expérimentés (3+ ans)</option>
+          </select>
         </div>
-        <div className="opportunities-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Entreprise</th>
-                <th>Catégorie d'Offre</th>
-                <th>Date de Révision</th>
-                <th>Budget</th>
-                <th>Statut</th>
-              </tr>
-            </thead>
-            <tbody>
-              {opportunities.map((opp) => (
-                <tr key={opp.id}>
-                  <td className="company-cell">
-                    <div className="company-avatar"><Icons.Building size={18} /></div>
-                    <span>{opp.company}</span>
-                  </td>
-                  <td>{opp.category}</td>
-                  <td>{opp.reviewDate}</td>
-                  <td className="budget-cell">{opp.budget}</td>
-                  <td><span className={`status-badge status-${opp.statusColor}`}>{opp.status}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-      <section className="proposal-section">
-        <div className="section-header">
-          <h2>Tableau de Gestion des Propositions</h2>
-          <button className="view-all-btn">Tout voir <Icons.ChevronDown size={16} /></button>
-        </div>
-        <div className="proposal-cards">
-          {proposalCards.map((card) => (
-            <motion.div key={card.id} className="proposal-card" whileHover={{ y: -4 }}>
-              <div className="card-header">
-                <h3>{card.title}</h3>
-                <div className="card-budget">{card.budget}</div>
-              </div>
-              <p className="card-description">{card.description}</p>
-              <div className="progress-container">
-                <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${card.progress}%` }}></div>
+
+        {/* Grille des profils anonymisés */}
+        <div className="candidates-grid">
+          {filteredCandidates.length > 0 ? (
+            filteredCandidates.map((candidate) => (
+              <motion.div
+                key={candidate._id}
+                className="candidate-card"
+                whileHover={{ y: -2 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <div className="candidate-header">
+                  <div className="candidate-avatar">
+                    {candidate.firstName.charAt(0)}{candidate.lastName.charAt(0)}
+                  </div>
+                  <div className="candidate-match">
+                    <span className="match-label">Profil candidat</span>
+                  </div>
                 </div>
-                <span className="progress-label">{card.progress}%</span>
-              </div>
-            </motion.div>
-          ))}
+
+                <div className="candidate-info">
+                  <div className="candidate-name">
+                    {candidate.firstName} {candidate.lastName}
+                  </div>
+                  <div className="candidate-position">
+                    {candidate.position || candidate.experience || 'Poste non spécifié'}
+                  </div>
+                  <div className="candidate-meta">
+                    <span className="candidate-location">
+                      <Icons.MapPin size={14} />
+                      {candidate.address || 'Adresse non spécifiée'}
+                    </span>
+                    {candidate.availability && (
+                      <span className="candidate-availability">
+                        Disponibilité: {candidate.availability}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {candidate.bio && (
+                  <div className="candidate-description">
+                    {candidate.bio.length > 100
+                      ? candidate.bio.substring(0, 100) + '...'
+                      : candidate.bio
+                    }
+                  </div>
+                )}
+
+                {candidate.skills && candidate.skills.length > 0 && (
+                  <div className="candidate-skills">
+                    {candidate.skills.slice(0, 3).map((skill, index) => (
+                      <span key={index} className="skill-tag">{skill}</span>
+                    ))}
+                    {candidate.skills.length > 3 && (
+                      <span className="skill-more">+{candidate.skills.length - 3}</span>
+                    )}
+                  </div>
+                )}
+
+                <div className="candidate-actions">
+                  <button
+                    className="candidate-action-btn profile-btn"
+                    onClick={() => {
+                      setSelectedCandidate(candidate);
+                      setShowProfileModal(true);
+                    }}
+                  >
+                    <Icons.User size={14} />
+                    Profil
+                  </button>
+                  <button
+                    className="candidate-action-btn view-btn"
+                    onClick={() => {
+                      // Action neutre pour le moment
+                      console.log('Voir candidat:', candidate.firstName, candidate.lastName);
+                    }}
+                  >
+                    <Icons.Eye size={14} />
+                    Voir
+                  </button>
+                </div>
+
+                <div className="candidate-footer">
+                  <span className="applied-date">
+                    Profil créé {new Date(candidate.createdAt).toLocaleDateString('fr-FR')}
+                  </span>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="no-candidates">
+              <Icons.Users size={48} />
+              <h3>Aucun profil trouvé</h3>
+              <p>Ajustez vos critères de recherche ou revenez plus tard.</p>
+            </div>
+          )}
         </div>
       </section>
     </>
   );
 
-  const renderAnalytics = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>📊 Analytiques de Recrutement</h2></div>
-      <div className="stats-grid" style={{ marginBottom: '2rem' }}>
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #6C00FF, #9D50FF)' }}><Icons.Users size={24} /></div>
-          <div className="stat-info"><h3>247</h3><p>Total Candidats</p></div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #F59E0B, #FBBF24)' }}><Icons.TrendingUp size={24} /></div>
-          <div className="stat-info"><h3>+32%</h3><p>Croissance ce mois</p></div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #10B981, #34D399)' }}><Icons.Target size={24} /></div>
-          <div className="stat-info"><h3>89%</h3><p>Taux de conversion</p></div>
-        </div>
-      </div>
-      <div className="dashboard-section">
-        <h2>Performance par Poste</h2>
-        <div className="jobs-list">
-          <div className="job-item">
-            <div className="job-info"><h3>Développeur Full Stack</h3><div className="job-stats"><span>45 candidatures</span><span className="dot">•</span><span>12 entretiens</span></div></div>
-            <span className="status status-actif">Très actif</span>
+  const renderJobs = () => {
+    try {
+      return (
+        <section className="jobs-section">
+          <div className="section-header">
+            <h2>Mes Offres d'Emploi</h2>
+            <button className="primary-btn" onClick={handlePublishOffer}>
+              <Icons.Plus size={16} />
+              Nouvelle offre
+            </button>
           </div>
-          <div className="job-item">
-            <div className="job-info"><h3>Designer UI/UX</h3><div className="job-stats"><span>32 candidatures</span><span className="dot">•</span><span>8 entretiens</span></div></div>
-            <span className="status status-actif">Actif</span>
+
+          <div className="jobs-grid">
+            {companyJobsQuery === undefined ? (
+              <div className="loading-state">
+                <Icons.Loader size={32} />
+                <p>Chargement des offres...</p>
+              </div>
+            ) : companyJobs.length > 0 ? (
+              companyJobs.map((job) => (
+            <motion.div
+              key={job._id}
+              className="job-card"
+              whileHover={{ y: -2 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <div className="job-card-header">
+                <div className="job-title-section">
+                  <h3 className="job-title">{job?.title || 'Titre non disponible'}</h3>
+                  <span className="status-badge status-green">
+                    Publiée
+                  </span>
+                </div>
+                <div className="job-department">{job?.department || 'Département non spécifié'}</div>
+              </div>
+
+              <div className="job-card-content">
+                <div className="job-info">
+                  <div className="job-meta">
+                    <Icons.MapPin size={14} />
+                    <span>{job?.location || 'Non spécifiée'}</span>
+                  </div>
+                  <div className="job-meta">
+                    <Icons.Clock size={14} />
+                    <span>{job?.createdAt ? formatDate(job.createdAt) : 'Date inconnue'}</span>
+                  </div>
+                </div>
+
+                <div className="job-stats">
+                  <div className="stat-item">
+                    <span className="stat-label">Candidatures</span>
+                    <span className="stat-value">0</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Vues</span>
+                    <span className="stat-value">0</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="job-card-actions">
+                <button
+                  className="action-btn view-btn"
+                  title="Voir les détails"
+                  onClick={() => handleViewJob(job)}
+                >
+                  <Icons.Eye size={16} />
+                  Voir
+                </button>
+                <button
+                  className="action-btn edit-btn"
+                  title="Modifier l'offre"
+                  onClick={() => handleEditJob(job)}
+                >
+                  <Icons.Edit size={16} />
+                  Modifier
+                </button>
+                <button
+                  className="action-btn delete-btn"
+                  title="Supprimer l'offre"
+                  onClick={() => handleDeleteJob(job)}
+                >
+                  <Icons.X size={16} />
+                  Supprimer
+                </button>
+              </div>
+            </motion.div>
+          ))
+        ) : (
+          <div className="no-jobs">
+            <div className="no-jobs-content">
+              <Icons.Briefcase size={48} />
+              <h3>Aucune offre publiée</h3>
+              <p>Vous n'avez pas encore publié d'offres d'emploi.</p>
+              <button
+                className="create-first-job-btn"
+                onClick={handlePublishOffer}
+              >
+                Créer ma première offre
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
-  );
+      );
+    } catch (error) {
+      console.error('Erreur dans renderJobs:', error);
+      return (
+        <section className="jobs-section">
+          <div className="section-header">
+            <h2>Mes Offres d'Emploi</h2>
+            <button className="primary-btn" onClick={handlePublishOffer}>
+              <Icons.Plus size={16} />
+              Nouvelle offre
+            </button>
+          </div>
+          <div className="error-state">
+            <Icons.AlertCircle size={48} />
+            <h3>Erreur de chargement</h3>
+            <p>Une erreur s'est produite lors du chargement des offres.</p>
+            <button onClick={() => window.location.reload()} className="primary-btn">
+              Recharger la page
+            </button>
+          </div>
+        </section>
+      );
+    }
+  };
 
   const renderCandidates = () => (
-    <section className="opportunities-section">
+    <section className="candidates-section">
       <div className="section-header">
-        <h2>👥 Base de Candidats</h2>
-        <div className="filter-pills">
-          <button className="pill active">Tous</button>
-          <button className="pill">Qualifiés</button>
-          <button className="pill">Favoris</button>
-        </div>
+        <h2>Candidatures Reçues</h2>
       </div>
-      <div className="opportunities-table">
-        <table>
-          <thead><tr><th>Candidat</th><th>Poste visé</th><th>Expérience</th><th>Compétences</th><th>Statut</th></tr></thead>
-          <tbody>
-            {['Sophie Martin - Full Stack - 5 ans - React, Node.js', 'Thomas Dubois - UI/UX - 3 ans - Figma, Adobe XD', 'Marie Lefebvre - Chef de Projet - 7 ans - Agile, Scrum'].map((c, i) => {
-              const [nom, poste, exp, comp] = c.split(' - ');
-              return (
-                <tr key={i}>
-                  <td className="company-cell"><div className="company-avatar"><Icons.User size={18} /></div><span>{nom}</span></td>
-                  <td>{poste}</td>
-                  <td>{exp}</td>
-                  <td>{comp}</td>
-                  <td><span className="status-badge status-green">Actif</span></td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className="coming-soon">
+        <Icons.Users size={48} />
+        <h2>Fonctionnalité à venir</h2>
+        <p>La gestion des candidatures sera bientôt disponible.</p>
       </div>
     </section>
   );
 
-  const renderApplications = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>📦 Candidatures Reçues</h2></div>
-      <div className="opportunities-table">
-        <table>
-          <thead><tr><th>Candidat</th><th>Poste</th><th>Date</th><th>CV</th><th>Statut</th></tr></thead>
-          <tbody>
-            {opportunities.map((opp) => (
-              <tr key={opp.id}>
-                <td className="company-cell"><div className="company-avatar"><Icons.User size={18} /></div><span>{opp.company}</span></td>
-                <td>{opp.category}</td>
-                <td>{opp.reviewDate}</td>
-                <td><button className="action-btn"><Icons.FileText size={16} />Voir CV</button></td>
-                <td><span className={`status-badge status-${opp.statusColor}`}>{opp.status}</span></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  const renderAnalytics = () => (
+    <section className="analytics-section">
+      <div className="section-header">
+        <h2>Statistiques</h2>
+      </div>
+      <div className="coming-soon">
+        <Icons.BarChart size={48} />
+        <h2>Analytics à venir</h2>
+        <p>Les statistiques détaillées seront bientôt disponibles.</p>
       </div>
     </section>
   );
 
-  const renderPipeline = () => (
-    <section className="proposal-section">
-      <div className="section-header"><h2>📈 Pipeline de Recrutement</h2></div>
-      <div className="proposal-cards">
-        <motion.div className="proposal-card"><h3>Nouveaux CV</h3><p>15 nouveaux profils à examiner</p><div className="progress-container"><div className="progress-bar"><div className="progress-fill" style={{ width: '35%' }}></div></div><span className="progress-label">35%</span></div></motion.div>
-        <motion.div className="proposal-card"><h3>Pré-sélection</h3><p>8 candidats à contacter</p><div className="progress-container"><div className="progress-bar"><div className="progress-fill" style={{ width: '65%' }}></div></div><span className="progress-label">65%</span></div></motion.div>
-        <motion.div className="proposal-card"><h3>Entretiens</h3><p>12 entretiens planifiés</p><div className="progress-container"><div className="progress-bar"><div className="progress-fill" style={{ width: '80%' }}></div></div><span className="progress-label">80%</span></div></motion.div>
-      </div>
-    </section>
-  );
-
-  const renderInterviews = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>💬 Entretiens Planifiés</h2></div>
-      <div className="dashboard-section">
-        <div className="interviews-list">
-          {['Sophie Martin - Développeur Full Stack - 25 Oct 2025 - 14:00', 'Thomas Dubois - Designer UI/UX - 26 Oct 2025 - 10:30', 'Marie Lefebvre - Chef de Projet - 27 Oct 2025 - 15:00'].map((i, idx) => {
-            const [nom, poste, date, time] = i.split(' - ');
-            return (
-              <div key={idx} className="interview-item">
-                <div className="interview-icon"><Icons.MessageCircle size={24} /></div>
-                <div className="interview-info"><h3>{nom}</h3><p>{poste}</p></div>
-                <div className="interview-time"><p className="date">{date}</p><p className="time">{time}</p></div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-
-  const renderOffersSent = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>✉️ Offres d'Emploi Envoyées</h2></div>
-      <div className="opportunities-table">
-        <table>
-          <thead><tr><th>Candidat</th><th>Poste</th><th>Salaire Proposé</th><th>Date Envoi</th><th>Statut</th></tr></thead>
-          <tbody>
-            {['Sophie Martin - Full Stack - 55K€ - 20 Oct 2025 - Acceptée', 'Pierre Rousseau - Backend Python - 52K€ - 22 Oct 2025 - En attente'].map((o, i) => {
-              const [nom, poste, sal, date, stat] = o.split(' - ');
-              return (
-                <tr key={i}>
-                  <td className="company-cell"><div className="company-avatar"><Icons.User size={18} /></div><span>{nom}</span></td>
-                  <td>{poste}</td>
-                  <td className="salary-cell">{sal}</td>
-                  <td>{date}</td>
-                  <td><span className={`status-badge status-${stat === 'Acceptée' ? 'green' : 'yellow'}`}>{stat}</span></td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  );
-
-  const renderActiveJobs = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>💼 Offres d'Emploi Actives</h2></div>
-      <div className="dashboard-section">
-        <div className="jobs-list">
-          {['Développeur Full Stack - 45 candidatures - 230 vues', 'Designer UI/UX - 32 candidatures - 180 vues', 'Chef de Projet - 28 candidatures - 150 vues'].map((j, i) => {
-            const [titre, cand, vues] = j.split(' - ');
-            return (
-              <div key={i} className="job-item">
-                <div className="job-info"><h3>{titre}</h3><div className="job-stats"><span>{cand}</span><span className="dot">•</span><span>{vues}</span></div></div>
-                <span className="status status-actif">Actif</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-
-  const renderDraftJobs = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>📝 Brouillons d'Offres</h2></div>
-      <div className="dashboard-section">
-        <div className="jobs-list">
-          {['Product Owner - Brouillon créé le 20 Oct', 'Data Scientist - Brouillon créé le 18 Oct'].map((j, i) => {
-            const [titre, info] = j.split(' - ');
-            return (
-              <div key={i} className="job-item">
-                <div className="job-info"><h3>{titre}</h3><p>{info}</p></div>
-                <button className="action-btn"><Icons.FileText size={16} />Continuer</button>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-
-  const renderArchivedJobs = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>📁 Offres Archivées</h2></div>
-      <div className="coming-soon"><Icons.File size={64} /><h2>Offres archivées</h2><p>Aucune offre archivée pour le moment</p></div>
-    </section>
-  );
-
-  const renderTemplates = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>📄 Modèles d'Offres</h2></div>
-      <div className="proposal-cards">
-        <motion.div className="proposal-card"><h3>Modèle Développeur</h3><p>Template pré-rempli pour postes tech</p><button className="action-btn" style={{ marginTop: '1rem' }}><Icons.FileText size={16} />Utiliser</button></motion.div>
-        <motion.div className="proposal-card"><h3>Modèle Designer</h3><p>Template pré-rempli pour postes créatifs</p><button className="action-btn" style={{ marginTop: '1rem' }}><Icons.FileText size={16} />Utiliser</button></motion.div>
-      </div>
-    </section>
-  );
-
-  const renderTeam = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>👥 Membres de l'Équipe</h2></div>
-      <div className="dashboard-section">
-        <div className="applications-list">
-          {['Jean Dupont - RH Manager - Administrateur', 'Marie Claire - Recruteur - Éditeur'].map((m, i) => {
-            const [nom, role, perm] = m.split(' - ');
-            return (
-              <div key={i} className="application-item">
-                <div className="candidate-info"><div className="candidate-avatar"><Icons.User size={20} /></div><div><h3>{nom}</h3><p className="position-name">{role}</p></div></div>
-                <div className="application-meta"><span className="status-badge status-blue">{perm}</span></div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-
-  const renderCompanyProfile = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>🏢 Profil Entreprise</h2></div>
-      <div className="dashboard-section">
-        <h2>Informations de l'Entreprise</h2>
-        <div style={{ display: 'grid', gap: '1rem' }}>
-          <div><strong>Nom:</strong> Tech Corp</div>
-          <div><strong>Secteur:</strong> Technologies de l'information</div>
-          <div><strong>Taille:</strong> 50-200 employés</div>
-          <div><strong>Localisation:</strong> Paris, France</div>
-        </div>
-      </div>
+  const renderProfile = () => (
+    <section className="profile-section">
+      <ProfileSection />
     </section>
   );
 
   const renderSettings = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>⚙️ Paramètres</h2></div>
-      <div className="coming-soon"><Icons.Target size={64} /><h2>Paramètres</h2><p>Configuration du compte et préférences</p></div>
-    </section>
-  );
-
-  const renderInvoices = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>📄 Factures</h2></div>
-      <div className="opportunities-table">
-        <table>
-          <thead><tr><th>N° Facture</th><th>Date</th><th>Montant</th><th>Statut</th><th>Action</th></tr></thead>
-          <tbody>
-            {['INV-2025-001 - 01 Oct 2025 - 299€ - Payée', 'INV-2025-002 - 01 Sep 2025 - 299€ - Payée'].map((f, i) => {
-              const [num, date, montant, stat] = f.split(' - ');
-              return (
-                <tr key={i}>
-                  <td>{num}</td>
-                  <td>{date}</td>
-                  <td className="salary-cell">{montant}</td>
-                  <td><span className="status-badge status-green">{stat}</span></td>
-                  <td><button className="action-btn"><Icons.FileText size={16} />Télécharger</button></td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+    <section className="settings-section">
+      <div className="section-header">
+        <h2>Paramètres</h2>
       </div>
-    </section>
-  );
-
-  const renderSubscription = () => (
-    <section className="opportunities-section">
-      <div className="section-header"><h2>📦 Abonnement</h2></div>
-      <div className="dashboard-section">
-        <h2>Plan Actuel: Premium</h2>
-        <div style={{ marginTop: '1.5rem' }}>
-          <p><strong>Prix:</strong> 299€ / mois</p>
-          <p><strong>Prochaine facturation:</strong> 01 Nov 2025</p>
-          <p><strong>Offres actives:</strong> Illimitées</p>
-          <button className="action-btn" style={{ marginTop: '1.5rem' }}><Icons.Package size={16} />Gérer l'abonnement</button>
-        </div>
+      <div className="coming-soon">
+        <Icons.Target size={48} />
+        <h2>Paramètres à venir</h2>
+        <p>Les paramètres du compte seront bientôt disponibles.</p>
       </div>
     </section>
   );
@@ -529,7 +459,7 @@ const DashboardEntreprise = () => {
     <div className="dashboard-crm">
       {/* SIDEBAR GAUCHE */}
       <aside className="crm-sidebar">
-        {/* Logo Entreprise */}
+        {/* Logo Skillijob */}
         <div className="sidebar-logo">
           <div className="logo-image">
             <img src="/logo-skillijob.png" alt="Skillijob" />
@@ -549,8 +479,8 @@ const DashboardEntreprise = () => {
             return (
               <button
                 key={item.id}
-                className={`nav-item ${activeSection === item.id ? 'active' : ''}`}
-                onClick={() => setActiveSection(item.id)}
+                className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                onClick={() => item.action ? item.action() : setActiveTab(item.id)}
               >
                 <IconComponent name={item.icon} size={20} />
                 <span>{item.label}</span>
@@ -562,19 +492,37 @@ const DashboardEntreprise = () => {
 
       {/* MAIN CONTENT */}
       <main className="crm-main">
-        {/* HEADER AVEC NAVIGATION SKILLIJOB */}
+        {/* HEADER AVEC STATISTIQUES ET PUBLICATION */}
         <header className="crm-header">
-          <nav className="header-nav">
-            <a href="/candidats" className="nav-link">
-              Candidats
-            </a>
-            <a href="/tarifs" className="nav-link">
-              Tarifs
-            </a>
-            <a href="/publier-offre" className="nav-link nav-link-cta">
-              Publier une offre
-            </a>
-          </nav>
+          <div className="header-content">
+            <div className="header-stats">
+              <div className="stat-item">
+                <span className="stat-label">Offres publiées</span>
+                <span className="stat-value">{jobStats?.total || 0}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Profils consultés</span>
+                <span className="stat-value">{recruitmentStats?.profilesViewed || 0}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Profils débloqués</span>
+                <span className="stat-value">{recruitmentStats?.profilesUnlocked || 0}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Crédits restants</span>
+                <span className="stat-value">{recruitmentStats?.creditsRemaining || 0}</span>
+              </div>
+            </div>
+
+            <div className="header-actions">
+              <button
+                className="nav-link-cta"
+                onClick={handlePublishOffer}
+              >
+                Publier une offre
+              </button>
+            </div>
+          </div>
         </header>
 
         {/* CONTENU PRINCIPAL */}
@@ -582,6 +530,283 @@ const DashboardEntreprise = () => {
           {renderContent()}
         </div>
       </main>
+
+      {/* Modal Profil Candidat */}
+      <AnimatePresence>
+        {showProfileModal && selectedCandidate && (
+          <motion.div
+            className="profile-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowProfileModal(false)}
+          >
+            <motion.div
+              className="profile-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="profile-modal-header">
+                <div className="profile-modal-avatar">
+                  {selectedCandidate.firstName.charAt(0)}{selectedCandidate.lastName.charAt(0)}
+                </div>
+                <div className="profile-modal-info">
+                  <h3>{selectedCandidate.firstName} {selectedCandidate.lastName}</h3>
+                  <p>{selectedCandidate.experience || 'Expérience non spécifiée'}</p>
+                </div>
+                <button
+                  className="profile-modal-close"
+                  onClick={() => setShowProfileModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+
+              <div className="profile-modal-content">
+                <div className="profile-section">
+                  <h4>Description</h4>
+                  <p>{selectedCandidate.bio || 'Aucune description disponible.'}</p>
+                </div>
+
+                <div className="profile-section">
+                  <h4>Compétences</h4>
+                  <div className="profile-skills">
+                    {selectedCandidate.skills && selectedCandidate.skills.length > 0 ? (
+                      selectedCandidate.skills.map((skill, index) => (
+                        <span key={index} className="profile-skill-tag">{skill}</span>
+                      ))
+                    ) : (
+                      <p>Aucune compétence spécifiée.</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="profile-section">
+                  <h4>Informations de contact</h4>
+                  <div className="profile-contact-info">
+                    <div className="contact-item">
+                      <Icons.Mail size={16} />
+                      <span>{selectedCandidate.email}</span>
+                    </div>
+                    {selectedCandidate.phone && (
+                      <div className="contact-item">
+                        <Icons.Phone size={16} />
+                        <span>{selectedCandidate.phone}</span>
+                      </div>
+                    )}
+                    {selectedCandidate.linkedinUrl && (
+                      <div className="contact-item">
+                        <Icons.ExternalLink size={16} />
+                        <a href={selectedCandidate.linkedinUrl} target="_blank" rel="noopener noreferrer">
+                          LinkedIn
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="profile-section">
+                  <h4>Informations supplémentaires</h4>
+                  <div className="profile-details">
+                    <div className="detail-item">
+                      <strong>Localisation:</strong> {selectedCandidate.address || 'Non spécifiée'}
+                    </div>
+                    <div className="detail-item">
+                      <strong>Éducation:</strong> {selectedCandidate.education || 'Non spécifiée'}
+                    </div>
+                    <div className="detail-item">
+                      <strong>Disponibilité:</strong> {selectedCandidate.availability || 'Non spécifiée'}
+                    </div>
+                    <div className="detail-item">
+                      <strong>Profil créé le:</strong> {new Date(selectedCandidate.createdAt).toLocaleDateString('fr-FR')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Détails Offre */}
+      <AnimatePresence>
+        {showJobModal && selectedJob && (
+          <motion.div
+            className="profile-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowJobModal(false)}
+          >
+            <motion.div
+              className="profile-modal job-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="profile-modal-header">
+                <div className="profile-modal-avatar job-avatar">
+                  <Icons.Briefcase size={24} />
+                </div>
+                <div className="profile-modal-info">
+                  <h3>{selectedJob.title}</h3>
+                  <p>{selectedJob.department} • {selectedJob.location || 'Localisation non spécifiée'}</p>
+                </div>
+                <button
+                  className="profile-modal-close"
+                  onClick={() => setShowJobModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+
+              <div className="profile-modal-content">
+                <div className="profile-section">
+                  <h4>Description du poste</h4>
+                  <p>{selectedJob.description || 'Aucune description disponible.'}</p>
+                </div>
+
+                {selectedJob.requirements && selectedJob.requirements.length > 0 && (
+                  <div className="profile-section">
+                    <h4>Exigences</h4>
+                    <ul>
+                      {selectedJob.requirements.map((req, index) => (
+                        <li key={index}>{req}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {selectedJob.skills && selectedJob.skills.length > 0 && (
+                  <div className="profile-section">
+                    <h4>Compétences requises</h4>
+                    <div className="profile-skills">
+                      {selectedJob.skills.map((skill, index) => (
+                        <span key={index} className="profile-skill-tag">{skill}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="profile-section">
+                  <h4>Informations sur l'offre</h4>
+                  <div className="profile-details">
+                    <div className="detail-item">
+                      <strong>Type de contrat:</strong> {selectedJob.type || 'Non spécifié'}
+                    </div>
+                    <div className="detail-item">
+                      <strong>Secteur:</strong> {selectedJob.industry || 'Non spécifié'}
+                    </div>
+                    <div className="detail-item">
+                      <strong>Niveau d'expérience:</strong> {selectedJob.experienceLevel || 'Non spécifié'}
+                    </div>
+                    {selectedJob.salaryMin && (
+                      <div className="detail-item">
+                        <strong>Salaire:</strong> {selectedJob.salaryMin}€ - {selectedJob.salaryMax}€ par an
+                      </div>
+                    )}
+                    <div className="detail-item">
+                      <strong>Statut:</strong>
+                      <span className="status-badge status-green">
+                        Publiée
+                      </span>
+                    </div>
+                    <div className="detail-item">
+                      <strong>Créée le:</strong> {new Date(selectedJob.createdAt).toLocaleDateString('fr-FR')}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    className="action-btn edit-btn"
+                    onClick={() => {
+                      handleEditJob(selectedJob);
+                      setShowJobModal(false);
+                    }}
+                  >
+                    <Icons.Edit size={16} />
+                    Modifier l'offre
+                  </button>
+                  <button
+                    className="action-btn delete-btn"
+                    onClick={() => {
+                      handleDeleteJob(selectedJob);
+                      setShowJobModal(false);
+                    }}
+                  >
+                    <Icons.X size={16} />
+                    Supprimer l'offre
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Confirmation Suppression */}
+      <AnimatePresence>
+        {showDeleteModal && selectedJob && (
+          <motion.div
+            className="profile-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowDeleteModal(false)}
+          >
+            <motion.div
+              className="profile-modal delete-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="profile-modal-header">
+                <div className="profile-modal-avatar delete-avatar">
+                  <Icons.AlertCircle size={24} />
+                </div>
+                <div className="profile-modal-info">
+                  <h3>Confirmer la suppression</h3>
+                  <p>Êtes-vous sûr de vouloir supprimer cette offre ?</p>
+                </div>
+                <button
+                  className="profile-modal-close"
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  <Icons.X size={20} />
+                </button>
+              </div>
+
+              <div className="profile-modal-content">
+                <div className="delete-warning">
+                  <p><strong>Offre :</strong> {selectedJob.title}</p>
+                  <p>Cette action est irréversible. L'offre sera définitivement supprimée.</p>
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    className="action-btn cancel-btn"
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    className="action-btn delete-btn confirm-delete"
+                    onClick={confirmDeleteJob}
+                  >
+                    <Icons.X size={16} />
+                    Supprimer définitivement
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

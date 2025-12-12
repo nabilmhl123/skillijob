@@ -3,7 +3,9 @@ import { motion } from 'framer-motion';
 import Button from '../components/shared/Button';
 import PartnerLogo from '../components/shared/PartnerLogo';
 import HeroSection from '../components/shared/HeroSection';
+import PricingSection from '../components/pricing/PricingSection';
 import candidatImage from '../assets/images/image_candidat.png';
+import franceTravailLogo from '../assets/images/francetravail.jpg';
 import './CompaniesNew.css';
 
 const CompaniesNew = () => {
@@ -11,14 +13,14 @@ const CompaniesNew = () => {
 
   // Partners data - Same as Candidates.jsx
   const partners = [
-    { name: 'Manpower', color: '#0050A0', domain: 'manpower.fr' },
-    { name: 'Randstad', color: '#003DA5', domain: 'randstad.fr' },
-    { name: 'Adecco', color: '#E30613', domain: 'adecco.fr' },
-    { name: 'France Travail', color: '#FFC845', domain: 'francetravail.fr' },
-    { name: 'Indeed', color: '#2164F3', domain: 'indeed.com' },
-    { name: 'Monster', color: '#6E46AE', domain: 'monster.fr' },
-    { name: 'LinkedIn', color: '#0A66C2', domain: 'linkedin.com' },
-    { name: 'APEC', color: '#00A0DC', domain: 'apec.fr' }
+    { name: '', color: '#0050A0', domain: 'unml.info' },
+    { name: '', color: '#003DA5', domain: 'bpifrance.fr' },
+    { name: '', color: '#E30613', domain: 'bge.asso.fr' },
+    { name: '', color: '#FFC845', domain: 'francetravail.fr', logo: franceTravailLogo },
+    { name: '', color: '#2164F3', domain: 'indeed.com' },
+    { name: '', color: '#6E46AE', domain: 'monster.fr' },
+    { name: '', color: '#0A66C2', domain: 'linkedin.com' },
+    { name: '', color: '#00A0DC', domain: 'apec.fr' }
   ];
 
   // Dupliquer les partenaires pour un défilement infini
@@ -26,12 +28,12 @@ const CompaniesNew = () => {
 
   // Problems data
   const problems = [
-    'Cherchez en urgence à recruter dans un métier en tension',
+    'Avez cherchez en urgence à recruter dans un métier en tension',
     'Avez testé des cabinets de recrutement trop chers, ou de l\'intérim inefficace',
     'Avez déjà posté des annonces, sans résultat',
-    'Validations internes lentes, managers débordés',
+    'Avez des validations internes lentes, managers débordés',
     'Vous n\'avez pas le temps de trier et qualifier des CV non qualifiés',
-    'Mauvais matching : localisation / salaires / horaires'
+    'Avez un mauvais matching : localisation / salaires / horaires'
   ];
 
   // Benefits data
@@ -109,35 +111,21 @@ const CompaniesNew = () => {
     }
   ];
 
-  // Pricing features
-  const pricingFeatures = [
-    '5 entretiens garantis avec des profils que vous choisissez vous-même',
-    'Accès immédiat à notre base de candidats disponibles et qualifiés',
-    'Déblocage instantané : CV complet, coordonnées, compte-rendu RH',
-    'Garantie remplacement si un candidat ne se présente pas',
-    'Sourcing renforcé : dès réception de votre fiche de poste, notre équipe recherche activement des profils ciblés pour vos besoins'
-  ];
-
   const heroBadges = ['✓ Recrutement accéléré', '✓ Gain de temps réel'];
   const heroButtons = [
     {
       text: 'Voir les candidats',
       variant: 'primary',
       size: 'large',
-      href: '/espace-candidats'
+      href: 'https://form.jotform.com/252922402753050',
+      external: true
     },
     {
       text: 'Déposer une offre d\'emploi',
       variant: 'yellow',
       size: 'large',
-      href: 'https://form.jotform.com/252922402753050',
+      href: 'https://04bhw4ay.rcld.app/dashboard/#/nc/form/42ed82b6-a0b5-40ee-b688-e3a90268657d',
       external: true
-    },
-    {
-      text: 'Obtenir mes 5 profils qualifiés',
-      variant: 'secondary',
-      size: 'large',
-      href: '/paiements'
     }
   ];
 
@@ -149,8 +137,6 @@ const CompaniesNew = () => {
         subtitle="Contactez 5 profils prêts à l'entretien. Vous n'avez plus qu'à choisir."
         badges={heroBadges}
         buttons={heroButtons}
-        image={candidatImage}
-        imageAlt="Recrutement Skillijob – candidats qualifiés"
         note="Accès immédiat à l'Espace Candidats • Envoi < 24h après déblocage"
       />
 
@@ -182,7 +168,16 @@ const CompaniesNew = () => {
                 {duplicatedPartners.map((partner, index) => (
                   <div key={index} className="partners-carousel-slide">
                     <div className="partner-card">
-                      <PartnerLogo name={partner.name} color={partner.color} domain={partner.domain} />
+                      {partner.logo ? (
+                        <img
+                          src={partner.logo}
+                          alt={partner.name}
+                          className="partner-logo-image"
+                          style={{ maxHeight: '120px', maxWidth: '240px', objectFit: 'contain' }}
+                        />
+                      ) : (
+                        <PartnerLogo name={partner.name} color={partner.color} domain={partner.domain} />
+                      )}
                       <div className="partner-name" style={{ color: partner.color }}>
                         {partner.name}
                       </div>
@@ -222,20 +217,45 @@ const CompaniesNew = () => {
       <section aria-labelledby="benefits-title" id="avantages" className="benefits-section">
         <div className="container">
           <h2 className="section-title" id="benefits-title">
-            Pourquoi Skillijob ?
+            Skillijob, c'est une <strong>nouvelle façon de recruter</strong>.
           </h2>
+          <div className="benefits-tagline">
+            <span>Simple.</span>
+            <span>Rapide.</span>
+            <span>Efficace.</span>
+          </div>
           <p className="section-sub">
-            On ne vous envoie pas des CV. On vous met en relation avec des candidats disponibles, déjà qualifiés par notre équipe.
+            On ne vous envoie pas des CV. On vous met en relation avec des candidats <strong>disponibles, déjà qualifiés</strong> par notre équipe.
           </p>
 
           <div className="benefits-grid">
-            {benefits.map((benefit, idx) => (
-              <div key={idx} className="benefit-card">
-                <div className="kpi">{benefit.stat}</div>
-                <h3>{benefit.title}</h3>
-                <p className="section-sub">{benefit.description}</p>
-              </div>
-            ))}
+            <div className="benefit-card">
+              <h3>Gagnez du temps dès le départ</h3>
+              <p className="section-sub">
+                Vous accédez directement à des profils disponibles, déjà qualifiés. Nos clients économisent en moyenne <strong>8 à 12 heures</strong> par recrutement.
+              </p>
+            </div>
+
+            <div className="benefit-card">
+              <h3>Payez pour du concret, pas pour du flou</h3>
+              <p className="section-sub">
+                Vous choisissez les profils. Vous décidez qui rencontrer. Jusqu'à <strong>4 000 €</strong> d'économies par rapport à un cabinet classique.
+              </p>
+            </div>
+
+            <div className="benefit-card">
+              <h3>Accédez à un vivier actif et ciblé</h3>
+              <p className="section-sub">
+                Tous nos candidats sont appelés, validés et disponibles. Plus de <strong>3 000 profils qualifiés</strong> dans les secteurs en tension.
+              </p>
+            </div>
+
+            <div className="benefit-card">
+              <h3>Recrutez rapidement, sereinement</h3>
+              <p className="section-sub">
+                Vous êtes accompagné à chaque étape, jusqu'à l'entretien. <strong>80 %</strong> de nos clients recrutent en <strong>moins de 3 semaines</strong>.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -260,8 +280,65 @@ const CompaniesNew = () => {
             ))}
           </div>
 
+          {/* Timeline Roadmap intégrée */}
+          <div className="timeline-wrapper">
+            <div className="timeline-container">
+
+              <div className="milestone" data-position="top">
+                <div className="milestone-content">
+                  <h3 className="milestone-title">CONSULTER</h3>
+                  {/* <p className="milestone-desc">Créez votre compte entreprise en quelques clics</p> */}
+                </div>
+                <div className="milestone-circle">
+                  <span>01</span>
+                </div>
+              </div>
+
+              <div className="milestone" data-position="bottom">
+                <div className="milestone-circle">
+                  <span>02</span>
+                </div>
+                <div className="milestone-content">
+                  <h3 className="milestone-title">DÉBLOQUER</h3>
+                  {/* <p className="milestone-desc">Parcourez +3000 profils qualifiés dans votre secteur</p> */}
+                </div>
+              </div>
+
+              <div className="milestone" data-position="top">
+                <div className="milestone-content">
+                  <h3 className="milestone-title">CONTACTER</h3>
+                  {/* <p className="milestone-desc">Choisissez 5 candidats correspondant à vos besoins</p> */}
+                </div>
+                <div className="milestone-circle">
+                  <span>03</span>
+                </div>
+              </div>
+
+              <div className="milestone" data-position="bottom">
+                <div className="milestone-circle">
+                  <span>04</span>
+                </div>
+                <div className="milestone-content">
+                  <h3 className="milestone-title">RENCONTRER</h3>
+                  {/* <p className="milestone-desc">Contactez directement vos candidats préqualifiés</p> */}
+                </div>
+              </div>
+
+              <div className="milestone" data-position="top">
+                <div className="milestone-content">
+                  <h3 className="milestone-title">RECRUTER</h3>
+                  {/* <p className="milestone-desc">Embauchez en moins de 30 jours garanti</p> */}
+                </div>
+                <div className="milestone-circle">
+                  <span>05</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
           <div className="cta" style={{ marginTop: '2.5rem', justifyContent: 'center' }}>
-            <Button variant="primary" size="large" href="/espace-candidats">
+            <Button variant="primary" size="large" href="https://form.jotform.com/252922402753050" external>
               Voir les candidats
             </Button>
             <Button variant="yellow" size="large" href="/paiements">
@@ -271,42 +348,131 @@ const CompaniesNew = () => {
         </div>
       </section>
 
-      {/* Pricing Section - Minimalist Design */}
-      <section aria-labelledby="offer-title" id="offre" className="pricing-section">
+      {/* Guarantees Section */}
+      <section className="guarantees-main-section">
         <div className="container">
-          <div className="pricing-container">
-            <div className="pricing-header">
-              <span className="pricing-badge">OFFRE STARTER</span>
-              <h2 className="pricing-title" id="offer-title">
-                Tout ce dont vous avez besoin pour recruter
-              </h2>
-              <p className="pricing-subtitle">
-                Une solution complète, sans engagement, pour accéder rapidement aux meilleurs profils
-              </p>
-            </div>
+          <h2 className="guarantees-main-title">Garanties puissantes</h2>
 
-            <div className="pricing-card-minimal">
-              <div className="pricing-features-minimal">
-                {pricingFeatures.map((feature, idx) => (
-                  <div key={idx} className="feature-item-minimal">
-                    <div className="feature-check">✓</div>
-                    <span className="feature-text">{feature}</span>
-                  </div>
-                ))}
+          <div className="guarantees-row">
+            <article className="guarantee-card">
+              <svg className="card-shape-svg" viewBox="0 0 300 350" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <clipPath id="octagon-clip">
+                    <polygon points="90,10 210,10 290,90 290,210 210,290 90,290 10,210 10,90" />
+                  </clipPath>
+                </defs>
+                <polygon
+                  points="90,10 210,10 290,90 290,210 210,290 90,290 10,210 10,90"
+                  fill="white"
+                  stroke="#6C00FF"
+                  strokeWidth="6"
+                />
+              </svg>
+              <div className="card-content">
+                <h4 className="card-title">Garantie de résultat</h4>
+                <p className="card-text">
+                  Nous garantissons le nombre de candidats prévus dans le délai convenu, ou nous continuons sans frais.
+                </p>
+                <div className="card-check">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+              </div>
+            </article>
+
+            <article className="guarantee-card">
+              <svg className="card-shape-svg" viewBox="0 0 300 350" preserveAspectRatio="xMidYMid meet">
+                <polygon
+                  points="90,10 210,10 290,90 290,210 210,290 90,290 10,210 10,90"
+                  fill="white"
+                  stroke="#6C00FF"
+                  strokeWidth="6"
+                />
+              </svg>
+              <div className="card-content">
+                <h4 className="card-title">Garantie remplacement</h4>
+                <p className="card-text">
+                  Si un candidat ne convient pas ou ne se présente pas, nous le remplaçons gratuitement sous 48h.
+                </p>
+                <div className="card-check">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+              </div>
+            </article>
+
+            <article className="guarantee-card">
+              <svg className="card-shape-svg" viewBox="0 0 300 350" preserveAspectRatio="xMidYMid meet">
+                <polygon
+                  points="90,10 210,10 290,90 290,210 210,290 90,290 10,210 10,90"
+                  fill="white"
+                  stroke="#6C00FF"
+                  strokeWidth="6"
+                />
+              </svg>
+              <div className="card-content">
+                <h4 className="card-title">Garantie qualité</h4>
+                <p className="card-text">
+                  Chaque profil est pré-qualifié par nos équipes RH : expérience validée, disponibilité confirmée.
+                </p>
+                <div className="card-check">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div className="highlights">
+            <h3 className="highlights-title">En clair, Skillijob c'est :</h3>
+            <div className="highlights-row">
+              <div className="highlight-item">
+                <div className="icon-wrapper">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6C00FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+                    <path d="M12 18V6"></path>
+                  </svg>
+                </div>
+                <p className="kpi-small">Jusqu'à</p>
+                <p className="kpi-large">4 000 €*</p>
+                <p className="kpi-desc">d'Économies par recrutement vs cabinet classique</p>
               </div>
 
-              <div className="pricing-cta-section">
-                <Button variant="yellow" size="large" href="/paiements">
-                  Obtenir mes 5 profils qualifiés
-                </Button>
-                <p className="pricing-note">
-                  Dossiers complets envoyés {'<'} 24h après déblocage
-                </p>
+              <div className="highlight-item">
+                <div className="icon-wrapper">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6B3BFF" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <p className="kpi-small">Jusqu'à</p>
+                <p className="kpi-large">50 H</p>
+                <p className="kpi-desc">de gain de temps sur le processus de recrutement</p>
+              </div>
+
+              <div className="highlight-item">
+                <div className="icon-wrapper">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6B3BFF" strokeWidth="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7" r="4"></circle>
+                    <polyline points="17 11 19 13 23 9"></polyline>
+                  </svg>
+                </div>
+                <p className="kpi-small">Plus de</p>
+                <p className="kpi-large">3 000</p>
+                <p className="kpi-desc">profils qualifiés disponibles dans nos secteurs</p>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <PricingSection />
 
       {/* About Section */}
       <section aria-labelledby="about-title" className="about-section" id="apropos">
@@ -327,23 +493,23 @@ const CompaniesNew = () => {
             </div>
             <div className="about-stats">
               <div className="facts">
-                <span className="tag">EN CHIFFRES</span>
+                <span className="tag">20+ ans d’expérience terrain cumulée</span>
                 <div className="facts-grid">
                   <div className="fact">
                     <strong>3000+</strong>
-                    <span>Profils qualifiés</span>
+                    <span>Profils activés</span>
                   </div>
                   <div className="fact">
-                    <strong>80%</strong>
-                    <span>Recrutements {'<'} 3 sem</span>
+                    <strong>8</strong>
+                    <span>Secteurs couverts</span>
                   </div>
                   <div className="fact">
-                    <strong>24h</strong>
-                    <span>Livraison garantie</span>
+                    <strong>{'<'}24h</strong>
+                    <span>Après déblocage</span>
                   </div>
                   <div className="fact">
-                    <strong>0€</strong>
-                    <span>Commission embauche</span>
+                    <strong>98%</strong>
+                    <span>de Satisfaction</span>
                   </div>
                 </div>
               </div>
@@ -370,7 +536,7 @@ const CompaniesNew = () => {
                 <div className="cta-action-card">
                   <h3 className="cta-action-title">Explorer les candidats</h3>
                   <p className="cta-action-desc">Parcourez notre vivier de profils qualifiés gratuitement</p>
-                  <Button variant="primary" size="large" href="/espace-candidats">
+                  <Button variant="primary" size="large" href="https://form.jotform.com/252922402753050" external>
                     Voir les candidats
                   </Button>
                 </div>
