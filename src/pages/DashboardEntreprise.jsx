@@ -32,8 +32,11 @@ const DashboardEntreprise = () => {
   const jobStats = jobStatsQuery || {};
   const recruitmentStatsQuery = useQuery(api.jobs.getRecruitmentStats, { token });
   const recruitmentStats = recruitmentStatsQuery || {};
-  const allCandidatesQuery = useQuery(api.candidates.getAllProfiles);
-  const allCandidates = allCandidatesQuery || [];
+  const filteredCandidatesQuery = useQuery(api.candidates.searchProfiles, {
+    searchTerm: searchTerm || undefined,
+    filterBy: filterBy || undefined,
+  });
+  const filteredCandidates = filteredCandidatesQuery || [];
 
   // Mutations pour la gestion des offres
   const deleteJobMutation = useMutation(api.jobs.deleteJob);
@@ -129,22 +132,6 @@ const DashboardEntreprise = () => {
     }
   };
 
-  // Filtrage et recherche des candidats
-  const filteredCandidates = allCandidates
-    .filter(candidate => {
-      const matchesSearch = searchTerm === '' ||
-        candidate.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (candidate.bio && candidate.bio.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (candidate.experience && candidate.experience.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (candidate.firstName && candidate.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (candidate.lastName && candidate.lastName.toLowerCase().includes(searchTerm.toLowerCase()));
-
-      const matchesFilter = filterBy === 'all' ||
-        (filterBy === 'available' && candidate.availability === 'available') ||
-        (filterBy === 'experienced' && candidate.experience && candidate.experience.includes('ans'));
-
-      return matchesSearch && matchesFilter;
-    });
 
 
   const renderJobs = () => {

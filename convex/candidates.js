@@ -114,6 +114,57 @@ export const getAllProfiles = query({
 });
 
 /**
+ * Rechercher et filtrer les profils candidats (pour les entreprises)
+ */
+export const searchProfiles = query({
+  args: {
+    searchTerm: v.optional(v.string()),
+    filterBy: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const { searchTerm, filterBy } = args;
+
+    let query = ctx.db.query("candidateProfiles");
+
+    // Appliquer les filtres
+    if (filterBy && filterBy !== 'all') {
+      if (filterBy === 'available') {
+        query = query.filter((q) => q.eq(q.field("availability"), "available"));
+      } else if (filterBy === 'experienced') {
+        query = query.filter((q) => q.neq(q.field("experience"), undefined))
+                     .filter((q) => q.field("experience").includes("ans"));
+      }
+    }
+
+    const profiles = await query.collect();
+
+    // Appliquer la recherche textuelle côté serveur
+    if (searchTerm && searchTerm.trim() !== '') {
+      const searchLower = searchTerm.toLowerCase().trim();
+      return profiles.filter(profile => {
+        const matchesSearch =
+          // Recherche dans les compétences
+          (profile.skills && profile.skills.some(skill =>
+            skill.toLowerCase().includes(searchLower)
+          )) ||
+          // Recherche dans la bio
+          (profile.bio && profile.bio.toLowerCase().includes(searchLower)) ||
+          // Recherche dans l'expérience
+          (profile.experience && profile.experience.toLowerCase().includes(searchLower)) ||
+          // Recherche dans le prénom
+          (profile.firstName && profile.firstName.toLowerCase().includes(searchLower)) ||
+          // Recherche dans le nom
+          (profile.lastName && profile.lastName.toLowerCase().includes(searchLower));
+
+        return matchesSearch;
+      });
+    }
+
+    return profiles;
+  },
+});
+
+/**
  * Récupérer un profil spécifique par ID
  */
 export const getProfileById = query({
