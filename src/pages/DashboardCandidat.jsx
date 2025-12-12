@@ -19,6 +19,7 @@ const DashboardCandidat = () => {
   // Données réelles depuis Convex
   const publishedJobs = useQuery(api.jobs.getPublishedJobs) || [];
   const jobOffers = publishedJobs;
+  const allCandidates = useQuery(api.candidates.getAllProfiles) || [];
   const myApplications = [];
   const applicationStats = null;
   const recommendations = publishedJobs.slice(0, 5); // Utiliser les offres publiées comme recommandations temporaires
@@ -35,6 +36,7 @@ const DashboardCandidat = () => {
     // Fonctionnalité temporairement désactivée
     alert('Fonctionnalité de candidature à venir prochainement');
   };
+
 
   // Formater le salaire
   const formatSalary = (job) => {
@@ -254,47 +256,88 @@ const DashboardCandidat = () => {
   const renderJobs = () => (
     <section className="opportunities-section">
       <div className="section-header">
-        <h2>💼 Toutes les Offres d'Emploi</h2>
+        <h2>👥 Tous les Candidats</h2>
         <div className="filter-pills">
-          <button className="pill active">Récentes</button>
-          <button className="pill">Mieux payées</button>
-          <button className="pill">À proximité</button>
+          <button className="pill active">Récents</button>
+          <button className="pill">Expérimentés</button>
+          <button className="pill">Disponibles</button>
         </div>
       </div>
-      <div className="opportunities-table">
-        <table>
-          <thead><tr><th>Entreprise</th><th>Poste</th><th>Localisation</th><th>Salaire</th><th>Type</th><th>Action</th></tr></thead>
-          <tbody>
-            {jobOffers.length > 0 ? (
-              jobOffers.map((job) => (
-                <tr key={job._id}>
-                  <td className="company-cell">
-                    <div className="company-avatar"><Icons.Building size={18} /></div>
-                    <span>{job.companyName}</span>
-                  </td>
-                  <td className="position-cell">{job.title}</td>
-                  <td>{job.location}</td>
-                  <td className="salary-cell">{formatSalary(job)}</td>
-                  <td><span className="type-badge">{job.contractType}</span></td>
-                  <td>
-                    <button
-                      className="action-btn"
-                      onClick={() => handleApplyToJob(job._id)}
-                    >
-                      <Icons.Target size={16} />Postuler
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
-                  Aucune offre disponible pour le moment
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+
+      {/* Grille des profils de candidats */}
+      <div className="candidates-grid">
+        {allCandidates.length > 0 ? (
+          allCandidates.slice(0, 20).map((candidate) => (
+            <motion.div
+              key={candidate._id}
+              className="candidate-card"
+              whileHover={{ y: -2 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <div className="candidate-header">
+                <div className="candidate-avatar">
+                  {candidate.firstName?.charAt(0)}{candidate.lastName?.charAt(0)}
+                </div>
+                <div className="candidate-match">
+                  <span className="match-label">Profil candidat</span>
+                </div>
+              </div>
+
+              <div className="candidate-info">
+                <div className="candidate-name">
+                  {candidate.firstName || 'Prénom'} {candidate.lastName || 'Nom'}
+                </div>
+                <div className="candidate-position">
+                  {candidate.experience || 'Expérience non spécifiée'}
+                </div>
+                <div className="candidate-meta">
+                  <span className="candidate-location">
+                    <Icons.MapPin size={14} />
+                    {candidate.address || 'Localisation masquée'}
+                  </span>
+                  {candidate.availability && (
+                    <span className="candidate-availability">
+                      Disponibilité: {candidate.availability}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {candidate.bio && (
+                <div className="candidate-description">
+                  {candidate.bio.length > 100
+                    ? candidate.bio.substring(0, 100) + '...'
+                    : candidate.bio
+                  }
+                </div>
+              )}
+
+              {candidate.skills && candidate.skills.length > 0 && (
+                <div className="candidate-skills">
+                  {candidate.skills.slice(0, 3).map((skill, index) => (
+                    <span key={index} className="skill-tag">{skill}</span>
+                  ))}
+                  {candidate.skills.length > 3 && (
+                    <span className="skill-more">+{candidate.skills.length - 3}</span>
+                  )}
+                </div>
+              )}
+
+              <div className="candidate-footer">
+                <span className="applied-date">
+                  Profil créé {new Date(candidate.createdAt).toLocaleDateString('fr-FR')}
+                </span>
+              </div>
+            </motion.div>
+          ))
+        ) : (
+          <div className="no-candidates">
+            <Icons.Users size={48} />
+            <h3>Aucun profil trouvé</h3>
+            <p>Aucun candidat n'est disponible pour le moment.</p>
+          </div>
+        )}
       </div>
     </section>
   );
